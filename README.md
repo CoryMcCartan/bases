@@ -1,0 +1,72 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# **bases** <a href="https://corymccartan.com/bases/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+**bases** provides various basis expansions for flexible regression
+modeling, including random Fourier features, exact kernel / Gaussian
+process feature maps, BART prior features, and a helpful interface for
+n-way interactions. The provided functions may be used within any
+modeling formula, allowing the use of kernel methods and other basis
+expansions in modeling functions that do not otherwise support them.
+
+## Example: random Fourier features
+
+Fitting an approximate kernel regression with random Fourier features is
+as simple as wrapping the relevant variables in a call to `b_rff()`. The
+default kernel is a Gaussian/RBF kernel with length scale 1 which is
+applied to predictors after rescaling them to have unit variance.
+
+``` r
+library(bases)
+
+# Box & Jenkins (1976) sales data
+x = 1:150
+y = c(BJsales) 
+
+lm(y ~ b_rff(x, p = 5)) # 5 random features
+#> 
+#> Call:
+#> lm(formula = y ~ b_rff(x, p = 5))
+#> 
+#> Coefficients:
+#>      (Intercept)  b_rff(x, p = 5)1  b_rff(x, p = 5)2  b_rff(x, p = 5)3  
+#>          70200.9             298.4            1463.6           -1334.8  
+#> b_rff(x, p = 5)4  b_rff(x, p = 5)5  
+#>           1619.9          -70278.6
+```
+
+You can provide a different `kernel =` argument to swtich kernels. Many
+common kernels are provided with the package; see `?kernels`.
+
+``` r
+lm(y ~ b_rff(x, kernel = k_matern(scale = 0.1, nu = 5/2)))
+lm(y ~ b_rff(x, kernel = k_rq(scale = 2, alpha = 2)))
+```
+
+We can visualize RFF fits versus a simple linear model.
+
+``` r
+k = k_rbf(scale = 0.2)
+plot(x, y, xlab = "Month", ylab = "Sales")
+lines(x, fitted(lm(y ~ x)), lty = "dashed", lwd = 1.5)
+for (i in 1:20) {
+    m_rff = lm(y ~ b_rff(x, p = 20, kernel = k))
+    lines(x, fitted(m_rff), col = "#13a5")
+}
+```
+
+<img src="man/figures/README-rbf-plot-1.png" width="100%" />
+
+## Installation
+
+You can install the development version of bases with:
+
+``` r
+remotes::install_github("CoryMcCartan/bases")
+```

@@ -10,6 +10,13 @@
 
 Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi & Recht, 2007), exact kernel / Gaussian process feature maps, BART (Chipman et al., 2010) \doi{10.1214/09-AOAS285} prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://corymccartan.com/bases/}
+}
+
+}
 \author{
 \strong{Maintainer}: Cory McCartan \email{mccartan@psu.edu} (\href{https://orcid.org/0000-0002-6251-669X}{ORCID})
 

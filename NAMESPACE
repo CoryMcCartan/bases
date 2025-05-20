@@ -2,10 +2,10 @@
 
 S3method(makepredictcall,b_rff)
 S3method(predict,b_rff)
+export(b_rff)
 export(k_lapl)
 export(k_matern)
 export(k_rbf)
 export(k_rq)
-export(qtile)
 importFrom(rlang,abort)
 useDynLib(bases, .registration = TRUE)

@@ -40,6 +40,8 @@
 #' @references
 #' Rahimi, A., & Recht, B. (2007). *Random features for large-scale kernel
 #' machines.* Advances in neural information processing systems, 20.
+#'
+#' @export
 b_rff <- function(..., p = 100, kernel = k_rbf(),
                   stdize = c("scale", "box", "symbox", "none"), n_approx = nextn(4*p),
                   freqs = NULL, phases = NULL, shift = NULL, scale = NULL) {
