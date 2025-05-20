@@ -64,6 +64,14 @@ transform of the kernel, and \eqn{b\sim\mathrm{Unif}[-\pi, \pi]} is a random
 phase shift. The input data \code{x} may be shifted and rescaled before the
 feature mapping is applied, according to the \code{stdize} argument.
 }
+\examples{
+data(quakes)
+
+lm(depth ~ b_rff(lat, long, p=16), quakes)
+lm(depth ~ b_rff(lat, long, p=8, kernel=k_rbf(scale=0.5)), quakes)
+lm(depth ~ b_rff(lat, long, p=20, kernel=k_rbf(scale=5), stdize="none"), quakes)
+
+}
 \references{
 Rahimi, A., & Recht, B. (2007). \emph{Random features for large-scale kernel
 machines.} Advances in neural information processing systems, 20.

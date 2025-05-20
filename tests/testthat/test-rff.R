@@ -1,14 +1,13 @@
 test_that("Random features improve prediction fit", {
-    d = na.omit(penguins)
-    y = d$sex == "male"
+    y = quakes$depth
 
-    m = lm(y ~ bill_len + bill_dep + flipper_len + log(body_mass), d)
+    m = lm(y ~ lat + long, quakes)
     r2_lm = cor(fitted(m), y)^2
 
-    m = lm(y ~ b_rff(bill_len, bill_dep, flipper_len, log(body_mass), p=50), d)
+    m = lm(y ~ b_rff(lat, long, p=32), quakes)
     r2_rff = cor(fitted(m), y)^2
 
-    expect_gt(r2_rff - r2_lm, 0.05)
+    expect_gt(r2_rff - r2_lm, 0.8)
 })
 
 test_that("Manual Fourier transform matches known", {

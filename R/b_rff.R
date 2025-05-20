@@ -25,7 +25,7 @@
 #' @param n_approx The number of discrete frequencies to use in calculating the
 #'   Fourier transform of the provided kernel.  Not used for certain kernels for
 #'   which an analytic Fourier transform is available; see above.
-#' @param freqs Matrix of frequencies to use, `ncol(freqs)` matching the number
+#' @param freqs Matrix of frequencies to use; `ncol(freqs)` must match the number
 #'   of predictors. If provided, overrides those calculated automatically, thus
 #'   ignoring `p` and `kernel`.
 #' @param phases Vector of phase shifts to use. If provided, overrides those
@@ -40,6 +40,13 @@
 #' @references
 #' Rahimi, A., & Recht, B. (2007). *Random features for large-scale kernel
 #' machines.* Advances in neural information processing systems, 20.
+#'
+#' @examples
+#' data(quakes)
+#'
+#' lm(depth ~ b_rff(lat, long, p=16), quakes)
+#' lm(depth ~ b_rff(lat, long, p=8, kernel=k_rbf(scale=0.5)), quakes)
+#' lm(depth ~ b_rff(lat, long, p=20, kernel=k_rbf(scale=5), stdize="none"), quakes)
 #'
 #' @export
 b_rff <- function(..., p = 100, kernel = k_rbf(),
@@ -59,9 +66,9 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
         if (!is.null(kern_name <- attr(kernel, "name"))) {
             distr = switch(
                 kern_name,
-                rbf = \(p) rnorm(p, 0, 1 / attr(kernel, "scale")),
-                lapl = \(p) rcauchy(p, 0, 1 / attr(kernel, "scale")),
-                cauchy = \(p) rexp(p, attr(kernel, "scale")),
+                rbf = function (p) rnorm(p, 0, 1 / attr(kernel, "scale")),
+                lapl = function (p) rcauchy(p, 0, 1 / attr(kernel, "scale")),
+                cauchy = function (p) rexp(p, attr(kernel, "scale")),
                 NULL
             )
 
@@ -73,7 +80,7 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
             # find scale of kernel, calibrated to match RBF length scale
             k_scale = attr(kernel, "scale")
             if (is.null(k_scale)) { # fallback
-                k_scale = exp(uniroot(\(x) 1e-8 - kernel(0, exp(x)),
+                k_scale = exp(uniroot(function (x) 1e-8 - kernel(0, exp(x)),
                                       c(-20, 20), tol=1e-8)$root) / (2*pi)
             }
             # FFT
@@ -115,7 +122,7 @@ makepredictcall.b_rff <- function(var, call) {
     if (as.character(call)[1L] == "b_rff" ||
             (is.call(call) && identical(eval(call[[1L]]), b_rff))) {
         at = attributes(var)[c("freqs", "phases", "shift",  "scale")]
-        call = call[1L:2L]
+        # call = call[1L:2L]
         call[names(at)] = at
     }
     call

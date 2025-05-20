@@ -65,7 +65,7 @@ plot(x, y, xlab = "Month", ylab = "Sales")
 lines(x, fitted(lm(y ~ x)), lty = "dashed", lwd = 1.5)
 for (i in 1:20) {
     m_rff = lm(y ~ b_rff(x, p = 20, kernel = k))
-    lines(x, fitted(m_rff), col = "#13a5")
+    lines(x, fitted(m_rff), col = "#4584")
 }
 ```
 
