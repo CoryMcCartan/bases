@@ -15,6 +15,14 @@ n-way interactions. The provided functions may be used within any
 modeling formula, allowing the use of kernel methods and other basis
 expansions in modeling functions that do not otherwise support them.
 
+## Installation
+
+You can install the development version of **bases** with:
+
+``` r
+remotes::install_github("CoryMcCartan/bases")
+```
+
 ## Example: random Fourier features
 
 Fitting an approximate kernel regression with random Fourier features is
@@ -62,11 +70,3 @@ for (i in 1:20) {
 ```
 
 <img src="man/figures/README-rbf-plot-1.png" width="100%" />
-
-## Installation
-
-You can install the development version of bases with:
-
-``` r
-remotes::install_github("CoryMcCartan/bases")
-```

@@ -18,6 +18,10 @@ k_matern(scale = 1, nu = 1.5)
 }
 \arguments{
 \item{scale}{The kernel length scale.}
+
+\item{alpha}{The shape/df parameter. \eqn{\alpha=1} is the Cauchy kernel.}
+
+\item{nu}{The smoothness parameter. \eqn{\nu=0.5} is the Ornstein–Uhlenbeck kernel.}
 }
 \value{
 A function which calculates a kernel matrix for vector arguments \code{x}
@@ -35,8 +39,8 @@ inputs are provided.
 
 \item \code{k_lapl()}: Laplace kernel
 
-\item \code{k_rq()}: Rational quadratic kernel. \eqn{alpha=1} is the Cauchy kernel.
+\item \code{k_rq()}: Rational quadratic kernel.
 
-\item \code{k_matern()}: Matern kernel. \eqn{nu=0.5} is the Ornstein–Uhlenbeck kernel.
+\item \code{k_matern()}: Matern kernel.
 
 }}

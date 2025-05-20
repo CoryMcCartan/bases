@@ -12,7 +12,8 @@ Description: Provides various basis expansions for flexible regression modeling,
     allowing the use of kernel methods and other basis expansions in modeling 
     functions that do not otherwise support them.
 Imports:
-    rlang
+    rlang,
+    stats
 Suggests: 
     testthat (>= 3.0.0)
 LinkingTo: 

@@ -4,6 +4,7 @@
 .httr-oauth
 .DS_Store
 .quarto
+pkgdown
 
 *.swp
 *.tmp

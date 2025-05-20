@@ -101,16 +101,6 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
     m
 }
 
-#' Evaluate random Fourier features on new data
-#'
-#' See the generic [predict()] method for the general behavior of this function.
-#'
-#' @param object The result of a call to [b_rff()]
-#' @param newx The x values at which evaluations are required.
-#'
-#' @returns A new `b_rff` object with the Fourier features evaluated at the new
-#'   data points.
-#'
 #' @export
 predict.b_rff <- function (object, newx, ...)  {
     if (missing(newx)) {

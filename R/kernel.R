@@ -37,7 +37,8 @@ k_lapl = function(scale = 1) {
     fn
 }
 
-#' @describeIn kernels Rational quadratic kernel. \eqn{alpha=1} is the Cauchy kernel.
+#' @describeIn kernels Rational quadratic kernel.
+#' @param alpha The shape/df parameter. \eqn{\alpha=1} is the Cauchy kernel.
 #' @export
 k_rq = function(scale = 1, alpha = 2) {
     if (scale <= 0) abort("`scale` must be positive")
@@ -51,7 +52,8 @@ k_rq = function(scale = 1, alpha = 2) {
     fn
 }
 
-#' @describeIn kernels Matern kernel. \eqn{nu=0.5} is the Ornstein–Uhlenbeck kernel.
+#' @describeIn kernels Matern kernel.
+#' @param nu The smoothness parameter. \eqn{\nu=0.5} is the Ornstein–Uhlenbeck kernel.
 #' @export
 k_matern = function(scale = 1, nu = 1.5) {
     if (scale <= 0) abort("`scale` must be positive")

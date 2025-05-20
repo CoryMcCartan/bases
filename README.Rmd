@@ -25,7 +25,15 @@ including random Fourier features, exact kernel / Gaussian process feature maps,
 BART prior features, and a helpful interface for n-way interactions. The
 provided functions may be used within any modeling formula, allowing the use of
 kernel methods and other basis expansions in modeling functions that do not
-otherwise support them.
+otherwise support them. 
+
+## Installation
+
+You can install the development version of **bases** with:
+
+``` r
+remotes::install_github("CoryMcCartan/bases")
+```
 
 ## Example: random Fourier features
 
@@ -59,13 +67,4 @@ for (i in 1:20) {
     m_rff = lm(y ~ b_rff(x, p = 20, kernel = k))
     lines(x, fitted(m_rff), col = "#13a5")
 }
-```
-
-
-## Installation
-
-You can install the development version of bases with:
-
-``` r
-remotes::install_github("CoryMcCartan/bases")
 ```

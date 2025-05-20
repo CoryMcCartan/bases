@@ -1,4 +1,8 @@
 url: http://corymccartan.com/bases/
 template:
   bootstrap: 5
+  math-rendering: mathjax
+  bslib:
+    bootswatch: zephyr
+    primary: "#455482"
 
