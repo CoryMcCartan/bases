@@ -24,4 +24,14 @@ A new kernel function, with class \code{c("kernel", "function")}.
 Kernel functions (see \code{\link[=kernels]{?kernels}}) may be multiplied by constants,
 multiplied by each other, or added together.
 }
+\examples{
+x = seq(-1, 1, 0.5)
+k = k_rbf()
+k2 = k_per(scale=0.2, period=0.3)
+
+k_add = k2 + 0.5*k
+print(k_add)
+image(k_add(x, x))
+
+}
 \concept{kernels}

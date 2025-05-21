@@ -83,20 +83,20 @@ print.ridge <- function(x, ...) {
 #' @param object A fitted [ridge()] model.
 #' @export
 fitted.ridge <- function(object, ...) {
-    x$fitted
+    object$fitted
 }
 
 #' @describeIn ridge Coefficients
 #' @export
 coef.ridge <- function(object, ...) {
-    x$coef
+    object$coef
 }
 
 #' @describeIn ridge Predicted values
 #' @param newdata A data frame containing the new data to predict
 #' @export
 predict.ridge <- function(object, newdata, ...) {
-    tt = delete.response(terms(x))
+    tt = delete.response(terms(object))
     m = if (missing(newdata)) {
         model.frame(tt, ...)
     } else {
@@ -107,7 +107,7 @@ predict.ridge <- function(object, newdata, ...) {
     }
     X = model.matrix(tt, m, ...)
 
-    out = c(X %*% x$coef + x$mean_y)
+    out = c(X %*% object$coef + object$mean_y)
     names(out) = rownames(X)
     out
 }

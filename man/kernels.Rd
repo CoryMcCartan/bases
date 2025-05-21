@@ -59,12 +59,8 @@ k(0, 0)
 k(0, x)
 k(x, x)
 
-k2 = k_per(scale=0.2, period=0.3)
-round(k2(x, x))
-
-k_add = k2 + 0.5*k
-print(k_add)
-image(k_add(x, x))
+k = k_per(scale=0.2, period=0.3)
+round(k(x, x))
 
 }
 \concept{kernels}

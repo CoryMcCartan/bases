@@ -21,12 +21,8 @@
 #' k(0, x)
 #' k(x, x)
 #'
-#' k2 = k_per(scale=0.2, period=0.3)
-#' round(k2(x, x))
-#'
-#' k_add = k2 + 0.5*k
-#' print(k_add)
-#' image(k_add(x, x))
+#' k = k_per(scale=0.2, period=0.3)
+#' round(k(x, x))
 #'
 NULL
 
@@ -134,6 +130,16 @@ k_per = function(scale = 1, period = 1) {
 #' @concept kernels
 #' @md
 #' @returns A new kernel function, with class `c("kernel", "function")`.
+#'
+#' @examples
+#' x = seq(-1, 1, 0.5)
+#' k = k_rbf()
+#' k2 = k_per(scale=0.2, period=0.3)
+#'
+#' k_add = k2 + 0.5*k
+#' print(k_add)
+#' image(k_add(x, x))
+#'
 NULL
 
 #' @rdname kernel-arith
