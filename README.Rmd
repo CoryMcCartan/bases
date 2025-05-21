@@ -40,7 +40,7 @@ remotes::install_github("CoryMcCartan/bases")
 ## Example: random Fourier features
 
 The basis functions in **bases** all start with `b_` and are designed to work in
-the same way as built-in basis expansions like `splines::bs` or `poly`: simply
+the same way as built-in basis expansions like `splines::bs()` or `poly()`: simply
 include the function in a model formula.
 
 So fitting an approximate kernel regression with random Fourier features is as simple as wrapping the relevant variables in a call to the corresponding basis function, `b_rff()`.

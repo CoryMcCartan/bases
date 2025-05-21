@@ -43,7 +43,7 @@ An object of class \code{ridge} with components including:
 }
 \description{
 Lightweight routine for ridge regression, fitted via a singular value
-decomposition. The penalty may be automatically determined via leave-one-out
+decomposition. The penalty may be automatically determined by leave-one-out
 cross validation.
 }
 \section{Methods (by generic)}{
