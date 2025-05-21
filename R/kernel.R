@@ -3,14 +3,31 @@
 #' These functions return vectorized kernel functions that can be used to
 #' calculate kernel matrices, or provided directly to other basis functions.
 #' These functions are designed to take a maximum value of one when identical
-#' inputs are provided.
+#' inputs are provided. Kernels can be combined with arithmetic expressions; see
+#' [`?kernel-arith`][kernel-arith].
 #'
 #' @param scale The kernel length scale.
 #'
 #' @returns A function which calculates a kernel matrix for vector arguments `x`
-#'   and `y`.
+#'   and `y`. The function has class `c("kernel", "function")`.
 #'
+#' @concept kernels
 #' @name kernels
+#'
+#' @examples
+#' k = k_rbf()
+#' x = seq(-1, 1, 0.5)
+#' k(0, 0)
+#' k(0, x)
+#' k(x, x)
+#'
+#' k2 = k_per(scale=0.2, period=0.3)
+#' round(k2(x, x))
+#'
+#' k_add = k2 + 0.5*k
+#' print(k_add)
+#' image(k_add(x, x))
+#'
 NULL
 
 #' @describeIn kernels Radial basis function kernel
@@ -22,6 +39,7 @@ k_rbf = function(scale = 1) {
     }
     attr(fn, "name") = "rbf"
     attr(fn, "scale") = scale
+    class(fn) = c("kernel", "function")
     fn
 }
 
@@ -34,6 +52,7 @@ k_lapl = function(scale = 1) {
     }
     attr(fn, "name") = "lapl"
     attr(fn, "scale") = scale
+    class(fn) = c("kernel", "function")
     fn
 }
 
@@ -49,6 +68,7 @@ k_rq = function(scale = 1, alpha = 2) {
     attr(fn, "name") = if (alpha == 1) "cauchy" else "rq"
     attr(fn, "scale") = scale
     attr(fn, "alpha") = alpha
+    class(fn) = c("kernel", "function")
     fn
 }
 
@@ -84,5 +104,71 @@ k_matern = function(scale = 1, nu = 1.5) {
     attr(fn, "name") = "matern"
     attr(fn, "scale") = scale
     attr(fn, "nu") = nu
+    class(fn) = c("kernel", "function")
     fn
 }
+
+#' @describeIn kernels Periodic (exp-sine-squared) kernel.
+#' @param period The period, in the same units as `scale`.
+#' @export
+k_per = function(scale = 1, period = 1) {
+    if (scale <= 0) abort("`scale` must be positive")
+    if (period <= 0) abort("`period` must be positive")
+    fn = function(x, y) {
+        exp(-2 * sin(pi * sqrt(dist_l2(x, y)) / period)^2 / scale^2)
+    }
+    attr(fn, "name") = "per"
+    attr(fn, "scale") = scale
+    attr(fn, "period") = period
+    class(fn) = c("kernel", "function")
+    fn
+}
+
+
+#' Kernel arithmetic
+#'
+#' Kernel functions (see [`?kernels`][kernels]) may be multiplied by constants,
+#' multiplied by each other, or added together.
+#'
+#' @name kernel-arith
+#' @concept kernels
+#' @md
+#' @returns A new kernel function, with class `c("kernel", "function")`.
+NULL
+
+#' @rdname kernel-arith
+#'
+#' @param x a numeric or a `kernel` function
+#' @param k2 a `kernel` function
+#'
+#' @export
+`*.kernel` <- function(x, k2) {
+    stopifnot(is.numeric(x) || inherits(x, "kernel"))
+    stopifnot(inherits(k2, "kernel"))
+
+    if (is.numeric(x)) {
+        rlang::fn_body(k2) <- rlang::expr({!!x * (!!rlang::fn_body(k2)[[2]])})
+        k2
+    } else {
+        k1 = x
+        fn <- function(x, y) { k1(x, y) * k2(x, y) }
+        attr(fn, "name") = paste(attr(k1, "name"), "*", attr(k2, "name"))
+        fn
+    }
+}
+
+#' @rdname kernel-arith
+#'
+#' @param k1 a `kernel` function
+#'
+#' @export
+`+.kernel` <- function(k1, k2) {
+    stopifnot(inherits(k1, "kernel"))
+    stopifnot(inherits(k2, "kernel"))
+
+    fn <- function(x, y) { k1(x, y) + k2(x, y) }
+    attr(fn, "name") = paste(attr(k1, "name"), "+", attr(k2, "name"))
+    fn
+}
+
+

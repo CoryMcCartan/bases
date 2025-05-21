@@ -10,7 +10,7 @@
 #' feature mapping is applied, according to the `stdize` argument.
 #'
 #' @param ... The variable(s) to build features for. A single data frame or
-#'   matrix may be provided as well.
+#'   matrix may be provided as well. Missing values are not allowed.
 #' @param p The number of random features.
 #' @param kernel A kernel function. If one of the recognized kernel functions
 #'   such as [k_rbf()] is provided, then the computations will be exact.
@@ -44,10 +44,19 @@
 #' @examples
 #' data(quakes)
 #'
-#' lm(depth ~ b_rff(lat, long, p=16), quakes)
-#' lm(depth ~ b_rff(lat, long, p=8, kernel=k_rbf(scale=0.5)), quakes)
-#' lm(depth ~ b_rff(lat, long, p=20, kernel=k_rbf(scale=5), stdize="none"), quakes)
+#' m = ridge(depth ~ b_rff(lat, long), quakes)
+#' plot(fitted(m), quakes$depth)
 #'
+#' # more random featues means a higher ridge penalty
+#' m500 = ridge(depth ~ b_rff(lat, long, p = 500), quakes)
+#' c(default = m$penalty, p500 = m500$penalty)
+#'
+#' # A shorter length scale fits the data better (R^2)
+#' m_025 = ridge(depth ~ b_rff(lat, long, kernel = k_rbf(scale = 0.25)), quakes)
+#' c(
+#'   len_1 = cor(quakes$depth, fitted(m))^2,
+#'   len_025 = cor(quakes$depth, fitted(m_025))^2
+#' )
 #' @export
 b_rff <- function(..., p = 100, kernel = k_rbf(),
                   stdize = c("scale", "box", "symbox", "none"), n_approx = nextn(4*p),
@@ -122,7 +131,6 @@ makepredictcall.b_rff <- function(var, call) {
     if (as.character(call)[1L] == "b_rff" ||
             (is.call(call) && identical(eval(call[[1L]]), b_rff))) {
         at = attributes(var)[c("freqs", "phases", "shift",  "scale")]
-        # call = call[1L:2L]
         call[names(at)] = at
     }
     call

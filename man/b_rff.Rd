@@ -18,7 +18,7 @@ b_rff(
 }
 \arguments{
 \item{...}{The variable(s) to build features for. A single data frame or
-matrix may be provided as well.}
+matrix may be provided as well. Missing values are not allowed.}
 
 \item{p}{The number of random features.}
 
@@ -38,7 +38,7 @@ dimension to lie in \eqn{[-0.5, 0.5]^d}.}
 Fourier transform of the provided kernel.  Not used for certain kernels for
 which an analytic Fourier transform is available; see above.}
 
-\item{freqs}{Matrix of frequencies to use, \code{ncol(freqs)} matching the number
+\item{freqs}{Matrix of frequencies to use; \code{ncol(freqs)} must match the number
 of predictors. If provided, overrides those calculated automatically, thus
 ignoring \code{p} and \code{kernel}.}
 
@@ -67,10 +67,19 @@ feature mapping is applied, according to the \code{stdize} argument.
 \examples{
 data(quakes)
 
-lm(depth ~ b_rff(lat, long, p=16), quakes)
-lm(depth ~ b_rff(lat, long, p=8, kernel=k_rbf(scale=0.5)), quakes)
-lm(depth ~ b_rff(lat, long, p=20, kernel=k_rbf(scale=5), stdize="none"), quakes)
+m = ridge(depth ~ b_rff(lat, long), quakes)
+plot(fitted(m), quakes$depth)
 
+# more random featues means a higher ridge penalty
+m500 = ridge(depth ~ b_rff(lat, long, p = 500), quakes)
+c(default = m$penalty, p500 = m500$penalty)
+
+# A shorter length scale fits the data better (R^2)
+m_025 = ridge(depth ~ b_rff(lat, long, kernel = k_rbf(scale = 0.25)), quakes)
+c(
+  len_1 = cor(quakes$depth, fitted(m))^2,
+  len_025 = cor(quakes$depth, fitted(m_025))^2
+)
 }
 \references{
 Rahimi, A., & Recht, B. (2007). \emph{Random features for large-scale kernel

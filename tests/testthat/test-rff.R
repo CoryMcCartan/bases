@@ -34,7 +34,7 @@ test_that("Random features closely approximate Gaussian process", {
     xs = c(do_std(matrix(x))$x)
 
     k = k_rbf(0.2)
-    yhat_gp = mean(y) + k(xs, xs) %*% solve(k(xs, xs) + 1e-2*diag(length(y))) %*% (y - mean(y))
+    yhat_gp = mean(y) + k(xs, xs) %*% solve(k(xs, xs) + 1e-5*diag(length(y))) %*% (y - mean(y))
     yhat_rff = rowMeans(replicate(50, fitted(lm(y ~ b_rff(x, kernel=k)))))
 
     expect_lt(sd(yhat_rff - yhat_gp) / sd(y), 0.025)

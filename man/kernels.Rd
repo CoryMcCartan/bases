@@ -6,6 +6,7 @@
 \alias{k_lapl}
 \alias{k_rq}
 \alias{k_matern}
+\alias{k_per}
 \title{Kernel functions}
 \usage{
 k_rbf(scale = 1)
@@ -15,6 +16,8 @@ k_lapl(scale = 1)
 k_rq(scale = 1, alpha = 2)
 
 k_matern(scale = 1, nu = 1.5)
+
+k_per(scale = 1, period = 1)
 }
 \arguments{
 \item{scale}{The kernel length scale.}
@@ -22,16 +25,19 @@ k_matern(scale = 1, nu = 1.5)
 \item{alpha}{The shape/df parameter. \eqn{\alpha=1} is the Cauchy kernel.}
 
 \item{nu}{The smoothness parameter. \eqn{\nu=0.5} is the Ornstein–Uhlenbeck kernel.}
+
+\item{period}{The period, in the same units as \code{scale}.}
 }
 \value{
 A function which calculates a kernel matrix for vector arguments \code{x}
-and \code{y}.
+and \code{y}. The function has class \code{c("kernel", "function")}.
 }
 \description{
 These functions return vectorized kernel functions that can be used to
 calculate kernel matrices, or provided directly to other basis functions.
 These functions are designed to take a maximum value of one when identical
-inputs are provided.
+inputs are provided. Kernels can be combined with arithmetic expressions; see
+\code{\link[=kernel-arith]{?kernel-arith}}.
 }
 \section{Functions}{
 \itemize{
@@ -43,4 +49,22 @@ inputs are provided.
 
 \item \code{k_matern()}: Matern kernel.
 
+\item \code{k_per()}: Periodic (exp-sine-squared) kernel.
+
 }}
+\examples{
+k = k_rbf()
+x = seq(-1, 1, 0.5)
+k(0, 0)
+k(0, x)
+k(x, x)
+
+k2 = k_per(scale=0.2, period=0.3)
+round(k2(x, x))
+
+k_add = k2 + 0.5*k
+print(k_add)
+image(k_add(x, x))
+
+}
+\concept{kernels}

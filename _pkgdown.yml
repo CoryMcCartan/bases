@@ -5,4 +5,14 @@ template:
   bslib:
     bootswatch: zephyr
     primary: "#455482"
-
+reference:
+- title: Basis expansions
+  contents:
+  - starts_with("b_")
+- title: Kernels
+  contents:
+  - kernels
+  - has_concept("kernels")
+- title: Ridge regression
+  contents:
+  - ridge

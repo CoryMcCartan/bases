@@ -38,3 +38,15 @@ test_that("Matern limit is Gaussian", {
     x = seq(-5, 5, length.out=51)
     expect_equal(k_matern(nu=100)(x, x), k_rbf()(x, x), tolerance = 5e-3)
 })
+
+
+test_that("Kernel arithmetic works as expected", {
+    x = seq(-5, 5, length.out=51)
+
+    k1 = k_rbf()
+    k2 = k_lapl(scale = 2)
+
+    expect_equal(0.5 * k2(x, x), (0.5 * k2)(x, x))
+    expect_equal(k1(x, x) * k2(x, x), (k1 * k2)(x, x))
+    expect_equal(k1(x, x) + k2(x, x), (k1 + k2)(x, x))
+})
