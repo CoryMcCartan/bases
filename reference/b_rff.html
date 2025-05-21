@@ -6,15 +6,17 @@
     }
   };
 </script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Random Fourier feature basis — b_rff"><meta name="description" content="Generates a random Fourier feature basis matrix for a provided kernel,
-optionally rescaling the data to lie in the unit hypercube.
-Random features are of the form $$
+optionally rescaling the data to lie in the unit hypercube. A good review of
+random features is the Liu et al. (2021) review paper cited below.
+Random features here are of the form $$
   \phi(x) = \cos(\omega^T x + b),
 $$ where \(\omega\) is a vector of frequencies sampled from the Fourier
 transform of the kernel, and \(b\sim\mathrm{Unif}[-\pi, \pi]\) is a random
 phase shift. The input data x may be shifted and rescaled before the
 feature mapping is applied, according to the stdize argument."><meta property="og:description" content="Generates a random Fourier feature basis matrix for a provided kernel,
-optionally rescaling the data to lie in the unit hypercube.
-Random features are of the form $$
+optionally rescaling the data to lie in the unit hypercube. A good review of
+random features is the Liu et al. (2021) review paper cited below.
+Random features here are of the form $$
   \phi(x) = \cos(\omega^T x + b),
 $$ where \(\omega\) is a vector of frequencies sampled from the Fourier
 transform of the kernel, and \(b\sim\mathrm{Unif}[-\pi, \pi]\) is a random
@@ -54,8 +56,9 @@ feature mapping is applied, according to the stdize argument."><meta property="o
 
     <div class="ref-description section level2">
     <p>Generates a random Fourier feature basis matrix for a provided kernel,
-optionally rescaling the data to lie in the unit hypercube.
-Random features are of the form $$
+optionally rescaling the data to lie in the unit hypercube. A good review of
+random features is the Liu et al. (2021) review paper cited below.
+Random features here are of the form $$
   \phi(x) = \cos(\omega^T x + b),
 $$ where \(\omega\) is a vector of frequencies sampled from the Fourier
 transform of the kernel, and \(b\sim\mathrm{Unif}[-\pi, \pi]\) is a random
@@ -149,6 +152,9 @@ to ensure the analytical and empirical frequency covariance matrices agree.</p>
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rahimi, A., &amp; Recht, B. (2007). <em>Random features for large-scale kernel
 machines.</em> Advances in Neural Information Processing Systems, 20.</p>
+<p>Liu, F., Huang, X., Chen, Y., &amp; Suykens, J. A. (2021). Random features for
+kernel approximation: A survey on algorithms, theory, and beyond. <em>IEEE
+Transactions on Pattern Analysis and Machine Intelligence</em>, 44(10), 7128-7148.</p>
 <p>Shen, W., Yang, Z., &amp; Wang, J. (2017, February). Random features for
 shift-invariant kernels with moment matching. In <em>Proceedings of the AAAI
 Conference on Artificial Intelligence</em> (Vol. 31, No. 1).</p>

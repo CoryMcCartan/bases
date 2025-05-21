@@ -67,7 +67,7 @@
 </div>
 <!-- badges: start -->
 
-<p><strong>bases</strong> provides various basis expansions for flexible regression modeling, including random Fourier features, exact kernel / Gaussian process feature maps, BART prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.</p>
+<p><strong>bases</strong> provides <a href="./reference/index.html#basis-expansions">various basis expansions</a> for flexible regression modeling, including random Fourier features, exact kernel / Gaussian process feature maps, BART prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of <a href="./reference/kernels.html">kernel functions</a> are also provided, which support kernel arithmetic to form new kernels. Basic <a href="./reference/ridge.html">ridge regression</a> functionality is included as well.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -94,9 +94,9 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;      (Intercept)  b_rff(x, p = 5)1  b_rff(x, p = 5)2  b_rff(x, p = 5)3  </span></span>
-<span><span class="co">#&gt;          70200.9             298.4            1463.6           -1334.8  </span></span>
+<span><span class="co">#&gt;         -1821607             12882             33383            -35639  </span></span>
 <span><span class="co">#&gt; b_rff(x, p = 5)4  b_rff(x, p = 5)5  </span></span>
-<span><span class="co">#&gt;           1619.9          -70278.6</span></span></code></pre></div>
+<span><span class="co">#&gt;            88853           4123981</span></span></code></pre></div>
 <p>You can provide a different <code>kernel =</code> argument to switch kernels. Many common kernels are provided with the package; see <code><a href="reference/kernels.html">?kernels</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/b_rff.html">b_rff</a></span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="fu"><a href="reference/kernels.html">k_matern</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.1</span>, nu <span class="op">=</span> <span class="fl">5</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -148,6 +148,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/CoryMcCartan/bases" class="external-link"><img src="https://codecov.io/gh/CoryMcCartan/bases/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
