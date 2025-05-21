@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Basis Expansions for Regression Modeling • bases</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
   window.MathJax = {
     chtml: {
@@ -39,11 +44,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/CoryMcCartan/bases/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -71,14 +78,14 @@
 <div class="section level2">
 <h2 id="example-random-fourier-features">Example: random Fourier features<a class="anchor" aria-label="anchor" href="#example-random-fourier-features"></a>
 </h2>
-<p>The basis functions in <strong>bases</strong> all start with <code>b_</code> and are designed to work in the same way as built-in basis expansions like <code><a href="https://rdrr.io/r/splines/bs.html" class="external-link">splines::bs</a></code> or <code>poly</code>: simply include the function in a model formula.</p>
+<p>The basis functions in <strong>bases</strong> all start with <code>b_</code> and are designed to work in the same way as built-in basis expansions like <code><a href="https://rdrr.io/r/splines/bs.html" class="external-link">splines::bs()</a></code> or <code><a href="https://rdrr.io/r/stats/poly.html" class="external-link">poly()</a></code>: simply include the function in a model formula.</p>
 <p>So fitting an approximate kernel regression with random Fourier features is as simple as wrapping the relevant variables in a call to the corresponding basis function, <code><a href="reference/b_rff.html">b_rff()</a></code>. The default kernel is a Gaussian/RBF kernel with length scale 1 which is applied to predictors after rescaling them to have unit variance.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://corymccartan.com/bases/">bases</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Box &amp; Jenkins (1976) sales data</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">150</span></span>
-<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">BJsales</span><span class="op">)</span> </span>
+<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BJsales</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="reference/b_rff.html">b_rff</a></span><span class="op">(</span><span class="va">x</span>, p <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="co"># 5 random features</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -106,7 +113,15 @@
 <p><img src="reference/figures/README-rbf-plot-1.png" width="100%"></p>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/CoryMcCartan/bases/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/CoryMcCartan/bases/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
