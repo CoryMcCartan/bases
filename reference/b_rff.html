@@ -82,7 +82,7 @@ feature mapping is applied, according to the <code>stdize</code> argument.</p>
 
 <dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>The variable(s) to build features for. A single data frame or
-matrix may be provided as well.</p></dd>
+matrix may be provided as well. Missing values are not allowed.</p></dd>
 
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
@@ -112,7 +112,7 @@ which an analytic Fourier transform is available; see above.</p></dd>
 
 
 <dt id="arg-freqs">freqs<a class="anchor" aria-label="anchor" href="#arg-freqs"></a></dt>
-<dd><p>Matrix of frequencies to use, <code>ncol(freqs)</code> matching the number
+<dd><p>Matrix of frequencies to use; <code>ncol(freqs)</code> must match the number
 of predictors. If provided, overrides those calculated automatically, thus
 ignoring <code>p</code> and <code>kernel</code>.</p></dd>
 
@@ -146,108 +146,23 @@ machines.</em> Advances in neural information processing systems, 20.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">quakes</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, p<span class="op">=</span><span class="fl">16</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lm(formula = depth ~ b_rff(lat, long, p = 16), data = quakes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                (Intercept)   b_rff(lat, long, p = 16)1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    1776.24                     2076.33  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 16)2   b_rff(lat, long, p = 16)3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     964.69                      -39.91  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 16)4   b_rff(lat, long, p = 16)5  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    -387.45                    -2927.69  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 16)6   b_rff(lat, long, p = 16)7  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     236.78                      697.56  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 16)8   b_rff(lat, long, p = 16)9  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     197.52                     -129.22  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 16)10  b_rff(lat, long, p = 16)11  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   -2066.33                     -377.20  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 16)12  b_rff(lat, long, p = 16)13  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    3009.06                      155.98  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 16)14  b_rff(lat, long, p = 16)15  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   -5329.97                      126.53  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 16)16  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    -730.68  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, p<span class="op">=</span><span class="fl">8</span>, kernel<span class="op">=</span><span class="fu"><a href="kernels.html">k_rbf</a></span><span class="op">(</span>scale<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lm(formula = depth ~ b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     data = quakes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                           (Intercept)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                               212.478  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                -5.066  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))2  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                               417.081  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                38.154  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))4  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                              -103.652  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))5  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                              -277.305  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))6  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                              -330.216  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))7  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                               -16.102  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 8, kernel = k_rbf(scale = 0.5))8  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                              -438.076  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, p<span class="op">=</span><span class="fl">20</span>, kernel<span class="op">=</span><span class="fu"><a href="kernels.html">k_rbf</a></span><span class="op">(</span>scale<span class="op">=</span><span class="fl">5</span><span class="op">)</span>, stdize<span class="op">=</span><span class="st">"none"</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lm(formula = depth ~ b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     stdize = "none"), data = quakes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                            (Intercept)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 424.02  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -1928.43  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")2  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 614.98  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 637.60  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")4  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                -879.01  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")5  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                              -18519.07  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")6  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 -73.48  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")7  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -2701.68  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")8  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                2315.78  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")9  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 -77.36  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")10  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -8343.52  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")11  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 193.50  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")12  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                2735.79  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")13  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                -195.64  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")14  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -3171.10  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")15  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -2196.33  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")16  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                4073.88  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")17  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 328.49  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")18  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                  81.56  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")19  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               -7651.58  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b_rff(lat, long, p = 20, kernel = k_rbf(scale = 5), stdize = "none")20  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                -425.00  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="ridge.html">ridge</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">$</span><span class="va">depth</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fitted.ridge(m):</span> object 'x' not found</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># more random featues means a higher ridge penalty</span></span></span>
+<span class="r-in"><span><span class="va">m500</span> <span class="op">=</span> <span class="fu"><a href="ridge.html">ridge</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, p <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>default <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">penalty</span>, p500 <span class="op">=</span> <span class="va">m500</span><span class="op">$</span><span class="va">penalty</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      default         p500 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.0001229786 0.0433915690 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A shorter length scale fits the data better (R^2)</span></span></span>
+<span class="r-in"><span><span class="va">m_025</span> <span class="op">=</span> <span class="fu"><a href="ridge.html">ridge</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, kernel <span class="op">=</span> <span class="fu"><a href="kernels.html">k_rbf</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  len_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">quakes</span><span class="op">$</span><span class="va">depth</span>, <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  len_025 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">quakes</span><span class="op">$</span><span class="va">depth</span>, <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">m_025</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fitted.ridge(m):</span> object 'x' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
