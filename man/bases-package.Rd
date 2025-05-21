@@ -14,6 +14,8 @@ Provides various basis expansions for flexible regression modeling, including ra
 Useful links:
 \itemize{
   \item \url{http://corymccartan.com/bases/}
+  \item \url{https://github.com/CoryMcCartan/bases/}
+  \item Report bugs at \url{https://github.com/CoryMcCartan/bases/issues}
 }
 
 }

@@ -47,7 +47,7 @@ inputs are provided. Kernels can be combined with arithmetic expressions; see
 
 \item \code{k_rq()}: Rational quadratic kernel.
 
-\item \code{k_matern()}: Matern kernel.
+\item \code{k_matern()}: Matérn kernel.
 
 \item \code{k_per()}: Periodic (exp-sine-squared) kernel.
 

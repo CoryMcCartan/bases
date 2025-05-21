@@ -9,6 +9,11 @@
 #' phase shift. The input data `x` may be shifted and rescaled before the
 #' feature mapping is applied, according to the `stdize` argument.
 #'
+#' To reduce the variance of the approximation, a moment-matching transformation
+#' is applied to ensure the sampled frequencies have mean zero, per Shen et al.
+#' (2017).  For the Gaussian/RBF kernel, second moment-matching is also applied
+#' to ensure the analytical and empirical frequency covariance matrices agree.
+#'
 #' @param ... The variable(s) to build features for. A single data frame or
 #'   matrix may be provided as well. Missing values are not allowed.
 #' @param p The number of random features.
@@ -39,7 +44,11 @@
 #'
 #' @references
 #' Rahimi, A., & Recht, B. (2007). *Random features for large-scale kernel
-#' machines.* Advances in neural information processing systems, 20.
+#' machines.* Advances in Neural Information Processing Systems, 20.
+#'
+#' Shen, W., Yang, Z., & Wang, J. (2017, February). Random features for
+#' shift-invariant kernels with moment matching. In *Proceedings of the AAAI
+#' Conference on Artificial Intelligence* (Vol. 31, No. 1).
 #'
 #' @examples
 #' data(quakes)
@@ -71,13 +80,16 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
     if (is.null(phases))
         phases = runif(p, -pi, pi)
     if (is.null(freqs)) {
+        k_scale = attr(kernel, "scale")
         # analytical Fourier transform
         if (!is.null(kern_name <- attr(kernel, "name"))) {
             distr = switch(
                 kern_name,
-                rbf = function (p) rnorm(p, 0, 1 / attr(kernel, "scale")),
-                lapl = function (p) rcauchy(p, 0, 1 / attr(kernel, "scale")),
-                cauchy = function (p) rexp(p, attr(kernel, "scale")),
+                rbf = function (p) rnorm(p, 0, 1 / k_scale),
+                lapl = function (p) rcauchy(p, 0, 1 / k_scale),
+                cauchy = function (p) {
+                    rexp(p, k_scale) * sample(c(-1, 1), p, replace=TRUE)
+                },
                 NULL
             )
 
@@ -87,7 +99,6 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
         # manual Fourier transform
         if (is.null(freqs)) {  # check handles case where `name` doesn't match above
             # find scale of kernel, calibrated to match RBF length scale
-            k_scale = attr(kernel, "scale")
             if (is.null(k_scale)) { # fallback
                 k_scale = exp(uniroot(function (x) 1e-8 - kernel(0, exp(x)),
                                       c(-20, 20), tol=1e-8)$root) / (2*pi)
@@ -96,10 +107,18 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
             fx = seq(-128*k_scale, 128*k_scale, length.out=n_approx)
             kx = kernel(fx, 0)
             px = abs(fft(kx))[1:(n_approx/2)]
-            # convert to frequencies
-            freqs = (sample(length(px), p*d, replace=TRUE, prob=px) - 0.5) /
+            # convert to frequencies. Symmetrize so we can moment-match
+            freqs = sample(c(-1, 1), p, replace=TRUE)  *
+                (sample(length(px), p*d, replace=TRUE, prob=px) - 0.5) /
                 256 * (2 * pi / k_scale)
             freqs = matrix(freqs, nrow=d, ncol=p)
+        }
+
+        # moment-matching
+        freqs = freqs - rowMeans(freqs)
+        if (!is.null(kern_name) && kern_name == "rbf") {
+            chol_freq = chol(cov(t(freqs)))
+            freqs = crossprod(solve(chol_freq), freqs) / k_scale
         }
     }
 
@@ -107,12 +126,12 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
         abort("Number of columns in `freqs` must match length of `phases`")
     }
 
-    m = cos(x %*% freqs + rep(phases, each=n))
+    m = cos(x %*% freqs + rep(phases, each=n)) / sqrt(p)
     attr(m, "freqs") = freqs
     attr(m, "phases") = phases
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
-    class(m) = c("b_rff", "matrix")
+    class(m) = c("b_rff", "matrix", "array")
 
     m
 }
@@ -123,7 +142,7 @@ predict.b_rff <- function (object, newx, ...)  {
         return(object)
     }
     at = attributes(var)[c("freqs", "phases", "shift",  "scale")]
-    do.call(b_rff, list(x = newx, at))
+    do.call(b_rff, list(newx, at))
 }
 
 #' @export

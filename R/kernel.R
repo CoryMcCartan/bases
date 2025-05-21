@@ -68,7 +68,7 @@ k_rq = function(scale = 1, alpha = 2) {
     fn
 }
 
-#' @describeIn kernels Matern kernel.
+#' @describeIn kernels Matérn kernel.
 #' @param nu The smoothness parameter. \eqn{\nu=0.5} is the Ornstein–Uhlenbeck kernel.
 #' @export
 k_matern = function(scale = 1, nu = 1.5) {

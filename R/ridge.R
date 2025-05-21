@@ -2,9 +2,11 @@
 #'
 #' Lightweight routine for ridge regression, fitted via a singular value
 #' decomposition. The penalty may be automatically determined by leave-one-out
-#' cross validation.
+#' cross validation. The intercept term is unpenalized.
 #'
-#' @param formula A model formula; see [formula].
+#' @param formula A model formula; see [formula]. The intercept term is
+#'   unpenalized; to fit a penalized intercept, remove the intercept and add
+#'   your own to the design matrix.
 #' @param data An optional data frame or object in which to interpret the
 #'   variables occurring in formula.
 #' @param penalty The ridge penalty. Must be a single numeric or the string
@@ -33,10 +35,14 @@ ridge <- function(formula, data, penalty = "auto", ...) {
         model.frame(formula, data, ...)
     }
     tt = attr(m, "terms")
-    attr(tt, "intercept") = 0
     y = model.response(m)
-    mean_y = mean(y)
-    y = y - mean_y
+    if (attr(tt, "intercept") == 1) { # has intercept
+        attr(tt, "intercept") = 0
+        mean_y = mean(y)
+        y = y - mean_y
+    } else {
+        mean_y = 0
+    }
     X = model.matrix(tt, m, ...)
 
     n = nrow(X)

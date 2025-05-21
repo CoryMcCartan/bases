@@ -16,7 +16,9 @@ ridge(formula, data, penalty = "auto", ...)
 \method{predict}{ridge}(object, newdata, ...)
 }
 \arguments{
-\item{formula}{A model formula; see \link{formula}.}
+\item{formula}{A model formula; see \link{formula}. The intercept term is
+unpenalized; to fit a penalized intercept, remove the intercept and add
+your own to the design matrix.}
 
 \item{data}{An optional data frame or object in which to interpret the
 variables occurring in formula.}
@@ -44,7 +46,7 @@ An object of class \code{ridge} with components including:
 \description{
 Lightweight routine for ridge regression, fitted via a singular value
 decomposition. The penalty may be automatically determined by leave-one-out
-cross validation.
+cross validation. The intercept term is unpenalized.
 }
 \section{Methods (by generic)}{
 \itemize{

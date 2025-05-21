@@ -64,6 +64,12 @@ transform of the kernel, and \eqn{b\sim\mathrm{Unif}[-\pi, \pi]} is a random
 phase shift. The input data \code{x} may be shifted and rescaled before the
 feature mapping is applied, according to the \code{stdize} argument.
 }
+\details{
+To reduce the variance of the approximation, a moment-matching transformation
+is applied to ensure the sampled frequencies have mean zero, per Shen et al.
+(2017).  For the Gaussian/RBF kernel, second moment-matching is also applied
+to ensure the analytical and empirical frequency covariance matrices agree.
+}
 \examples{
 data(quakes)
 
@@ -83,5 +89,9 @@ c(
 }
 \references{
 Rahimi, A., & Recht, B. (2007). \emph{Random features for large-scale kernel
-machines.} Advances in neural information processing systems, 20.
+machines.} Advances in Neural Information Processing Systems, 20.
+
+Shen, W., Yang, Z., & Wang, J. (2017, February). Random features for
+shift-invariant kernels with moment matching. In \emph{Proceedings of the AAAI
+Conference on Artificial Intelligence} (Vol. 31, No. 1).
 }

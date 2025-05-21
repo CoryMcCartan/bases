@@ -33,11 +33,17 @@ test_that("Random features closely approximate Gaussian process", {
     x = seq_along(y)
     xs = c(do_std(matrix(x))$x)
 
-    k = k_rbf(0.2)
-    yhat_gp = mean(y) + k(xs, xs) %*% solve(k(xs, xs) + 1e-5*diag(length(y))) %*% (y - mean(y))
-    yhat_rff = rowMeans(replicate(50, fitted(lm(y ~ b_rff(x, kernel=k)))))
+    k = k_rbf(0.1)
+    yhat_gp = mean(y) + k(xs, xs) %*% solve(k(xs, xs) + 1e-4*diag(length(y))) %*% (y - mean(y))
+    yhat_rff = rowMeans(replicate(50, {
+        fitted(ridge(y ~ b_rff(x, kernel=k, p=100), penalty=1e-4))
+    }))
+    yhat_rff2 = rowMeans(replicate(50, {
+        fitted(ridge(y ~ b_rff(x, kernel=k, p=400), penalty=1e-4))
+    }))
 
-    expect_lt(sd(yhat_rff - yhat_gp) / sd(y), 0.025)
+    expect_lt(sd(yhat_rff - yhat_gp) / sd(y), 0.05)
+    expect_lt(sd(yhat_rff2 - yhat_gp) / sd(y), sd(yhat_rff - yhat_gp) / sd(y))
 })
 
 test_that("predict() method works correctly", {

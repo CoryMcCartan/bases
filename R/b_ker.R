@@ -52,7 +52,7 @@ b_ker <- function(..., kernel = k_rbf(),
     attr(m, "x") = x
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
-    class(m) = c("b_ker", "matrix")
+    class(m) = c("b_ker", "matrix", "array")
 
     m
 }
@@ -63,7 +63,7 @@ predict.b_ker <- function (object, newx, ...)  {
         return(object)
     }
     at = attributes(var)[c("x", "shift",  "scale")]
-    do.call(b_ker, list(x = newx, at))
+    do.call(b_ker, list(newx, at))
 }
 
 #' @export
