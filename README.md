@@ -6,17 +6,21 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/CoryMcCartan/bases/graph/badge.svg)](https://app.codecov.io/gh/CoryMcCartan/bases)
 <!-- badges: end -->
 
-**bases** provides various basis expansions for flexible regression
-modeling, including random Fourier features, exact kernel / Gaussian
-process feature maps, BART prior features, and a helpful interface for
-n-way interactions. The provided functions may be used within any
-modeling formula, allowing the use of kernel methods and other basis
-expansions in modeling functions that do not otherwise support them.
-Along with the basis expansions, a number of kernel functions are also
-provided, which support kernel arithmetic to form new kernels. Basic
-ridge regression functionality is included as well.
+**bases** provides [various basis
+expansions](./reference/index.html#basis-expansions) for flexible
+regression modeling, including random Fourier features, exact kernel /
+Gaussian process feature maps, BART prior features, and a helpful
+interface for n-way interactions. The provided functions may be used
+within any modeling formula, allowing the use of kernel methods and
+other basis expansions in modeling functions that do not otherwise
+support them. Along with the basis expansions, a number of [kernel
+functions](./reference/kernels.html) are also provided, which support
+kernel arithmetic to form new kernels. Basic [ridge
+regression](./reference/ridge.html) functionality is included as well.
 
 ## Installation
 
@@ -52,9 +56,9 @@ lm(y ~ b_rff(x, p = 5)) # 5 random features
 #> 
 #> Coefficients:
 #>      (Intercept)  b_rff(x, p = 5)1  b_rff(x, p = 5)2  b_rff(x, p = 5)3  
-#>          70200.9             298.4            1463.6           -1334.8  
+#>         -1821607             12882             33383            -35639  
 #> b_rff(x, p = 5)4  b_rff(x, p = 5)5  
-#>           1619.9          -70278.6
+#>            88853           4123981
 ```
 
 You can provide a different `kernel =` argument to switch kernels. Many

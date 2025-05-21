@@ -56,8 +56,9 @@ A matrix of random Fourier features.
 }
 \description{
 Generates a random Fourier feature basis matrix for a provided kernel,
-optionally rescaling the data to lie in the unit hypercube.
-Random features are of the form \deqn{
+optionally rescaling the data to lie in the unit hypercube. A good review of
+random features is the Liu et al. (2021) review paper cited below.
+Random features here are of the form \deqn{
   \phi(x) = \cos(\omega^T x + b),
 } where \eqn{\omega} is a vector of frequencies sampled from the Fourier
 transform of the kernel, and \eqn{b\sim\mathrm{Unif}[-\pi, \pi]} is a random
@@ -90,6 +91,10 @@ c(
 \references{
 Rahimi, A., & Recht, B. (2007). \emph{Random features for large-scale kernel
 machines.} Advances in Neural Information Processing Systems, 20.
+
+Liu, F., Huang, X., Chen, Y., & Suykens, J. A. (2021). Random features for
+kernel approximation: A survey on algorithms, theory, and beyond. \emph{IEEE
+Transactions on Pattern Analysis and Machine Intelligence}, 44(10), 7128-7148.
 
 Shen, W., Yang, Z., & Wang, J. (2017, February). Random features for
 shift-invariant kernels with moment matching. In \emph{Proceedings of the AAAI
