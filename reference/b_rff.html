@@ -139,9 +139,19 @@ overrides those calculated according to <code>stdize</code>.</p></dd>
     <p>A matrix of random Fourier features.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>To reduce the variance of the approximation, a moment-matching transformation
+is applied to ensure the sampled frequencies have mean zero, per Shen et al.
+(2017).  For the Gaussian/RBF kernel, second moment-matching is also applied
+to ensure the analytical and empirical frequency covariance matrices agree.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rahimi, A., &amp; Recht, B. (2007). <em>Random features for large-scale kernel
-machines.</em> Advances in neural information processing systems, 20.</p>
+machines.</em> Advances in Neural Information Processing Systems, 20.</p>
+<p>Shen, W., Yang, Z., &amp; Wang, J. (2017, February). Random features for
+shift-invariant kernels with moment matching. In <em>Proceedings of the AAAI
+Conference on Artificial Intelligence</em> (Vol. 31, No. 1).</p>
     </div>
 
     <div class="section level2">
@@ -156,7 +166,7 @@ machines.</em> Advances in neural information processing systems, 20.</p>
 <span class="r-in"><span><span class="va">m500</span> <span class="op">=</span> <span class="fu"><a href="ridge.html">ridge</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, p <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>default <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">penalty</span>, p500 <span class="op">=</span> <span class="va">m500</span><span class="op">$</span><span class="va">penalty</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      default         p500 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.0001229786 0.0433915690 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9.637751e-07 4.504327e-05 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A shorter length scale fits the data better (R^2)</span></span></span>
 <span class="r-in"><span><span class="va">m_025</span> <span class="op">=</span> <span class="fu"><a href="ridge.html">ridge</a></span><span class="op">(</span><span class="va">depth</span> <span class="op">~</span> <span class="fu">b_rff</span><span class="op">(</span><span class="va">lat</span>, <span class="va">long</span>, kernel <span class="op">=</span> <span class="fu"><a href="kernels.html">k_rbf</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>, <span class="va">quakes</span><span class="op">)</span></span></span>
@@ -165,7 +175,7 @@ machines.</em> Advances in neural information processing systems, 20.</p>
 <span class="r-in"><span>  len_025 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">quakes</span><span class="op">$</span><span class="va">depth</span>, <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">m_025</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     len_1   len_025 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9196942 0.9371233 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9179528 0.9399802 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
