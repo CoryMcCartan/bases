@@ -26,4 +26,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
-URL: http://corymccartan.com/bases/
+URL: http://corymccartan.com/bases/,
+    https://github.com/CoryMcCartan/bases/
+BugReports: https://github.com/CoryMcCartan/bases/issues
