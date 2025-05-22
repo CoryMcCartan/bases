@@ -3,6 +3,14 @@
 #include <iostream>
 using namespace cpp11;
 
+/*
+ * Construct an indicator matrix for a forest of binary trees and data `x`.
+ * Forests are specified as a list of tree `depths` (of length = the # trees),
+ * and flat vectors `vars` containing 1-indexed variable indices (columns of
+ * `x`) and `thresh` containing the threshold values for each variable.
+ * It must be the case that sum(depths) == length(vars) == length(thresh).
+ * Returns a nrow(x) -by- sum(2^depths) integer indicator matrix.
+ */
 [[cpp11::register]]
 integers_matrix<> forest_mat(const doubles_matrix<> x, const integers depths,
                              const integers vars, const doubles thresh) {

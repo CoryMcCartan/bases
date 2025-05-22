@@ -1,6 +1,10 @@
 #include <cpp11.hpp>
 using namespace cpp11;
 
+/*
+ * L2 distance between `x` and `y`, as a matrix with a row for each row of `x`
+ * and a column for each row of `y`.
+ */
 [[cpp11::register]]
 doubles_matrix<> dist_l2(const doubles_matrix<> x, const doubles_matrix<> y) {
     int nx = x.nrow();
@@ -22,6 +26,10 @@ doubles_matrix<> dist_l2(const doubles_matrix<> x, const doubles_matrix<> y) {
     return out;
 }
 
+/*
+ * L1 distance between `x` and `y`, as a matrix with a row for each row of `x`
+ * and a column for each row of `y`.
+ */
 [[cpp11::register]]
 doubles_matrix<> dist_l1(const doubles_matrix<> x, const doubles_matrix<> y) {
     int nx = x.nrow();
