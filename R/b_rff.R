@@ -136,6 +136,7 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
     attr(m, "phases") = phases
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
+    attr(m, "call") = rlang::current_call()
     class(m) = c("b_rff", "matrix", "array")
 
     m
@@ -146,8 +147,9 @@ predict.b_rff <- function (object, newx, ...)  {
     if (missing(newx)) {
         return(object)
     }
-    at = attributes(var)[c("freqs", "phases", "shift",  "scale")]
-    do.call(b_rff, list(newx, at))
+    out = rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
+    # attr(out, "call") = attr(object, "call")
+    out
 }
 
 #' @export

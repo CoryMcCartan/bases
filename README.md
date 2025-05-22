@@ -6,8 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/CoryMcCartan/bases/graph/badge.svg)](https://app.codecov.io/gh/CoryMcCartan/bases)
 <!-- badges: end -->
 
 **bases** provides [various basis

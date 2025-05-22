@@ -44,6 +44,7 @@ b_inter <- function(..., depth = 2, stdize = c("symbox", "box", "scale", "none")
 
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
+    attr(m, "call") = rlang::current_call()
     class(m) = c("b_inter", "matrix", "array")
 
     m
@@ -55,8 +56,7 @@ predict.b_inter <- function (object, newx, ...)  {
     if (missing(newx)) {
         return(object)
     }
-    at = attributes(var)[c("shift",  "scale")]
-    do.call(b_inter, list(newx, at))
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
 }
 
 #' @export

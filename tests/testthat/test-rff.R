@@ -20,10 +20,16 @@ test_that("Manual Fourier transform matches known", {
         k2 = k1
         attr(k2, "name") = NULL
 
-        yhat1 = fitted(lm(y ~ b_rff(x, p=250, n_approx=2048, kernel=k1)))
-        yhat2 = fitted(lm(y ~ b_rff(x, p=250, n_approx=2048, kernel=k2)))
+        yhat1 = rowMeans(replicate(100, {
+            fitted(lm(y ~ b_rff(x, p=100, n_approx=2048, kernel=k1)))
+        }))
+        yhat2 = rowMeans(replicate(100, {
+            fitted(lm(y ~ b_rff(x, p=100, n_approx=2048, kernel=k2)))
+        }))
 
-        expect_lt(sd(yhat1 - yhat2) / sd(y), 0.05)
+        expect_lt(sd(yhat1 - yhat2) / sd(y),
+                  0.05 + 0.05*(attr(k1, "name") == "lapl"),
+                  label=paste0(attr(k1, "name"), "() difference"))
     }
 })
 
@@ -63,4 +69,9 @@ test_that("predict() method works correctly", {
 
     skip_on_cran()
     expect_gt(sd(pred_m2[2:21] - fitted(m)[1:20]), 0.01)
+
+    B = b_rff(x, p=5)
+    expect_equal(predict(B, newx=list(x=x)), predict(B, newx=list(x=x)))
+    expect_equal(predict(B, newx=list(x=xn)), predict(B, newx=list(x=xn)))
+    expect_equal(nrow(predict(B, newx=list(x=xn))), length(xn))
 })

@@ -18,6 +18,7 @@ test_that("predict() method works correctly", {
     m = lm(y ~ b_ker(x))
 
     expect_equal(predict(m), fitted(m), tolerance=1e-4)
+    expect_equal(predict(m), predict(m, list(x=x)))
 
     pred_m = suppressWarnings(predict(m, newdata=list(x=xn)))
     expect_equal(unname(pred_m[2:21]), unname(fitted(m)[1:20]), tolerance=1e-4)

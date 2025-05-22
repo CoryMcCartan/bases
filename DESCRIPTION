@@ -20,6 +20,8 @@ Imports:
     rlang,
     stats
 Suggests: 
+    recipes,
+    tibble,
     testthat (>= 3.0.0)
 LinkingTo: 
     cpp11

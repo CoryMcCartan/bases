@@ -52,6 +52,7 @@ b_ker <- function(..., kernel = k_rbf(),
     attr(m, "x") = x
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
+    attr(m, "call") = rlang::current_call()
     class(m) = c("b_ker", "matrix", "array")
 
     m
@@ -62,8 +63,7 @@ predict.b_ker <- function (object, newx, ...)  {
     if (missing(newx)) {
         return(object)
     }
-    at = attributes(var)[c("x", "shift",  "scale")]
-    do.call(b_ker, list(newx, at))
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
 }
 
 #' @export

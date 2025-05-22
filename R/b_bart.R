@@ -79,6 +79,7 @@ b_bart <- function(..., trees = 100, depths = bart_depth_prior()(trees),
     attr(m, "thresh") = thresh
     attr(m, "drop") = drop
     attr(m, "ranges") = ranges
+    attr(m, "call") = rlang::current_call()
     class(m) = c("b_bart", "matrix", "array")
 
     m
@@ -104,8 +105,7 @@ predict.b_bart <- function (object, newx, ...)  {
     if (missing(newx)) {
         return(object)
     }
-    at = attributes(var)[c("depths", "vars", "thresh", "drop", "ranges")]
-    do.call(b_bart, list(newx, at))
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
 }
 
 #' @export

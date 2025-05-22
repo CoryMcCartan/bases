@@ -8,6 +8,7 @@ template:
 reference:
 - title: Basis expansions
   contents:
+  - b_rff
   - starts_with("b_")
 - title: Kernels
   contents:
@@ -16,3 +17,7 @@ reference:
 - title: Ridge regression
   contents:
   - ridge
+- title: Interfaces
+  desc: Helper functions to work with other modeling packages.
+  contents:
+  - has_concept("interfaces")
