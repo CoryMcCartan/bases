@@ -1,4 +1,6 @@
 test_that("recipe environment magic works", {
+    testthat::skip_if_not_installed("recipes")
+
     rec = recipes::recipe(depth ~ lat + long + mag, quakes)
     rec = step_basis(rec, lat, long, fn = b_rff,
                      options = list(p = 5, kernel = k_rbf(2), stdize="none"))

@@ -8,19 +8,19 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi & Recht, 2007), exact kernel / Gaussian process feature maps, BART (Chipman et al., 2010) \doi{10.1214/09-AOAS285} prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.
+Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi & Recht, 2007), exact kernel / Gaussian process feature maps, Bayesian Additive Rrgression Trees (BART) (Chipman et al., 2010) \doi{10.1214/09-AOAS285} prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://corymccartan.com/bases/}
+  \item \url{https://corymccartan.com/bases/}
   \item \url{https://github.com/CoryMcCartan/bases/}
   \item Report bugs at \url{https://github.com/CoryMcCartan/bases/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Cory McCartan \email{mccartan@psu.edu} (\href{https://orcid.org/0000-0002-6251-669X}{ORCID})
+\strong{Maintainer}: Cory McCartan \email{mccartan@psu.edu} (\href{https://orcid.org/0000-0002-6251-669X}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}

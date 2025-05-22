@@ -1,19 +1,19 @@
 Package: bases
 Title: Basis Expansions for Regression Modeling
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
-    person("Cory", "McCartan", , "mccartan@psu.edu", role = c("aut", "cre"),
+    person("Cory", "McCartan", , "mccartan@psu.edu", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-6251-669X"))
 Description: Provides various basis expansions for flexible regression modeling,
     including random Fourier features (Rahimi & Recht, 2007), exact kernel / 
-    Gaussian process feature maps, BART (Chipman et al., 2010)
-    <doi:10.1214/09-AOAS285> prior features, and a helpful interface for n-way 
-    interactions. The provided functions may be used within any modeling formula, 
-    allowing the use of kernel methods and other basis expansions in modeling 
-    functions that do not otherwise support them.  Along with the basis 
-    expansions, a number of kernel functions are also provided, which support
-    kernel arithmetic to form new kernels. Basic ridge regression functionality
-    is included as well.
+    Gaussian process feature maps, Bayesian Additive Rrgression Trees (BART) 
+    (Chipman et al., 2010) <doi:10.1214/09-AOAS285> prior features, and a helpful 
+    interface for n-way interactions. The provided functions may be used within 
+    any modeling formula, allowing the use of kernel methods and other basis 
+    expansions in modeling functions that do not otherwise support them. Along 
+    with the basis expansions, a number of kernel functions are also provided, 
+    which support kernel arithmetic to form new kernels. Basic ridge regression
+    functionality is included as well.
 Depends:
     R (>= 3.6.0)
 Imports:
@@ -32,7 +32,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
-URL: http://corymccartan.com/bases/,
+URL: https://corymccartan.com/bases/,
     https://github.com/CoryMcCartan/bases/
 BugReports: https://github.com/CoryMcCartan/bases/issues
 VignetteBuilder: knitr

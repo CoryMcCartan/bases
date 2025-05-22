@@ -22,11 +22,14 @@ regression](./reference/ridge.html) functionality is included as well.
 
 ## Installation
 
-You can install the development version of **bases** with:
+You can install **bases** from CRAN:
 
 ``` r
-remotes::install_github("CoryMcCartan/bases")
+install.packages("bases")
 ```
+
+You can install the development version with
+`remotes::install_github("CoryMcCartan/bases")`.
 
 ## Example: random Fourier features
 
