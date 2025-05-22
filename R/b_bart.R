@@ -101,11 +101,11 @@ bart_depth_prior <- function(mean_depth = 1.25) {
 }
 
 #' @export
-predict.b_bart <- function (object, newx, ...)  {
-    if (missing(newx)) {
+predict.b_bart <- function (object, newdata, ...)  {
+    if (missing(newdata)) {
         return(object)
     }
-    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
 }
 
 #' @export

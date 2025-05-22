@@ -14,10 +14,8 @@ reference:
   contents:
   - kernels
   - has_concept("kernels")
-- title: Ridge regression
+- title: Modeling
+  desc: Functions for modeling and interfacing with other modeling packages.
   contents:
   - ridge
-- title: Interfaces
-  desc: Helper functions to work with other modeling packages.
-  contents:
   - has_concept("interfaces")

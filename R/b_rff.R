@@ -143,11 +143,11 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
 }
 
 #' @export
-predict.b_rff <- function (object, newx, ...)  {
-    if (missing(newx)) {
+predict.b_rff <- function (object, newdata, ...)  {
+    if (missing(newdata)) {
         return(object)
     }
-    out = rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
+    out = rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
     # attr(out, "call") = attr(object, "call")
     out
 }

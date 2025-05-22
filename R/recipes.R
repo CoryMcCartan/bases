@@ -16,7 +16,7 @@
 #' @param options A list of options for the basis function `fn`.
 #' @param object The basis object created once the step has been trained.
 #' @param prefix The prefix to use for the new column names. Numbers will be
-#'   appended, per [recipes::names0], to create column names.
+#'   appended, per [recipes::names0()], to create column names.
 #' @param skip A logical. Should the step be skipped when the recipe is baked by
 #'   [recipes::bake()]?
 #' @param id A character string that is unique to this step to identify it.
@@ -27,8 +27,7 @@
 #' @details
 #' # Tuning Parameters
 #'
-#' The tuning parameters depend on the chosen basis `fn` and are provided via
-#' the `objects` argument.
+#' There are no tuning parameters made available to the `tunable` interface.
 #'
 #' # Case Weights
 #'
@@ -99,7 +98,7 @@ bake.step_basis <- function(object, new_data, ...) {
     new_values = if (is.null(new_data)) {
         object$object
     } else {
-        predict(object$object, newx=new_data[, col_names])
+        predict(object$object, newdata=new_data[, col_names])
     }
     new_values = as.data.frame(new_values)
     colnames(new_values) = colnames(object$object)

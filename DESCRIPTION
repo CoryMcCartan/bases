@@ -22,7 +22,9 @@ Imports:
 Suggests: 
     recipes,
     tibble,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 LinkingTo: 
     cpp11
 License: MIT + file LICENSE
@@ -33,3 +35,4 @@ Config/testthat/edition: 3
 URL: http://corymccartan.com/bases/,
     https://github.com/CoryMcCartan/bases/
 BugReports: https://github.com/CoryMcCartan/bases/issues
+VignetteBuilder: knitr

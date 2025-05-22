@@ -52,11 +52,11 @@ b_inter <- function(..., depth = 2, stdize = c("symbox", "box", "scale", "none")
 
 
 #' @export
-predict.b_inter <- function (object, newx, ...)  {
-    if (missing(newx)) {
+predict.b_inter <- function (object, newdata, ...)  {
+    if (missing(newdata)) {
         return(object)
     }
-    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
 }
 
 #' @export

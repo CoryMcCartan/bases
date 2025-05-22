@@ -59,11 +59,11 @@ b_ker <- function(..., kernel = k_rbf(),
 }
 
 #' @export
-predict.b_ker <- function (object, newx, ...)  {
-    if (missing(newx)) {
+predict.b_ker <- function (object, newdata, ...)  {
+    if (missing(newdata)) {
         return(object)
     }
-    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newx)
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
 }
 
 #' @export

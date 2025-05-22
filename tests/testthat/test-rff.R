@@ -71,7 +71,7 @@ test_that("predict() method works correctly", {
     expect_gt(sd(pred_m2[2:21] - fitted(m)[1:20]), 0.01)
 
     B = b_rff(x, p=5)
-    expect_equal(predict(B, newx=list(x=x)), predict(B, newx=list(x=x)))
-    expect_equal(predict(B, newx=list(x=xn)), predict(B, newx=list(x=xn)))
-    expect_equal(nrow(predict(B, newx=list(x=xn))), length(xn))
+    expect_equal(predict(B, newdata=list(x=x)), predict(B, newdata=list(x=x)))
+    expect_equal(predict(B, newdata=list(x=xn)), predict(B, newdata=list(x=xn)))
+    expect_equal(nrow(predict(B, newdata=list(x=xn))), length(xn))
 })

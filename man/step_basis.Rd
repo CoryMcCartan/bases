@@ -37,7 +37,7 @@ been estimated.}
 \item{object}{The basis object created once the step has been trained.}
 
 \item{prefix}{The prefix to use for the new column names. Numbers will be
-appended, per \link[recipes:names0]{recipes::names0}, to create column names.}
+appended, per \code{\link[recipes:names0]{recipes::names0()}}, to create column names.}
 
 \item{skip}{A logical. Should the step be skipped when the recipe is baked by
 \code{\link[recipes:bake]{recipes::bake()}}?}
@@ -54,8 +54,7 @@ step that will create new columns that are basis expansions, using any of the
 basis expansion functions in this package.
 }
 \section{Tuning Parameters}{
-The tuning parameters depend on the chosen basis \code{fn} and are provided via
-the \code{objects} argument.
+There are no tuning parameters made available to the \code{tunable} interface.
 }
 
 \section{Case Weights}{

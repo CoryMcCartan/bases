@@ -16,5 +16,5 @@ test_that("predict() method works correctly", {
     expect_equal(pred_m[1:20], fitted(m)[1:20], tolerance=1e-5)
 
     B = with(mtcars, b_bart(disp, cyl, hp, wt, trees=50))
-    expect_equal(predict(B, newx=mtcars), predict(B, newx=mtcars))
+    expect_equal(predict(B, newdata=mtcars), predict(B, newdata=mtcars))
 })

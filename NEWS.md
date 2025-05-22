@@ -4,3 +4,4 @@
   random Fourier features, BART prior features, and n-way interactions
 * Lightweight ridge regression routine
 * Gaussian, Laplace, Rational quadratic, Matérn, and periodic kernels
+* Support for `recipes` package

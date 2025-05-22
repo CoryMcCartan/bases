@@ -10,3 +10,4 @@
 *.o
 *.so
 docs
+inst/doc
