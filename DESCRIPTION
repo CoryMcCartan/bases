@@ -14,6 +14,8 @@ Description: Provides various basis expansions for flexible regression modeling,
     expansions, a number of kernel functions are also provided, which support
     kernel arithmetic to form new kernels. Basic ridge regression functionality
     is included as well.
+Depends:
+    R (>= 3.6.0)
 Imports:
     rlang,
     stats
