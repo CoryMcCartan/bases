@@ -20,15 +20,22 @@ set.seed(16802)
 [![R-CMD-check](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CoryMcCartan/bases/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**bases** provides [various basis expansions](./reference/index.html#basis-expansions) 
-for flexible regression modeling, including random Fourier features, exact
-kernel / Gaussian process feature maps, BART prior features, and a helpful
-interface for n-way interactions. The provided functions may be used within any
-modeling formula, allowing the use of kernel methods and other basis expansions
-in modeling functions that do not otherwise support them.  Along with the basis
-expansions, a number of [kernel functions](./reference/kernels.html) are also 
-provided, which support kernel arithmetic to form new kernels. Basic 
-[ridge regression](./reference/ridge.html) functionality is included as well.
+**bases** provides various basis expansions for flexible regression modeling,
+including random Fourier features (`?b_rff`), exact kernel / Gaussian process
+feature maps (`?b_ker`), Bayesian Additive Regression Trees prior features
+(`?b_bart`), and a helpful interface for n-way interactions (`?b_inter`). The
+provided functions may be used within any modeling formula, allowing the use of
+kernel methods and other basis expansions in modeling functions that do not
+otherwise support them.  
+
+Along with the basis expansions, a number of kernel functions (`?kernels`)
+are also provided, which support kernel arithmetic to form new kernels. Basic 
+ridge regression functionality (`?ridge`) is included as well.
+
+Finally, the package provides a
+[recipes](https://recipes.tidymodels.org/)-friendly interface, so that these
+basis expansions can be combined with other transformations and used within the
+[tidymodels](https://www.tidymodels.org/) framework.
 
 ## Installation
 
@@ -38,12 +45,16 @@ You can install **bases** from CRAN:
 install.packages("bases")
 ```
 
-You can install the development version with `remotes::install_github("CoryMcCartan/bases")`.
+You can install the development version with 
+
+```r
+remotes::install_github("CoryMcCartan/bases")
+```
 
 ## Example: random Fourier features
 
 The basis functions in **bases** all start with `b_` and are designed to work in
-the same way as built-in basis expansions like `splines::bs()` or `poly()`: simply
+the same way as built-in basis expansions like `bs()` or `poly()`: simply
 include the function in a model formula.
 
 So fitting an approximate kernel regression with random Fourier features is as simple as wrapping the relevant variables in a call to the corresponding basis function, `b_rff()`.

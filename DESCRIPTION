@@ -1,12 +1,12 @@
 Package: bases
 Title: Basis Expansions for Regression Modeling
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Cory", "McCartan", , "mccartan@psu.edu", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-6251-669X"))
 Description: Provides various basis expansions for flexible regression modeling,
     including random Fourier features (Rahimi & Recht, 2007), exact kernel / 
-    Gaussian process feature maps, Bayesian Additive Rrgression Trees (BART) 
+    Gaussian process feature maps, Bayesian Additive Regression Trees (BART) 
     (Chipman et al., 2010) <doi:10.1214/09-AOAS285> prior features, and a helpful 
     interface for n-way interactions. The provided functions may be used within 
     any modeling formula, allowing the use of kernel methods and other basis 
