@@ -1,4 +1,4 @@
-# bases 0.1.1
+# bases 0.1.2
 
 * Basis expansions for Gaussian processes / kernel ridge regression,
   random Fourier features, BART prior features, and n-way interactions
