@@ -1,0 +1,44 @@
+---
+title: "Other Basis Expansions and Embeddings"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Other Basis Expansions and Embeddings}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Other R packages may be useful for generating basis expansions for certain kinds of data.
+This page lists several options.
+
+## Categorical predictors
+
+- The [`embed`](https://embed.tidymodels.org/) package provides several methods for encoding categorical predictors based on their relationship with an outcome variable. 
+  Users should note that this creates a feedback effect, where the outcome variable is used to define the predictors, which may cause problems in certain statistical workflows.
+
+## Continuous predictors
+
+- The [`embed`](https://embed.tidymodels.org/) package allows for discretizing continuous variables based on their relationship with an outcome variable, using CART, and extracting PCA components from a set of numerical predictors. 
+  Users should note that `ridge()` regression automatically shrinks lower-variance PCA components more than higher-variance components, and providing normalized PCA components to a predictive model may lead to unintuitive results in some cases.
+  Selecting a sparse subset of principal components may be useful, however.
+  
+## Text data
+
+- The [`conText`](https://github.com/prodriguezsosa/conText) package estimates context-specific word and document embeddings.
+
+- The [`text2vec`](https://text2vec.org/) package provides a number of tools to convert text to numeric vectors, including fitting custom GloVe models and topic modeling, and is designed to handle large-scale data.
+
+- The [`text2map`](https://cran.r-project.org/web/packages/text2map/) and its accompanying [`text2map.pretrained`](https://culturalcartography.gitlab.io/text2map.pretrained/) package (not on CRAN) provides access to a number of pre-trained word embeddings.
+  
+## Images and audio data 
+
+- The [`torchvision`](https://mlverse.github.io/torchvision/) package provides functions for various transformations of image data.
+  It also provides access to pre-trained models from which image embeddings may be extracted.
+  
+- The [`torchaudio`](https://mlverse.github.io/torchvision/) package provides functions for various transformations of audio data, including a number of spectral transformations.

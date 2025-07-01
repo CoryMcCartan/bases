@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi & Recht, 2007) \url{https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf}, exact kernel / Gaussian process feature maps, Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) \doi{10.1214/09-AOAS285} prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.
+Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi & Recht, 2007) \url{https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf}, exact kernel / Gaussian process feature maps, prior features for Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) \doi{10.1214/09-AOAS285}, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.
 }
 \seealso{
 Useful links:
