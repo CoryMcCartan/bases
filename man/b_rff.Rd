@@ -38,9 +38,9 @@ dimension to lie in \eqn{[-0.5, 0.5]^d}.}
 Fourier transform of the provided kernel.  Not used for certain kernels for
 which an analytic Fourier transform is available; see above.}
 
-\item{freqs}{Matrix of frequencies to use; \code{ncol(freqs)} must match the number
-of predictors. If provided, overrides those calculated automatically, thus
-ignoring \code{p} and \code{kernel}.}
+\item{freqs}{Matrix of frequencies to use; \code{nrow(freqs)} must match the
+number of predictors. If provided, overrides those calculated
+automatically, thus ignoring \code{p} and \code{kernel}.}
 
 \item{phases}{Vector of phase shifts to use. If provided, overrides those
 calculated automatically, thus ignoring \code{p} and \code{kernel}.}

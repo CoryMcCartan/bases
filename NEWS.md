@@ -1,4 +1,6 @@
 # bases 0.2.0
+
+* New `b_nn()` for neural network basis expansion
 * New vignette on other packages that help produce basis expansions or embeddings.
 
 # bases 0.1.2

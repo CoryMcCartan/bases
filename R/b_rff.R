@@ -31,9 +31,9 @@
 #' @param n_approx The number of discrete frequencies to use in calculating the
 #'   Fourier transform of the provided kernel.  Not used for certain kernels for
 #'   which an analytic Fourier transform is available; see above.
-#' @param freqs Matrix of frequencies to use; `ncol(freqs)` must match the number
-#'   of predictors. If provided, overrides those calculated automatically, thus
-#'   ignoring `p` and `kernel`.
+#' @param freqs Matrix of frequencies to use; `nrow(freqs)` must match the
+#'   number of predictors. If provided, overrides those calculated
+#'   automatically, thus ignoring `p` and `kernel`.
 #' @param phases Vector of phase shifts to use. If provided, overrides those
 #'   calculated automatically, thus ignoring `p` and `kernel`.
 #' @param shift Vector of shifts, or single shift value, to use. If provided,
@@ -125,6 +125,8 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
             chol_freq = chol(cov(t(freqs)))
             freqs = crossprod(solve(chol_freq), freqs) / k_scale
         }
+    } else if (nrow(freqs) != d) {
+        abort("`freqs` must have the same number of rows as the number of input variables")
     }
 
     if (ncol(freqs) != length(phases)) {
@@ -147,9 +149,7 @@ predict.b_rff <- function (object, newdata, ...)  {
     if (missing(newdata)) {
         return(object)
     }
-    out = rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
-    # attr(out, "call") = attr(object, "call")
-    out
+    rlang::eval_tidy(makepredictcall(object, attr(object, "call")), newdata)
 }
 
 #' @export

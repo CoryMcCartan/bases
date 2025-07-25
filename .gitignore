@@ -11,3 +11,4 @@
 *.so
 docs
 inst/doc
+data-raw
