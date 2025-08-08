@@ -13,6 +13,10 @@
 #' @inheritParams b_rff
 #' @param x The (training) data points at which to evaluate the kernel. If
 #'   provided, overrides `...`.
+#' @param L_inv The inverse of the Cholesky factor of the kernel matrix at the
+#'   training points. Will be automatically computed if not provided, but in
+#'   order to avoid recomputing it for new predictions, pass `L_inv = TRUE`,
+#'   which will save and re-use this matrix for future calls.
 #'
 #' @returns A matrix of kernel features.
 #'
@@ -39,19 +43,26 @@
 #' @export
 b_ker <- function(..., kernel = k_rbf(),
                   stdize = c("scale", "box", "symbox", "none"),
-                  x = NULL, shift = NULL, scale = NULL) {
+                  x = NULL, shift = NULL, scale = NULL, L_inv = NULL) {
     y = as.matrix(cbind(...))
     std = do_std(y, stdize, shift, scale)
     y = std$x
     if (is.null(x)) x = y
 
-    II = diag(nrow(x))
-    K = kernel(x, x) + 1e-9 * II
-    m = kernel(y, x) %*% backsolve(chol(K), II)
+    save = isTRUE(L_inv)
+    if (is.null(L_inv) || save) {
+        II = diag(nrow(x))
+        K = kernel(x, x) + 1e-9 * II
+        L_inv = backsolve(chol(K), II)
+    }
+    m = kernel(y, x) %*% L_inv
 
     attr(m, "x") = x
     attr(m, "shift") = std$shift
     attr(m, "scale") = std$scale
+    if (save) {
+        attr(m, "L_inv") = L_inv
+    }
     attr(m, "call") = rlang::current_call()
     class(m) = c("b_ker", "matrix", "array")
 
@@ -70,7 +81,7 @@ predict.b_ker <- function (object, newdata, ...)  {
 makepredictcall.b_ker <- function(var, call) {
     if (as.character(call)[1L] == "b_ker" ||
         (is.call(call) && identical(eval(call[[1L]]), b_ker))) {
-        at = attributes(var)[c("x", "shift",  "scale")]
+        at = attributes(var)[c("x", "shift",  "scale", "L_inv")]
         call[names(at)] = at
     }
     call

@@ -10,7 +10,8 @@ b_ker(
   stdize = c("scale", "box", "symbox", "none"),
   x = NULL,
   shift = NULL,
-  scale = NULL
+  scale = NULL,
+  L_inv = NULL
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ overrides those calculated according to \code{stdize}.}
 
 \item{scale}{Vector of scales, or single scale value, to use. If provided,
 overrides those calculated according to \code{stdize}.}
+
+\item{L_inv}{The inverse of the Cholesky factor of the kernel matrix at the
+training points. Will be automatically computed if not provided, but in
+order to avoid recomputing it for new predictions, pass \code{L_inv = TRUE},
+which will save and re-use this matrix for future calls.}
 }
 \value{
 A matrix of kernel features.
