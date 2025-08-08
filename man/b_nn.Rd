@@ -62,7 +62,7 @@ sampled weights have unit covariance.
 \examples{
 data(quakes)
 
-m = ridge(depth ~ b_nn(lat, long, p=100, activation=tanh), quakes)
+m = ridge(depth ~ b_nn(lat, long, p = 100, activation = tanh), quakes)
 plot(fitted(m), quakes$depth)
 
 # In 1-D with ReLU (default), equivalent to piecewise
