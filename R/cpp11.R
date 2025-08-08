@@ -11,3 +11,7 @@ dist_l2 <- function(x, y) {
 dist_l1 <- function(x, y) {
   .Call(`_bases_dist_l1`, x, y)
 }
+
+im2col <- function(x, h, w, c, size, stride) {
+  .Call(`_bases_im2col`, x, h, w, c, size, stride)
+}

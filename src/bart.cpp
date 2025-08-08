@@ -1,6 +1,5 @@
 #include <cpp11.hpp>
-#include <vector>
-#include <iostream>
+
 using namespace cpp11;
 
 /*
