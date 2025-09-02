@@ -24,6 +24,9 @@
 #' @param drop Columns in the calculated indicator matrix to drop. By default,
 #'   any leaves which match zero input rows are dropped.  If provided, overrides
 #'   this default.
+#' @param min_drop Controls the default dropping of columns. Leaves which match
+#'   `min_drop` or fewer input rows are dropped. Defaults to 0, so only empty
+#'    leaves are dropped.
 #' @param ranges The range of the input features, provided as a matrix with two
 #'   rows and a column for each input feature. The first row is the minimum and
 #'   the second row is the maximum.
@@ -49,7 +52,7 @@
 #'
 #' @export
 b_bart <- function(..., trees = 100, depths = bart_depth_prior()(trees),
-                   vars = NULL, thresh = NULL, drop = NULL, ranges = NULL) {
+                   vars = NULL, thresh = NULL, drop = NULL, min_drop = 0L, ranges = NULL) {
     x = as.matrix(cbind(...))
     storage.mode(x) = "double"
     if (is.null(ranges)) ranges = apply(x, 2, range)
@@ -69,8 +72,10 @@ b_bart <- function(..., trees = 100, depths = bart_depth_prior()(trees),
 
     m = forest_mat(x, as.integer(depths), vars, thresh)
     if (is.null(drop)) {
+        if (!is.numeric(min_drop) || length(min_drop) != 1 || min_drop < 0)
+            abort("`min_drop` must be a single non-negative integer")
         tot = colSums(m)
-        drop = which(tot == 0 | tot == nrow(x))
+        drop = which(tot <= min_drop | tot >= nrow(x) - min_drop)
     }
     if (length(drop) > 0) m = m[, -drop]
 
