@@ -12,6 +12,7 @@ b_bart(
   vars = NULL,
   thresh = NULL,
   drop = NULL,
+  min_drop = 0L,
   ranges = NULL
 )
 
@@ -40,6 +41,10 @@ length equal to \code{sum(depths)}.}
 \item{drop}{Columns in the calculated indicator matrix to drop. By default,
 any leaves which match zero input rows are dropped.  If provided, overrides
 this default.}
+
+\item{min_drop}{Controls the default dropping of columns. Leaves which match
+\code{min_drop} or fewer input rows are dropped. Defaults to 0, so only empty
+leaves are dropped.}
 
 \item{ranges}{The range of the input features, provided as a matrix with two
 rows and a column for each input feature. The first row is the minimum and

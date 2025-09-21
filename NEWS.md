@@ -1,6 +1,6 @@
 # bases 0.2.0
 
-* `mgcv` smooth interface via `s()` for more flexible penalization
+* `mgcv` smooth interface via `s()` for more flexible penalization TODO
 * New `b_nn()` for neural network basis expansion
 * New `b_conv()` for random convolutional features for regression on images TODO im2col()
 * New `b_rocket()` for random convolutional features for regression on time series TODO https://arxiv.org/pdf/2012.08791
