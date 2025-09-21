@@ -29,7 +29,9 @@ NULL
 #' @describeIn kernels Radial basis function kernel
 #' @export
 k_rbf = function(scale = 1) {
-    if (scale <= 0) abort("`scale` must be positive")
+    if (scale <= 0) {
+        abort("`scale` must be positive")
+    }
     fn = function(x, y) {
         exp(-0.5 * dist_l2(x, y) / scale^2)
     }
@@ -42,7 +44,9 @@ k_rbf = function(scale = 1) {
 #' @describeIn kernels Laplace kernel
 #' @export
 k_lapl = function(scale = 1) {
-    if (scale <= 0) abort("`scale` must be positive")
+    if (scale <= 0) {
+        abort("`scale` must be positive")
+    }
     fn = function(x, y) {
         exp(-dist_l1(x, y) / scale)
     }
@@ -56,8 +60,12 @@ k_lapl = function(scale = 1) {
 #' @param alpha The shape/df parameter. \eqn{\alpha=1} is the Cauchy kernel.
 #' @export
 k_rq = function(scale = 1, alpha = 2) {
-    if (scale <= 0) abort("`scale` must be positive")
-    if (alpha <= 0) abort("`alpha` must be positive")
+    if (scale <= 0) {
+        abort("`scale` must be positive")
+    }
+    if (alpha <= 0) {
+        abort("`alpha` must be positive")
+    }
     fn = function(x, y) {
         (1 + dist_l2(x, y) / (2 * alpha * scale^2))^(-alpha)
     }
@@ -72,8 +80,12 @@ k_rq = function(scale = 1, alpha = 2) {
 #' @param nu The smoothness parameter. \eqn{\nu=0.5} is the Ornstein–Uhlenbeck kernel.
 #' @export
 k_matern = function(scale = 1, nu = 1.5) {
-    if (scale <= 0) abort("`scale` must be positive")
-    if (nu <= 0) abort("`nu` must be positive")
+    if (scale <= 0) {
+        abort("`scale` must be positive")
+    }
+    if (nu <= 0) {
+        abort("`nu` must be positive")
+    }
 
     if (nu == 0.5) {
         fn = function(x, y) {
@@ -87,7 +99,7 @@ k_matern = function(scale = 1, nu = 1.5) {
     } else if (nu == 2.5) {
         fn = function(x, y) {
             d = sqrt(5 * dist_l2(x, y)) / scale
-            (1 + d + d^2/3) * exp(-d)
+            (1 + d + d^2 / 3) * exp(-d)
         }
     } else {
         fn = function(x, y) {
@@ -108,8 +120,12 @@ k_matern = function(scale = 1, nu = 1.5) {
 #' @param period The period, in the same units as `scale`.
 #' @export
 k_per = function(scale = 1, period = 1) {
-    if (scale <= 0) abort("`scale` must be positive")
-    if (period <= 0) abort("`period` must be positive")
+    if (scale <= 0) {
+        abort("`scale` must be positive")
+    }
+    if (period <= 0) {
+        abort("`period` must be positive")
+    }
     fn = function(x, y) {
         exp(-2 * sin(pi * sqrt(dist_l2(x, y)) / period)^2 / scale^2)
     }
@@ -153,11 +169,15 @@ NULL
     stopifnot(inherits(k2, "kernel"))
 
     if (is.numeric(x)) {
-        rlang::fn_body(k2) <- rlang::expr({!!x * (!!rlang::fn_body(k2)[[2]])})
+        rlang::fn_body(k2) <- rlang::expr({
+            !!x * (!!rlang::fn_body(k2)[[2]])
+        })
         k2
     } else {
         k1 = x
-        fn <- function(x, y) { k1(x, y) * k2(x, y) }
+        fn <- function(x, y) {
+            k1(x, y) * k2(x, y)
+        }
         attr(fn, "name") = paste(attr(k1, "name"), "*", attr(k2, "name"))
         fn
     }
@@ -172,9 +192,9 @@ NULL
     stopifnot(inherits(k1, "kernel"))
     stopifnot(inherits(k2, "kernel"))
 
-    fn <- function(x, y) { k1(x, y) + k2(x, y) }
+    fn <- function(x, y) {
+        k1(x, y) + k2(x, y)
+    }
     attr(fn, "name") = paste(attr(k1, "name"), "+", attr(k2, "name"))
     fn
 }
-
-

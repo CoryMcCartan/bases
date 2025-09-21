@@ -36,7 +36,8 @@ ridge <- function(formula, data, penalty = "auto", ...) {
     }
     tt = attr(m, "terms")
     y = model.response(m)
-    if (attr(tt, "intercept") == 1) { # has intercept
+    if (attr(tt, "intercept") == 1) {
+        # has intercept
         attr(tt, "intercept") = 0
         mean_y = mean(y)
         y = y - mean_y
@@ -52,11 +53,11 @@ ridge <- function(formula, data, penalty = "auto", ...) {
     if (penalty == "auto") {
         loo_mse = function(lpen) {
             d_pen_f = udv$d^2 / (udv$d^2 + 10^lpen)
-            hat1m = 1 - rowSums(udv$u^2 * rep(d_pen_f, each=n))
+            hat1m = 1 - rowSums(udv$u^2 * rep(d_pen_f, each = n))
             resid = y - udv$u %*% (d_pen_f * uy)
             mean((resid / hat1m)^2)
         }
-        penalty = 10^(optimize(loo_mse, c(-8, 8), tol=0.01)$minimum)
+        penalty = 10^(optimize(loo_mse, c(-8, 8), tol = 0.01)$minimum)
     }
     if (!is.numeric(penalty) && length(penalty) == 1) {
         abort('`penalty` must be a single numeric value, or the string "auto"')

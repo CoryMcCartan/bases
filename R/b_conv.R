@@ -24,8 +24,11 @@
 #' FALSE
 #'
 #' @export
-b_conv <- function(x, p = 100, size = 3, stride = size,
-                   activation = c("max", "mean", "ppv"),
-                   kernels = NULL) {
-
-}
+b_conv <- function(
+    x,
+    p = 100,
+    size = 3,
+    stride = size,
+    activation = c("max", "mean", "ppv"),
+    kernels = NULL
+) {}

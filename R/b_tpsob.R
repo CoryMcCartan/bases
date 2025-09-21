@@ -9,7 +9,10 @@
 #'      \phi_j(x) = \sqrt{2}\cos(\pi (j-1) x).
 #' }
 #'
-b_tpsob <- function(..., p = 100, stdize = c("scale", "box", "symbox", "none"),
-                    shift = NULL, scale = NULL) {
-
-}
+b_tpsob <- function(
+    ...,
+    p = 100,
+    stdize = c("scale", "box", "symbox", "none"),
+    shift = NULL,
+    scale = NULL
+) {}

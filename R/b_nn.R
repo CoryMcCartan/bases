@@ -47,9 +47,16 @@
 #' plot(x, y)
 #' lines(x, fitted(m), col="blue")
 #' @export
-b_nn <- function(..., p = 100, activation = function(x) (x + abs(x)) / 2,
-                 stdize = c("scale", "box", "symbox", "none"),
-                 weights = NULL, biases = NULL, shift = NULL, scale = NULL) {
+b_nn <- function(
+    ...,
+    p = 100,
+    activation = function(x) (x + abs(x)) / 2,
+    stdize = c("scale", "box", "symbox", "none"),
+    weights = NULL,
+    biases = NULL,
+    shift = NULL,
+    scale = NULL
+) {
     x = as.matrix(cbind(...))
     n = nrow(x)
     d = ncol(x)
@@ -58,22 +65,26 @@ b_nn <- function(..., p = 100, activation = function(x) (x + abs(x)) / 2,
     x = std$x
 
     if (is.null(weights)) {
-        weights = matrix(rnorm(p * d), nrow=d, ncol=p)
+        weights = matrix(rnorm(p * d), nrow = d, ncol = p)
 
         weights = weights - rowMeans(weights)
         chol_wt = chol(cov(t(weights)))
         weights = crossprod(solve(chol_wt), weights)
     } else if (nrow(weights) != d) {
-        abort("`weights` must have the same number of rows as the number of input variables")
+        abort(
+            "`weights` must have the same number of rows as the number of input variables"
+        )
     }
     if (is.null(biases)) {
         biases = rnorm(p)
         biases = biases - mean(biases)
     } else if (length(biases) != ncol(weights)) {
-        abort("`biases` must have length matching the number of columns in `weights`")
+        abort(
+            "`biases` must have length matching the number of columns in `weights`"
+        )
     }
 
-    m = activation(std$x %*% weights + rep(biases, each=n))
+    m = activation(std$x %*% weights + rep(biases, each = n))
     attr(m, "weights") = weights
     attr(m, "biases") = biases
     attr(m, "shift") = std$shift
@@ -86,7 +97,7 @@ b_nn <- function(..., p = 100, activation = function(x) (x + abs(x)) / 2,
 
 
 #' @export
-predict.b_nn <- function (object, newdata, ...)  {
+predict.b_nn <- function(object, newdata, ...) {
     if (missing(newdata)) {
         return(object)
     }
@@ -95,9 +106,11 @@ predict.b_nn <- function (object, newdata, ...)  {
 
 #' @export
 makepredictcall.b_nn <- function(var, call) {
-    if (as.character(call)[1L] == "b_nn" ||
-        (is.call(call) && identical(eval(call[[1L]]), b_nn))) {
-        at = attributes(var)[c("shift",  "scale", "weights", "biases")]
+    if (
+        as.character(call)[1L] == "b_nn" ||
+            (is.call(call) && identical(eval(call[[1L]]), b_nn))
+    ) {
+        at = attributes(var)[c("shift", "scale", "weights", "biases")]
         call[names(at)] = at
     }
     call

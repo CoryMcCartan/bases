@@ -72,9 +72,17 @@
 #'   len_025 = cor(quakes$depth, fitted(m_025))^2
 #' )
 #' @export
-b_rff <- function(..., p = 100, kernel = k_rbf(),
-                  stdize = c("scale", "box", "symbox", "none"), n_approx = nextn(4*p),
-                  freqs = NULL, phases = NULL, shift = NULL, scale = NULL) {
+b_rff <- function(
+    ...,
+    p = 100,
+    kernel = k_rbf(),
+    stdize = c("scale", "box", "symbox", "none"),
+    n_approx = nextn(4 * p),
+    freqs = NULL,
+    phases = NULL,
+    shift = NULL,
+    scale = NULL
+) {
     x = as.matrix(cbind(...))
     n = nrow(x)
     d = ncol(x)
@@ -82,41 +90,52 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
     std = do_std(x, stdize, shift, scale)
     x = std$x
 
-    if (is.null(phases))
+    if (is.null(phases)) {
         phases = runif(p, -pi, pi)
+    }
     if (is.null(freqs)) {
         k_scale = attr(kernel, "scale")
         # analytical Fourier transform
         if (!is.null(kern_name <- attr(kernel, "name"))) {
             distr = switch(
                 kern_name,
-                rbf = function (p) rnorm(p, 0, 1 / k_scale),
-                lapl = function (p) rcauchy(p, 0, 1 / k_scale),
-                cauchy = function (p) {
-                    rexp(p, k_scale) * sample(c(-1, 1), p, replace=TRUE)
+                rbf = function(p) rnorm(p, 0, 1 / k_scale),
+                lapl = function(p) rcauchy(p, 0, 1 / k_scale),
+                cauchy = function(p) {
+                    rexp(p, k_scale) * sample(c(-1, 1), p, replace = TRUE)
                 },
                 NULL
             )
 
-            if (!is.null(distr))
-                freqs = matrix(distr(p * d), nrow=d, ncol=p)
+            if (!is.null(distr)) {
+                freqs = matrix(distr(p * d), nrow = d, ncol = p)
+            }
         }
         # manual Fourier transform
-        if (is.null(freqs)) {  # check handles case where `name` doesn't match above
+        if (is.null(freqs)) {
+            # check handles case where `name` doesn't match above
             # find scale of kernel, calibrated to match RBF length scale
-            if (is.null(k_scale)) { # fallback
-                k_scale = exp(uniroot(function (x) 1e-8 - kernel(0, exp(x)),
-                                      c(-20, 20), tol=1e-8)$root) / (2*pi)
+            if (is.null(k_scale)) {
+                # fallback
+                k_scale = exp(
+                    uniroot(
+                        function(x) 1e-8 - kernel(0, exp(x)),
+                        c(-20, 20),
+                        tol = 1e-8
+                    )$root
+                ) /
+                    (2 * pi)
             }
             # FFT
-            fx = seq(-128*k_scale, 128*k_scale, length.out=n_approx)
+            fx = seq(-128 * k_scale, 128 * k_scale, length.out = n_approx)
             kx = kernel(fx, 0)
-            px = abs(fft(kx))[1:(n_approx/2)]
+            px = abs(fft(kx))[1:(n_approx / 2)]
             # convert to frequencies. Symmetrize so we can moment-match
-            freqs = sample(c(-1, 1), p, replace=TRUE)  *
-                (sample(length(px), p*d, replace=TRUE, prob=px) - 0.5) /
-                256 * (2 * pi / k_scale)
-            freqs = matrix(freqs, nrow=d, ncol=p)
+            freqs = sample(c(-1, 1), p, replace = TRUE) *
+                (sample(length(px), p * d, replace = TRUE, prob = px) - 0.5) /
+                256 *
+                (2 * pi / k_scale)
+            freqs = matrix(freqs, nrow = d, ncol = p)
         }
 
         # moment-matching
@@ -126,14 +145,16 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
             freqs = crossprod(solve(chol_freq), freqs) / k_scale
         }
     } else if (nrow(freqs) != d) {
-        abort("`freqs` must have the same number of rows as the number of input variables")
+        abort(
+            "`freqs` must have the same number of rows as the number of input variables"
+        )
     }
 
     if (ncol(freqs) != length(phases)) {
         abort("Number of columns in `freqs` must match length of `phases`")
     }
 
-    m = cos(x %*% freqs + rep(phases, each=n)) / sqrt(p)
+    m = cos(x %*% freqs + rep(phases, each = n)) / sqrt(p)
     attr(m, "freqs") = freqs
     attr(m, "phases") = phases
     attr(m, "shift") = std$shift
@@ -145,7 +166,7 @@ b_rff <- function(..., p = 100, kernel = k_rbf(),
 }
 
 #' @export
-predict.b_rff <- function (object, newdata, ...)  {
+predict.b_rff <- function(object, newdata, ...) {
     if (missing(newdata)) {
         return(object)
     }
@@ -154,9 +175,11 @@ predict.b_rff <- function (object, newdata, ...)  {
 
 #' @export
 makepredictcall.b_rff <- function(var, call) {
-    if (as.character(call)[1L] == "b_rff" ||
-            (is.call(call) && identical(eval(call[[1L]]), b_rff))) {
-        at = attributes(var)[c("freqs", "phases", "shift",  "scale")]
+    if (
+        as.character(call)[1L] == "b_rff" ||
+            (is.call(call) && identical(eval(call[[1L]]), b_rff))
+    ) {
+        at = attributes(var)[c("freqs", "phases", "shift", "scale")]
         call[names(at)] = at
     }
     call

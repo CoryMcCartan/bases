@@ -41,10 +41,18 @@
 #'
 #' @concept interfaces
 #' @export
-step_basis <- function(recipe, ..., role = NA, trained = FALSE,
-                       fn = NULL, options = list(), object = NULL,
-                       prefix = deparse(substitute(fn)),
-                       skip = FALSE, id = recipes::rand_id("basis")) {
+step_basis <- function(
+    recipe,
+    ...,
+    role = NA,
+    trained = FALSE,
+    fn = NULL,
+    options = list(),
+    object = NULL,
+    prefix = deparse(substitute(fn)),
+    skip = FALSE,
+    id = recipes::rand_id("basis")
+) {
     rlang::check_installed("recipes")
 
     recipes::add_step(
@@ -63,11 +71,30 @@ step_basis <- function(recipe, ..., role = NA, trained = FALSE,
     )
 }
 
-step_basis_new <- function(terms, role, trained, fn, options, object, prefix, skip, id) {
+step_basis_new <- function(
+    terms,
+    role,
+    trained,
+    fn,
+    options,
+    object,
+    prefix,
+    skip,
+    id
+) {
     rlang::check_installed("recipes")
-    recipes::step(subclass = "basis", terms = terms, role = role,
-                  trained = trained, fn = fn, options = options,
-                  object = object, prefix = prefix, skip = skip, id = id)
+    recipes::step(
+        subclass = "basis",
+        terms = terms,
+        role = role,
+        trained = trained,
+        fn = fn,
+        options = options,
+        object = object,
+        prefix = prefix,
+        skip = skip,
+        id = id
+    )
 }
 
 #' @exportS3Method recipes::prep
@@ -77,15 +104,26 @@ prep.step_basis <- function(x, training, info = NULL, ...) {
     recipes::check_type(training[, col_names], types = c("double", "integer"))
 
     qq = x$fn[[1]]
-    cc = rlang::call2(rlang::quo_get_expr(qq), !!!c(rlang::syms(unname(col_names)), x$options))
+    cc = rlang::call2(
+        rlang::quo_get_expr(qq),
+        !!!c(rlang::syms(unname(col_names)), x$options)
+    )
     obj = rlang::eval_tidy(cc, training, rlang::quo_get_env(qq))
 
     attr(obj, "col_names") = col_names
-    colnames(obj) = recipes::names0(ncol(obj), prefix=x$prefix)
+    colnames(obj) = recipes::names0(ncol(obj), prefix = x$prefix)
 
-    step_basis_new(terms = x$terms, role = x$role, trained = TRUE,
-                   fn = x$fn, options= x$options, object = obj,
-                   prefix = x$prefix, skip = x$skip, id = x$id)
+    step_basis_new(
+        terms = x$terms,
+        role = x$role,
+        trained = TRUE,
+        fn = x$fn,
+        options = x$options,
+        object = obj,
+        prefix = x$prefix,
+        skip = x$skip,
+        id = x$id
+    )
 }
 
 #' @exportS3Method recipes::bake
@@ -98,7 +136,7 @@ bake.step_basis <- function(object, new_data, ...) {
     new_values = if (is.null(new_data)) {
         object$object
     } else {
-        predict(object$object, newdata=new_data[, col_names])
+        predict(object$object, newdata = new_data[, col_names])
     }
     new_values = as.data.frame(new_values)
     colnames(new_values) = colnames(object$object)
@@ -113,10 +151,16 @@ bake.step_basis <- function(object, new_data, ...) {
 print.step_basis <- function(x, width = max(20, options()$width - 35), ...) {
     rlang::check_installed("recipes")
     if (!is.null(x$object)) {
-        title = paste0("`", class(x$object)[1],"()` basis expansion on")
+        title = paste0("`", class(x$object)[1], "()` basis expansion on")
     } else {
         title = "Basis expansion on"
     }
-    recipes::print_step(attr(x$object, "col_names"), x$terms, x$trained, title, width)
+    recipes::print_step(
+        attr(x$object, "col_names"),
+        x$terms,
+        x$trained,
+        title,
+        width
+    )
     invisible(x)
 }

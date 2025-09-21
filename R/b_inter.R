@@ -28,9 +28,16 @@
 #' }
 #'
 #' @export
-b_inter <- function(..., depth = 2, stdize = c("symbox", "box", "scale", "none"),
-                    shift = NULL, scale = NULL) {
-    if (depth <= 1) abort("`depth` must be at least 2")
+b_inter <- function(
+    ...,
+    depth = 2,
+    stdize = c("symbox", "box", "scale", "none"),
+    shift = NULL,
+    scale = NULL
+) {
+    if (depth <= 1) {
+        abort("`depth` must be at least 2")
+    }
 
     ee = substitute(list(...))
     x = as.matrix(cbind(...))
@@ -38,8 +45,9 @@ b_inter <- function(..., depth = 2, stdize = c("symbox", "box", "scale", "none")
     std = do_std(x, stdize, shift, scale)
     data = as.data.frame(std$x)
 
-    if (depth )
-    form = as.formula(paste0("~ 0 + .^", depth))
+    if (depth) {
+        form = as.formula(paste0("~ 0 + .^", depth))
+    }
     m = model.matrix(form, data)
 
     attr(m, "shift") = std$shift
@@ -52,7 +60,7 @@ b_inter <- function(..., depth = 2, stdize = c("symbox", "box", "scale", "none")
 
 
 #' @export
-predict.b_inter <- function (object, newdata, ...)  {
+predict.b_inter <- function(object, newdata, ...) {
     if (missing(newdata)) {
         return(object)
     }
@@ -61,9 +69,11 @@ predict.b_inter <- function (object, newdata, ...)  {
 
 #' @export
 makepredictcall.b_inter <- function(var, call) {
-    if (as.character(call)[1L] == "b_inter" ||
-        (is.call(call) && identical(eval(call[[1L]]), b_inter))) {
-        at = attributes(var)[c("shift",  "scale")]
+    if (
+        as.character(call)[1L] == "b_inter" ||
+            (is.call(call) && identical(eval(call[[1L]]), b_inter))
+    ) {
+        at = attributes(var)[c("shift", "scale")]
         call[names(at)] = at
     }
     call

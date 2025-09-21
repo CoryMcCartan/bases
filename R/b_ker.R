@@ -41,13 +41,21 @@
 #' lines(x_pred, predict(m, newdata = list(x = x_pred)), lty="dashed")
 #'
 #' @export
-b_ker <- function(..., kernel = k_rbf(),
-                  stdize = c("scale", "box", "symbox", "none"),
-                  x = NULL, shift = NULL, scale = NULL, L_inv = NULL) {
+b_ker <- function(
+    ...,
+    kernel = k_rbf(),
+    stdize = c("scale", "box", "symbox", "none"),
+    x = NULL,
+    shift = NULL,
+    scale = NULL,
+    L_inv = NULL
+) {
     y = as.matrix(cbind(...))
     std = do_std(y, stdize, shift, scale)
     y = std$x
-    if (is.null(x)) x = y
+    if (is.null(x)) {
+        x = y
+    }
 
     save = isTRUE(L_inv)
     if (is.null(L_inv) || save) {
@@ -70,7 +78,7 @@ b_ker <- function(..., kernel = k_rbf(),
 }
 
 #' @export
-predict.b_ker <- function (object, newdata, ...)  {
+predict.b_ker <- function(object, newdata, ...) {
     if (missing(newdata)) {
         return(object)
     }
@@ -79,9 +87,11 @@ predict.b_ker <- function (object, newdata, ...)  {
 
 #' @export
 makepredictcall.b_ker <- function(var, call) {
-    if (as.character(call)[1L] == "b_ker" ||
-        (is.call(call) && identical(eval(call[[1L]]), b_ker))) {
-        at = attributes(var)[c("x", "shift",  "scale", "L_inv")]
+    if (
+        as.character(call)[1L] == "b_ker" ||
+            (is.call(call) && identical(eval(call[[1L]]), b_ker))
+    ) {
+        at = attributes(var)[c("x", "shift", "scale", "L_inv")]
         call[names(at)] = at
     }
     call
