@@ -22,7 +22,6 @@ Imports:
     stats
 Suggests:
     recipes,
-    Sieve,
     tibble,
     testthat (>= 3.0.0),
     knitr,
