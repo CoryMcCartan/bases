@@ -1,3 +1,24 @@
+test_that("Tensor product indices are generated correctly", {
+    skip_if_not_installed("Sieve")
+
+    d = 3
+    p = 73
+    i0 = Sieve::create_index_matrix(d, p + 1L, interaction_order = p)
+    i0 = i0[1L + seq_len(p), -1, drop = FALSE]
+
+    i1 = make_index_mat(d, p)
+    storage.mode(i1) = "double"
+
+    expect_true(all(diff(row_prod(i1)) >= 0))
+    expect_equal(nrow(i1), p)
+
+    cols_list = function(m) apply(m, 2, function(x) x, simplify = FALSE)
+    i0 = i0[do.call(order, cols_list(cbind(row_prod(i0), i0))), ]
+    i1 = i1[do.call(order, cols_list(cbind(row_prod(i1), i1))), ]
+
+    expect_equal(i0, i1)
+})
+
 test_that("Sobolev features improve prediction fit", {
     y = quakes$depth
 

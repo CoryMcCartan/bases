@@ -46,10 +46,7 @@ b_tpsob <- function(
     std = do_std(x, "box", shift, scale)
     x = std$x
 
-    rlang::check_installed("Sieve", "for this basis function.")
-    idx = Sieve::create_index_matrix(d, p + 1L, interaction_order = p)
-    idx = idx[1L + seq_len(p), -1, drop = FALSE]
-
+    idx = make_index_mat(d, p)
     m = matrix(nrow = n, ncol = p)
     for (j in seq_len(p)) {
         resc = 2^(sum(idx[j, ] > 1L) / 2)
@@ -83,4 +80,24 @@ makepredictcall.b_tpsob <- function(var, call) {
         call[names(at)] = at
     }
     call
+}
+
+make_index_mat <- function(d, p) {
+    out = matrix(nrow = p, ncol = d)
+    prod = 2L
+    row_ctr = 0L
+    while (row_ctr < p) {
+        factors = mult_partition(prod, d)
+        idx = row_ctr + seq_len(nrow(factors))
+        if (any(idx > p)) {
+            idx = idx[idx <= p]
+            idx_fct = order(apply(factors, 1, max))[seq_along(idx)]
+            out[idx, ] = factors[idx_fct, ]
+        } else {
+            out[idx, ] = factors
+        }
+        prod = prod + 1L
+        row_ctr = row_ctr + length(idx)
+    }
+    out
 }

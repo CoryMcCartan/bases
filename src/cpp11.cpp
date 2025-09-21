@@ -26,13 +26,6 @@ extern "C" SEXP _bases_dist_l1(SEXP x, SEXP y) {
     return cpp11::as_sexp(dist_l1(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x), cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(y)));
   END_CPP11
 }
-// dist.cpp
-doubles row_prod(const doubles_matrix<> x);
-extern "C" SEXP _bases_row_prod(SEXP x) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(row_prod(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x)));
-  END_CPP11
-}
 // im2col.cpp
 doubles_matrix<> im2col(const doubles& x, int h, int w, int c, int size, int stride);
 extern "C" SEXP _bases_im2col(SEXP x, SEXP h, SEXP w, SEXP c, SEXP size, SEXP stride) {
@@ -40,14 +33,29 @@ extern "C" SEXP _bases_im2col(SEXP x, SEXP h, SEXP w, SEXP c, SEXP size, SEXP st
     return cpp11::as_sexp(im2col(cpp11::as_cpp<cpp11::decay_t<const doubles&>>(x), cpp11::as_cpp<cpp11::decay_t<int>>(h), cpp11::as_cpp<cpp11::decay_t<int>>(w), cpp11::as_cpp<cpp11::decay_t<int>>(c), cpp11::as_cpp<cpp11::decay_t<int>>(size), cpp11::as_cpp<cpp11::decay_t<int>>(stride)));
   END_CPP11
 }
+// tpsob.cpp
+integers_matrix<> mult_partition(int n, int k);
+extern "C" SEXP _bases_mult_partition(SEXP n, SEXP k) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(mult_partition(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<int>>(k)));
+  END_CPP11
+}
+// tpsob.cpp
+doubles row_prod(const doubles_matrix<> x);
+extern "C" SEXP _bases_row_prod(SEXP x) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(row_prod(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x)));
+  END_CPP11
+}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_bases_dist_l1",    (DL_FUNC) &_bases_dist_l1,    2},
-    {"_bases_dist_l2",    (DL_FUNC) &_bases_dist_l2,    2},
-    {"_bases_forest_mat", (DL_FUNC) &_bases_forest_mat, 4},
-    {"_bases_im2col",     (DL_FUNC) &_bases_im2col,     6},
-    {"_bases_row_prod",   (DL_FUNC) &_bases_row_prod,   1},
+    {"_bases_dist_l1",        (DL_FUNC) &_bases_dist_l1,        2},
+    {"_bases_dist_l2",        (DL_FUNC) &_bases_dist_l2,        2},
+    {"_bases_forest_mat",     (DL_FUNC) &_bases_forest_mat,     4},
+    {"_bases_im2col",         (DL_FUNC) &_bases_im2col,         6},
+    {"_bases_mult_partition", (DL_FUNC) &_bases_mult_partition, 2},
+    {"_bases_row_prod",       (DL_FUNC) &_bases_row_prod,       1},
     {NULL, NULL, 0}
 };
 }

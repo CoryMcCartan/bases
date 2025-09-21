@@ -12,10 +12,14 @@ dist_l1 <- function(x, y) {
   .Call(`_bases_dist_l1`, x, y)
 }
 
-row_prod <- function(x) {
-  .Call(`_bases_row_prod`, x)
-}
-
 im2col <- function(x, h, w, c, size, stride) {
   .Call(`_bases_im2col`, x, h, w, c, size, stride)
+}
+
+mult_partition <- function(n, k) {
+  .Call(`_bases_mult_partition`, n, k)
+}
+
+row_prod <- function(x) {
+  .Call(`_bases_row_prod`, x)
 }
