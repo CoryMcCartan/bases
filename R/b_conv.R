@@ -31,4 +31,6 @@ b_conv <- function(
     stride = size,
     activation = c("max", "mean", "ppv"),
     kernels = NULL
-) {}
+) {
+    abort("Not yet implemented.")
+}

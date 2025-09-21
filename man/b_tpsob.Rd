@@ -4,13 +4,22 @@
 \alias{b_tpsob}
 \title{Tensor-product Sobolev space basis}
 \usage{
-b_tpsob(
-  ...,
-  p = 100,
-  stdize = c("scale", "box", "symbox", "none"),
-  shift = NULL,
-  scale = NULL
-)
+b_tpsob(..., p = 100, shift = NULL, scale = NULL)
+}
+\arguments{
+\item{...}{The variable(s) to build features for. A single data frame or
+matrix may be provided as well. Missing values are not allowed.}
+
+\item{p}{The number of basis functions to generate.}
+
+\item{shift}{Vector of shifts, or single shift value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
+
+\item{scale}{Vector of scales, or single scale value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
+}
+\value{
+A matrix of tensor-product Sobolev space basis features.
 }
 \description{
 Generates features from a tensor-product Sobolev space basis for estimating
@@ -18,7 +27,26 @@ functions in a Sobolev space with dominating mixed derivatives. Basis
 functions are of the form \deqn{
     \psi_{\mathbf{j}}(\mathbf{x}) = \prod_{k=1}^d \psi_{j_k}(x_k),
 } where \deqn{
-     \phi_1(x) = 1, \quad\text{and}\quad
+     \phi_1(x) = 1 \quad\text{and}\quad
      \phi_j(x) = \sqrt{2}\cos(\pi (j-1) x).
 }
+The multi-indices \eqn{\mathbf{j}} are generated in a specific order to
+maximize statistical efficiency.
+All inputs are standardized to lie in the unit hypercube \eqn{[0, 1]^d}.
+}
+\examples{
+data(quakes)
+
+m = ridge(depth ~ b_tpsob(lat, long, p = 100), quakes)
+plot(fitted(m), quakes$depth)
+
+x = 1:150
+y = as.numeric(BJsales)
+m = lm(y ~ b_tpsob(x, p = 10))
+plot(x, y)
+lines(x, fitted(m), col="blue")
+}
+\references{
+Zhang, T., & Simon, N. (2023). Regression in tensor product spaces by the
+method of sieves. \emph{Electronic journal of statistics}, 17(2), 3660.
 }

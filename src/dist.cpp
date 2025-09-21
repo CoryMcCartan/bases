@@ -51,3 +51,27 @@ doubles_matrix<> dist_l1(const doubles_matrix<> x, const doubles_matrix<> y) {
 
     return out;
 }
+
+
+/*
+ * L1 distance between `x` and `y`, as a matrix with a row for each row of `x`
+ * and a column for each row of `y`.
+ */
+[[cpp11::register]]
+doubles row_prod(const doubles_matrix<> x) {
+    int n = x.nrow();
+    int p = x.ncol();
+    writable::doubles out(n);
+
+    for (int i = 0; i < n; i++) {
+        out[i] = x(i, 0);
+    }
+    for (int j = 1; j < p; j++) {
+        for (int i = 0; i < n; i++) {
+            out[i] *= x(i, j);
+        }
+    }
+
+    return out;
+}
+
