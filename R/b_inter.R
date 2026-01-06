@@ -42,6 +42,7 @@ b_inter <- function(
     ee = substitute(list(...))
     x = as.matrix(cbind(...))
     # Only set column names from expression if multiple arguments were provided
+    # ee contains: list() call + arguments, so length > 2 means more than one argument
     if (length(ee) > 2) {
         colnames(x) = vapply(ee[-1], deparse, "")
     }
