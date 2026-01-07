@@ -19,20 +19,20 @@ test_that("b_inter() works with entire data frames", {
     df = data.frame(x1 = rnorm(100), x2 = rnorm(100))
     result_df = b_inter(df)
     expect_s3_class(result_df, "b_inter")
-    expect_true(ncol(result_df) >= 3) # x1, x2, and x1:x2
+    expect_contains(colnames(result_df), c("x1", "x2", "x1:x2"))
     
     # Test with matrix with column names
     mat = matrix(rnorm(200), ncol = 2)
     colnames(mat) = c("v1", "v2")
     result_mat = b_inter(mat)
     expect_s3_class(result_mat, "b_inter")
-    expect_true(ncol(result_mat) >= 3) # v1, v2, and v1:v2
+    expect_contains(colnames(result_mat), c("v1", "v2", "v1:v2"))
     
     # Test with matrix without column names
     mat_no_names = matrix(rnorm(200), ncol = 2)
     result_no_names = b_inter(mat_no_names)
     expect_s3_class(result_no_names, "b_inter")
-    expect_true(ncol(result_no_names) >= 3) # V1, V2, and V1:V2 (default names)
+    expect_contains(colnames(result_no_names), c("V1", "V2", "V1:V2"))
     
     # Test that it gives the same result as passing columns individually
     m1 = lm(mpg ~ b_inter(mtcars[, c("disp", "cyl", "hp")]), mtcars)
