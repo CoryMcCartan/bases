@@ -24,7 +24,7 @@ Imports:
 Suggests:
     recipes,
     tibble,
-    adj,
+    adj (>= 0.1.0),
     RSpectra,
     igraph,
     testthat (>= 3.0.0),
@@ -37,7 +37,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
-Config/testthat/edition: 3
 URL: https://corymccartan.com/bases/,
     https://github.com/CoryMcCartan/bases/
 BugReports: https://github.com/CoryMcCartan/bases/issues
+Remotes:
+    alarm-redist/adj
+Config/testthat/edition: 3
+Config/build/compilation-database: true

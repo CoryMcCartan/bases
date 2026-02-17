@@ -9,4 +9,5 @@
 ^data-raw$
 ^pkgdown$
 ^cran-comments\.md$
+^compile_commands\.json$
 ^CRAN-SUBMISSION$
