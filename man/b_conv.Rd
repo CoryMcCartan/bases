@@ -8,39 +8,81 @@ b_conv(
   x,
   p = 100,
   size = 3,
-  stride = size,
-  activation = c("max", "mean", "ppv"),
-  kernels = NULL
+  stride = 1,
+  kernel_gen = c("rnorm", "patch"),
+  activation = max,
+  stdize = c("scale", "box", "symbox", "none"),
+  kernels = NULL,
+  shift = NULL,
+  scale = NULL
 )
 }
 \arguments{
-\item{x}{A list of images, each an array or matrix of pixel values between 0}
+\item{x}{A list of images, where each image is a matrix (for grayscale) or a
+3D array with dimensions (height, width, channels) for color images. Images
+may have different dimensions, but must be large enough to accommodate the
+convolution kernel size. Missing values are not allowed.}
 
-\item{p}{The number of features to generate.}
+\item{p}{The number of random convolutional kernels to generate.}
 
-\item{size}{The size of the convolutional kernel, e.g., 3 means a 3x3 kernel.}
+\item{size}{The size of the square convolutional kernel (e.g., 3 means a
+3x3 kernel).}
 
-\item{stride}{The stride of the convolution, i.e., how many pixels to skip
-between each convolution. The default is the same as \code{size} so that the
-convolution areas tile the image.}
+\item{stride}{The stride for the convolution operation, i.e., how many
+pixels to skip between kernel applications. Default is 1.}
 
-\item{activation}{The activation function to apply to the convolved images so
-that each convolution kernel produces a single feature. The default \code{"max"}
-is also known as "max pooling"; "mean" is average pooling, and "ppv" is
-the proportion of positive pixel values after convolution.}
+\item{kernel_gen}{Method for generating convolutional kernels. Either \code{"rnorm"}
+to generate kernels with entries drawn i.i.d. from a standard Normal
+distribution, or \code{"patch"} to extract random patches from the input images.}
 
-\item{kernels}{A matrix of convolutional kernels, where each column is a
-kernel in column-major format. Overrides \code{p} and \code{size} if provided.}
+\item{activation}{A function to pool the convolution outputs for each kernel.
+Defaults to \code{\link[=max]{max()}}. The function should accept a numeric vector and return
+a scalar or vector of pooled values. Common choices include \code{\link[=max]{max()}},
+\code{\link[=mean]{mean()}}, functions like the proportion of positive values (PPV), which
+can be implemented with \code{function(x) mean(x > 0)}. Multivariate pooling
+functions are also supported.}
+
+\item{stdize}{How to standardize the predictors, if at all. The default
+\code{"scale"} applies \code{scale()} to the input so that the features have mean
+zero and unit variance, \code{"box"} scales the data along each dimension
+to lie in the unit hypercube, and \code{"symbox"} scales the data along each
+dimension to lie in \eqn{[-0.5, 0.5]^d}.}
+
+\item{kernels}{Optional matrix of pre-specified convolutional kernels, where
+each column is a kernel in column-major format. If provided, overrides \code{p},
+\code{size}, and \code{kernel_gen}.}
+
+\item{shift}{Vector of shifts, or single shift value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
+
+\item{scale}{Vector of scales, or single scale value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
 }
 \value{
-A matrix of random convolutional features.
+A matrix of random convolutional features with one row per image in
+\code{x} and one column per kernel (or more columns if \code{activation} is
+multivariate).
 }
 \description{
-Generates random convolutional features from a list of images, where each
-image is an array or matrix of pixel values. The convolutional kernels have
-entries drawn iid from a standard Normal distribution.
+Generates random convolutional features from a list of images.
+Convolutional kernels are generated randomly (either
+from a Gaussian distribution or as patches extracted from the training
+images), applied to each image via efficient matrix multiplication, and then
+pooled to produce a fixed-size feature vector per image.
 }
 \examples{
-FALSE
+x = outer(1:28, 1:28, function(x, y) {
+    d = sqrt(4*(x - 14)^2 + (y - 14)^2)
+    dnorm(d, mean = 10, sd = 0.8)
+})
+pal = gray.colors(256, 1, 0)
+image(x, col = pal)
 
+# one random kernel (no activation)
+m = b_conv(list(x), p=1, activation=\(x) x)
+image(matrix(m, nrow = 26), col = pal)
+
+# many kernels (realistic use case)
+m = b_conv(list(x), p = 100, size = 3)
+str(m)
 }

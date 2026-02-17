@@ -40,6 +40,7 @@ test_that("predict() works with saved L_inv", {
     expect_equal(predict(m1), predict(m1, list(x = x)))
 
     skip_on_cran() # don't run timing tests on CRAN
+    skip_on_ci()
     t0 = system.time(
         for (i in 1:50) {
             predict(m0, list(x = x))
