@@ -8,39 +8,78 @@ b_conv(
   x,
   p = 100,
   size = 3,
-  stride = size,
-  activation = c("max", "mean", "ppv"),
-  kernels = NULL
+  stride = 1,
+  kernel_gen = c("rnorm", "patch"),
+  activation = max,
+  stdize = c("scale", "box", "symbox", "none"),
+  kernels = NULL,
+  shift = NULL,
+  scale = NULL
 )
 }
 \arguments{
-\item{x}{A list of images, each an array or matrix of pixel values between 0}
+\item{x}{A list of images, where each image is a matrix (for grayscale) or a
+3D array with dimensions (height, width, channels) for color images. Images
+may have different dimensions, but must be large enough to accommodate the
+convolution kernel size. Missing values are not allowed.}
 
-\item{p}{The number of features to generate.}
+\item{p}{The number of random convolutional kernels to generate.}
 
-\item{size}{The size of the convolutional kernel, e.g., 3 means a 3x3 kernel.}
+\item{size}{The size of the square convolutional kernel (e.g., 3 means a
+3x3 kernel).}
 
-\item{stride}{The stride of the convolution, i.e., how many pixels to skip
-between each convolution. The default is the same as \code{size} so that the
-convolution areas tile the image.}
+\item{stride}{The stride for the convolution operation, i.e., how many
+pixels to skip between kernel applications. Default is 1.}
 
-\item{activation}{The activation function to apply to the convolved images so
-that each convolution kernel produces a single feature. The default \code{"max"}
-is also known as "max pooling"; "mean" is average pooling, and "ppv" is
-the proportion of positive pixel values after convolution.}
+\item{kernel_gen}{Method for generating convolutional kernels. Either \code{"rnorm"}
+to generate kernels with entries drawn iid from a standard Normal
+distribution, or \code{"patch"} to extract random patches from the input images.}
 
-\item{kernels}{A matrix of convolutional kernels, where each column is a
-kernel in column-major format. Overrides \code{p} and \code{size} if provided.}
+\item{activation}{A function to pool the convolution outputs for each kernel.
+Defaults to \code{\link[=max]{max()}}. The function should accept a numeric vector and return
+a scalar or vector of pooled values. Common choices include \code{\link[=max]{max()}},
+\code{\link[=mean]{mean()}}, or custom functions.}
+
+\item{stdize}{How to standardize the image pixel values before convolution,
+if at all. The default \code{"scale"} applies \code{scale()} to the pixels so they
+have mean zero and unit variance across all images. \code{"box"} scales pixels
+to lie in [0, 1], \code{"symbox"} scales to lie in [-0.5, 0.5], and \code{"none"}
+applies no standardization.}
+
+\item{kernels}{Optional matrix of pre-specified convolutional kernels, where
+each column is a kernel in column-major format. If provided, overrides \code{p},
+\code{size}, and \code{kernel_gen}.}
+
+\item{shift}{Optional shift value(s) for standardization. If provided,
+overrides the shift calculated according to \code{stdize}.}
+
+\item{scale}{Optional scale value(s) for standardization. If provided,
+overrides the scale calculated according to \code{stdize}.}
 }
 \value{
-A matrix of random convolutional features.
+A matrix of random convolutional features with one row per image in
+\code{x} and one column per kernel (or more columns if \code{activation} is
+multivariate).
 }
 \description{
-Generates random convolutional features from a list of images, where each
-image is an array or matrix of pixel values. The convolutional kernels have
-entries drawn iid from a standard Normal distribution.
+Generates random convolutional features from a list of images for use in
+regression modeling. Convolutional kernels are generated randomly (either
+from a Gaussian distribution or as patches extracted from the training
+images), applied to each image via efficient matrix multiplication, and then
+pooled to produce a fixed-size feature vector per image. This approach allows
+kernel methods and other flexible models to be applied to image data.
 }
 \examples{
-FALSE
+# Create synthetic grayscale images
+set.seed(123)
+images = lapply(1:20, function(i) matrix(runif(28*28), 28, 28))
+
+# Generate random convolutional features
+feats = b_conv(images, p = 10, size = 3)
+dim(feats)
+
+# Use in regression
+y = rnorm(20)
+m = lm(y ~ feats)
 
 }
