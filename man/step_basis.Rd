@@ -62,7 +62,7 @@ The underlying operation does not use case weights.
 }
 
 \examples{
-\dontshow{if (rlang::is_installed("recipes")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("recipes")) withAutoprint(\{ # examplesIf}
 rec = recipes::recipe(depth ~ lat + long + mag, quakes)
 rec_rff = step_basis(rec, lat, long, fn = b_rff,
                      options = list(p = 5, kernel = k_rbf(2), stdize="none"))

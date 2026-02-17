@@ -19,10 +19,14 @@ Depends:
     R (>= 3.6.0)
 Imports:
     rlang,
-    stats
+    stats,
+    methods
 Suggests:
     recipes,
     tibble,
+    adj,
+    RSpectra,
+    igraph,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
@@ -31,7 +35,7 @@ LinkingTo:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://corymccartan.com/bases/,

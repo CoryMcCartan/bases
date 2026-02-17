@@ -4,6 +4,7 @@
 ## usethis namespace: start
 #' @importFrom rlang abort
 #' @import stats
+#' @importFrom methods as
 #' @useDynLib bases, .registration = TRUE
 ## usethis namespace: end
 NULL

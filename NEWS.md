@@ -2,8 +2,10 @@
 
 * `mgcv` smooth interface via `s()` for more flexible penalization TODO
 * New `b_nn()` for neural network basis expansion
-* New `b_tpsob()` for tensor product Sobolev space basis expansion (Zhang and
-     Simon 2023). Requires the `Sieve` package to be installed.
+* New `b_tpsob()` for tensor product Sobolev space basis expansion (Zhang and Simon 2023)
+* New `b_gff()` for graph Fourier features for regression on spatial and graph-structured data.
+  Requires `RSpectra` package for efficient eigendecomposition, and either
+  `adj` or `igraph` for graph representation.
 * New `b_conv()` for random convolutional features for regression on images TODO im2col()
 * New `b_rocket()` for random convolutional features for regression on time series TODO https://arxiv.org/pdf/2012.08791
 * New `b_echo()` for echo state network features for time series forecasting TODO https://www.ai.rug.nl/minds/uploads/PracticalESN.pdf
