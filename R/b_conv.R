@@ -42,7 +42,7 @@
 #' image(x, col = pal)
 #'
 #' # one random kernel (no activation)
-#' m = b_conv(list(x), p=1, activation=\(x) x)
+#' m = b_conv(list(x), p=1, activation=function(x) x)
 #' image(matrix(m, nrow = 26), col = pal)
 #'
 #' # many kernels (realistic use case)
