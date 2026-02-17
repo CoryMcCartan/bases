@@ -32,29 +32,31 @@ convolution kernel size. Missing values are not allowed.}
 pixels to skip between kernel applications. Default is 1.}
 
 \item{kernel_gen}{Method for generating convolutional kernels. Either \code{"rnorm"}
-to generate kernels with entries drawn iid from a standard Normal
+to generate kernels with entries drawn i.i.d. from a standard Normal
 distribution, or \code{"patch"} to extract random patches from the input images.}
 
 \item{activation}{A function to pool the convolution outputs for each kernel.
 Defaults to \code{\link[=max]{max()}}. The function should accept a numeric vector and return
 a scalar or vector of pooled values. Common choices include \code{\link[=max]{max()}},
-\code{\link[=mean]{mean()}}, or custom functions.}
+\code{\link[=mean]{mean()}}, functions like the proportion of positive values (PPV), which
+can be implemented with \code{function(x) mean(x > 0)}. Multivariate pooling
+functions are also supported.}
 
-\item{stdize}{How to standardize the image pixel values before convolution,
-if at all. The default \code{"scale"} applies \code{scale()} to the pixels so they
-have mean zero and unit variance across all images. \code{"box"} scales pixels
-to lie in [0, 1], \code{"symbox"} scales to lie in [-0.5, 0.5], and \code{"none"}
-applies no standardization.}
+\item{stdize}{How to standardize the predictors, if at all. The default
+\code{"scale"} applies \code{scale()} to the input so that the features have mean
+zero and unit variance, \code{"box"} scales the data along each dimension
+to lie in the unit hypercube, and \code{"symbox"} scales the data along each
+dimension to lie in \eqn{[-0.5, 0.5]^d}.}
 
 \item{kernels}{Optional matrix of pre-specified convolutional kernels, where
 each column is a kernel in column-major format. If provided, overrides \code{p},
 \code{size}, and \code{kernel_gen}.}
 
-\item{shift}{Optional shift value(s) for standardization. If provided,
-overrides the shift calculated according to \code{stdize}.}
+\item{shift}{Vector of shifts, or single shift value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
 
-\item{scale}{Optional scale value(s) for standardization. If provided,
-overrides the scale calculated according to \code{stdize}.}
+\item{scale}{Vector of scales, or single scale value, to use. If provided,
+overrides those calculated according to \code{stdize}.}
 }
 \value{
 A matrix of random convolutional features with one row per image in
@@ -62,24 +64,25 @@ A matrix of random convolutional features with one row per image in
 multivariate).
 }
 \description{
-Generates random convolutional features from a list of images for use in
-regression modeling. Convolutional kernels are generated randomly (either
+Generates random convolutional features from a list of images.
+Convolutional kernels are generated randomly (either
 from a Gaussian distribution or as patches extracted from the training
 images), applied to each image via efficient matrix multiplication, and then
-pooled to produce a fixed-size feature vector per image. This approach allows
-kernel methods and other flexible models to be applied to image data.
+pooled to produce a fixed-size feature vector per image.
 }
 \examples{
-# Create synthetic grayscale images
-set.seed(123)
-images = lapply(1:20, function(i) matrix(runif(28*28), 28, 28))
+x = outer(1:28, 1:28, function(x, y) {
+    d = sqrt(4*(x - 14)^2 + (y - 14)^2)
+    dnorm(d, mean = 10, sd = 0.8)
+})
+pal = gray.colors(256, 1, 0)
+image(x, col = pal)
 
-# Generate random convolutional features
-feats = b_conv(images, p = 10, size = 3)
-dim(feats)
+# one random kernel (no activation)
+m = b_conv(list(x), p=1, activation=\(x) x)
+image(matrix(m, nrow = 26), col = pal)
 
-# Use in regression
-y = rnorm(20)
-m = lm(y ~ feats)
-
+# many kernels (realistic use case)
+m = b_conv(list(x), p = 100, size = 3)
+str(m)
 }

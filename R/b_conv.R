@@ -1,12 +1,12 @@
 #' Random convolutional features
 #'
-#' Generates random convolutional features from a list of images for use in
-#' regression modeling. Convolutional kernels are generated randomly (either
+#' Generates random convolutional features from a list of images.
+#' Convolutional kernels are generated randomly (either
 #' from a Gaussian distribution or as patches extracted from the training
 #' images), applied to each image via efficient matrix multiplication, and then
-#' pooled to produce a fixed-size feature vector per image. This approach allows
-#' kernel methods and other flexible models to be applied to image data.
+#' pooled to produce a fixed-size feature vector per image.
 #'
+#' @inheritParams b_rff
 #' @param x A list of images, where each image is a matrix (for grayscale) or a
 #'   3D array with dimensions (height, width, channels) for color images. Images
 #'   may have different dimensions, but must be large enough to accommodate the
@@ -17,35 +17,37 @@
 #' @param stride The stride for the convolution operation, i.e., how many
 #'   pixels to skip between kernel applications. Default is 1.
 #' @param kernel_gen Method for generating convolutional kernels. Either `"rnorm"`
-#'   to generate kernels with entries drawn iid from a standard Normal
+#'   to generate kernels with entries drawn i.i.d. from a standard Normal
 #'   distribution, or `"patch"` to extract random patches from the input images.
 #' @param activation A function to pool the convolution outputs for each kernel.
 #'   Defaults to [max()]. The function should accept a numeric vector and return
 #'   a scalar or vector of pooled values. Common choices include [max()],
-#'   [mean()], or custom functions.
-#' @param stdize How to standardize the image pixel values before convolution,
-#'   if at all. The default `"scale"` applies `scale()` to the pixels so they
-#'   have mean zero and unit variance across all images. `"box"` scales pixels
-#'   to lie in \[0, 1\], `"symbox"` scales to lie in \[-0.5, 0.5\], and `"none"`
-#'   applies no standardization.
+#'   [mean()], functions like the proportion of positive values (PPV), which
+#'   can be implemented with `function(x) mean(x > 0)`. Multivariate pooling
+#'   functions are also supported.
 #' @param kernels Optional matrix of pre-specified convolutional kernels, where
 #'   each column is a kernel in column-major format. If provided, overrides `p`,
 #'   `size`, and `kernel_gen`.
-#' @param shift Optional shift value(s) for standardization. If provided,
-#'   overrides the shift calculated according to `stdize`.
-#' @param scale Optional scale value(s) for standardization. If provided,
-#'   overrides the scale calculated according to `stdize`.
 #'
 #' @returns A matrix of random convolutional features with one row per image in
 #'   `x` and one column per kernel (or more columns if `activation` is
 #'   multivariate).
 #'
 #' @examples
-#' # Create synthetic grayscale images
-#' images = lapply(1:20, function(i) matrix(runif(28*28), 28, 28))
+#' x = outer(1:28, 1:28, function(x, y) {
+#'     d = sqrt(4*(x - 14)^2 + (y - 14)^2)
+#'     dnorm(d, mean = 10, sd = 0.8)
+#' })
+#' pal = gray.colors(256, 1, 0)
+#' image(x, col = pal)
 #'
-#' # Generate random convolutional features
-#' m = b_conv(images, p = 10, size = 3)
+#' # one random kernel (no activation)
+#' m = b_conv(list(x), p=1, activation=\(x) x)
+#' image(matrix(m, nrow = 26), col = pal)
+#'
+#' # many kernels (realistic use case)
+#' m = b_conv(list(x), p = 100, size = 3)
+#' str(m)
 #' @export
 b_conv <- function(
     x,
