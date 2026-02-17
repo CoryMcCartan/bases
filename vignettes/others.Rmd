@@ -34,7 +34,7 @@ This page lists several options.
 
 - The [`text2vec`](https://text2vec.org/) package provides a number of tools to convert text to numeric vectors, including fitting custom GloVe models and topic modeling, and is designed to handle large-scale data.
 
-- The [`text2map`](https://cran.r-project.org/web/packages/text2map/) and its accompanying [`text2map.pretrained`](https://culturalcartography.gitlab.io/text2map.pretrained/) package (not on CRAN) provides access to a number of pre-trained word embeddings.
+- The [`text2map`](https://CRAN.R-project.org/package=text2map) and its accompanying [`text2map.pretrained`](https://culturalcartography.gitlab.io/text2map.pretrained/) package (not on CRAN) provides access to a number of pre-trained word embeddings.
   
 ## Images and audio data 
 

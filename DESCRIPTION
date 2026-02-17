@@ -1,6 +1,6 @@
 Package: bases
 Title: Basis Expansions for Regression Modeling
-Version: 0.1.2.9999
+Version: 0.2.0
 Authors@R:
     person("Cory", "McCartan", , "mccartan@psu.edu", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-6251-669X"))
@@ -41,7 +41,5 @@ VignetteBuilder: knitr
 URL: https://corymccartan.com/bases/,
     https://github.com/CoryMcCartan/bases/
 BugReports: https://github.com/CoryMcCartan/bases/issues
-Remotes:
-    alarm-redist/adj
 Config/testthat/edition: 3
 Config/build/compilation-database: true

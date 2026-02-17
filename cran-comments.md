@@ -2,12 +2,13 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a resubmission of a new release.
-* I have added a URL for the first citation in the DESCRIPTION and removed
-  trailing spaces on line breaks, as requested.
+* The NOTE is about the 'adj' package in Suggests not being in mainstream repositories. 
+  This package is only used for optional graph-related functionality in `b_gff()`. 
+  All examples and tests using 'adj' are conditional on its availability.
 
 ## Test environments
 * local R installation (macOS), R 4.5.0
+* win-builder (devel)
 * windows-latest (on gh-actions), (release)
 * macos-latest (on gh-actions), (release)
 * ubuntu-latest (on gh-actions), (release)
