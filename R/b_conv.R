@@ -65,11 +65,11 @@ b_conv <- function(
     stdize = rlang::arg_match(stdize)
 
     if (!is.list(x)) {
-        rlang::abort("`x` must be a list of images (matrices or arrays)")
+        abort("`x` must be a list of images (matrices or arrays)")
     }
     n = length(x)
     if (n == 0) {
-        rlang::abort("`x` must contain at least one image")
+        abort("`x` must contain at least one image")
     }
 
     # Validate and normalize images to 3D arrays (h, w, c)
@@ -77,16 +77,16 @@ b_conv <- function(
     for (i in seq_len(n)) {
         img = x[[i]]
         if (!is.numeric(img) && !is.array(img)) {
-            rlang::abort("All images must be numeric matrices or arrays")
+            abort("All images must be numeric matrices or arrays")
         }
         if (anyNA(img)) {
-            rlang::abort("Missing values are not allowed in images")
+            abort("Missing values are not allowed in images")
         }
 
         if (length(dim(img)) == 2) {
             dim(img) = c(dim(img), 1L)
         } else if (length(dim(img)) != 3) {
-            rlang::abort("Images must be 2D matrices or 3D arrays")
+            abort("Images must be 2D matrices or 3D arrays")
         }
 
         dims = dim(img)
@@ -97,7 +97,7 @@ b_conv <- function(
     # Check dimensions are sufficient and channels are consistent
     lapply(img_info, function(info) {
         if (info$h < size || info$w < size) {
-            rlang::abort("All images must be at least as large as the kernel `size`")
+            abort("All images must be at least as large as the kernel `size`")
         }
     })
 
@@ -127,10 +127,10 @@ b_conv <- function(
     } else {
         # Validate provided kernels
         if (!is.matrix(kernels)) {
-            rlang::abort("`kernels` must be a matrix")
+            abort("`kernels` must be a matrix")
         }
         if (nrow(kernels) != s2) {
-            rlang::abort(sprintf(
+            abort(sprintf(
                 "`kernels` must have %d rows (size^2), but has %d",
                 s2, nrow(kernels)
             ))

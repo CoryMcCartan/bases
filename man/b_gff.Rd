@@ -32,11 +32,9 @@ if (requireNamespace("adj", quietly = TRUE) && requireNamespace("RSpectra", quie
          c(22, 18, 24), c(23, 19, 25), c(24, 20)
     )
 
-    m = b_gff(a, p = 4, symmetric = TRUE)
+    m = b_gff(a, p = 3, symmetric = TRUE)
     image(matrix(m[, 1], 5, 5), col = pal)
-    image(matrix(m[, 2], 5, 5), col = pal)
     image(matrix(m[, 3], 5, 5), col = pal)
-    image(matrix(m[, 4], 5, 5), col = pal)
 
     if (requireNamespace("igraph", quietly = TRUE)) {
         a = igraph::make_lattice(c(100, 100))

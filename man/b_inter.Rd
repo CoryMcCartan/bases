@@ -47,7 +47,7 @@ the Lasso or ridge regression (see Gelman et al., 2008).
 lm(mpg ~ b_inter(cyl, hp, wt), mtcars)
 
 # how number of features depends on interaction depth
-for (d in 2:6) {
+for (d in 1:6) {
     X = with(mtcars, b_inter(cyl, disp, hp, drat, wt, depth=d))
     print(ncol(X))
 }

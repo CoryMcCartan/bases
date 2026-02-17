@@ -1,6 +1,6 @@
 # bases 0.2.0
 
-* `mgcv` smooth interface via `s()` for more flexible penalization TODO
+* `mgcv` smooth interface via `s()` for more flexible penalization
 * New `b_nn()` for neural network basis expansion
 * New `b_tpsob()` for tensor product Sobolev space basis expansion (Zhang and Simon 2023)
 * New `b_gff()` for graph Fourier features for regression on spatial and graph-structured data.

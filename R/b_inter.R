@@ -22,7 +22,7 @@
 #' lm(mpg ~ b_inter(cyl, hp, wt), mtcars)
 #'
 #' # how number of features depends on interaction depth
-#' for (d in 2:6) {
+#' for (d in 1:6) {
 #'     X = with(mtcars, b_inter(cyl, disp, hp, drat, wt, depth=d))
 #'     print(ncol(X))
 #' }
@@ -35,8 +35,8 @@ b_inter <- function(
     shift = NULL,
     scale = NULL
 ) {
-    if (depth <= 1) {
-        abort("`depth` must be at least 2")
+    if (depth <= 0) {
+        abort("`depth` must be positive")
     }
 
     ee = substitute(list(...))
@@ -50,8 +50,10 @@ b_inter <- function(
     std = do_std(x, stdize, shift, scale)
     data = as.data.frame(std$x)
 
-    if (depth) {
+    if (depth >= 2) {
         form = as.formula(paste0("~ 0 + .^", depth))
+    } else {
+        form = as.formula("~ 0 + .")
     }
     m = model.matrix(form, data)
 

@@ -22,6 +22,7 @@ Imports:
     stats,
     methods
 Suggests:
+    mgcv,
     recipes,
     tibble,
     adj (>= 0.1.0),
