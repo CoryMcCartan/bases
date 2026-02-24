@@ -3,7 +3,7 @@
 
 ## usethis namespace: start
 #' @importFrom rlang abort
-#' @import stats
+#' @rawNamespace import(stats, except = c("filter", "lag"))
 #' @importFrom methods as
 #' @useDynLib bases, .registration = TRUE
 ## usethis namespace: end
