@@ -1,0 +1,177 @@
+# **bases**
+
+**bases** provides various basis expansions for flexible regression
+modeling, including:
+
+- random Fourier features
+  ([`?b_rff`](http://corymccartan.com/bases/reference/b_rff.md))
+- exact kernel / Gaussian process feature maps
+  ([`?b_ker`](http://corymccartan.com/bases/reference/b_ker.md))
+- Bayesian additive regression trees (BART) prior features
+  ([`?b_bart`](http://corymccartan.com/bases/reference/b_bart.md))
+- neural network features
+  ([`?b_nn`](http://corymccartan.com/bases/reference/b_nn.md))
+- graph Fourier features
+  ([`?b_gff`](http://corymccartan.com/bases/reference/b_gff.md))
+- random convolutional image features
+  ([`?b_conv`](http://corymccartan.com/bases/reference/b_conv.md))
+- a helpful interface for n-way interactions
+  ([`?b_inter`](http://corymccartan.com/bases/reference/b_inter.md))
+
+The provided functions may be used within any modeling formula, allowing
+the use of kernel methods and other basis expansions in modeling
+functions that do not otherwise support them.
+
+Along with the basis expansions, a number of kernel functions
+([`?kernels`](http://corymccartan.com/bases/reference/kernels.md)) are
+also provided, which support kernel arithmetic to form new kernels.
+Basic ridge regression functionality
+([`?ridge`](http://corymccartan.com/bases/reference/ridge.md)) is
+included as well.
+
+Finally, the package provides two ways of interfacing with more complex
+modeling workflows:
+
+1.  Integration with `mgcv`, so that basis expansions can be used as
+    smooth terms within `s()`. This enables fitting different levels of
+    penalization to different basis expansions.
+
+2.  A [recipes](https://recipes.tidymodels.org/)-friendly interface, so
+    that these basis expansions can be combined with other
+    transformations and used within the
+    [tidymodels](https://www.tidymodels.org/) framework.
+
+## Installation
+
+You can install **bases** from CRAN:
+
+``` r
+install.packages("bases")
+```
+
+You can install the development version with
+
+``` r
+remotes::install_github("CoryMcCartan/bases")
+```
+
+## Example: random Fourier features
+
+The basis functions in **bases** all start with `b_` and are designed to
+work in the same way as built-in basis expansions like `bs()` or
+[`poly()`](https://rdrr.io/r/stats/poly.html): simply include the
+function in a model formula.
+
+So fitting an approximate kernel regression with random Fourier features
+is as simple as wrapping the relevant variables in a call to the
+corresponding basis function,
+[`b_rff()`](http://corymccartan.com/bases/reference/b_rff.md). The
+default kernel is a Gaussian/RBF kernel with length scale 1 which is
+applied to predictors after rescaling them to have unit variance.
+
+``` r
+library(bases)
+
+# Box & Jenkins (1976) sales data
+x = 1:150
+y = as.numeric(BJsales)
+
+lm(y ~ b_rff(x, p = 5)) # 5 random features
+#> 
+#> Call:
+#> lm(formula = y ~ b_rff(x, p = 5))
+#> 
+#> Coefficients:
+#>      (Intercept)  b_rff(x, p = 5)1  b_rff(x, p = 5)2  b_rff(x, p = 5)3  
+#>         -1821607             12882             33383            -35639  
+#> b_rff(x, p = 5)4  b_rff(x, p = 5)5  
+#>            88853           4123981
+```
+
+You can provide a different `kernel =` argument to switch kernels. Many
+common kernels are provided with the package; see
+[`?kernels`](http://corymccartan.com/bases/reference/kernels.md).
+
+``` r
+b_rff(x, kernel = k_matern(scale = 0.1, nu = 5/2))
+b_rff(x, kernel = k_rq(scale = 2, alpha = 2))
+```
+
+In practice, RFF are usually fit with penalization, such as via ridge
+regression. Below, we visualize several RFF ridge regression fits versus
+a simple linear model, using the
+[`ridge()`](http://corymccartan.com/bases/reference/ridge.md) function
+provided in the package.
+
+``` r
+k = k_rbf(scale = 0.2)
+plot(x, y, xlab = "Month", ylab = "Sales")
+lines(x, fitted(lm(y ~ x)), lty = "dashed", lwd = 1.5)
+for (i in 1:20) {
+    m_rff = ridge(y ~ b_rff(x, kernel = k))
+    lines(x, fitted(m_rff), col = "#4584")
+}
+```
+
+![](reference/figures/README-rbf-plot-1.png)
+
+# Package index
+
+## Basis expansions
+
+- [`b_rff()`](http://corymccartan.com/bases/reference/b_rff.md) : Random
+  Fourier feature basis
+- [`b_bart()`](http://corymccartan.com/bases/reference/b_bart.md)
+  [`bart_depth_prior()`](http://corymccartan.com/bases/reference/b_bart.md)
+  : Bayesian Additive Regression Tree (BART) features
+- [`b_conv()`](http://corymccartan.com/bases/reference/b_conv.md) :
+  Random convolutional features
+- [`b_gff()`](http://corymccartan.com/bases/reference/b_gff.md) : Graph
+  Fourier Feature basis
+- [`b_inter()`](http://corymccartan.com/bases/reference/b_inter.md) :
+  N-way interaction basis
+- [`b_ker()`](http://corymccartan.com/bases/reference/b_ker.md) : Exact
+  kernel feature basis
+- [`b_nn()`](http://corymccartan.com/bases/reference/b_nn.md) : Neural
+  network basis
+- [`b_tpsob()`](http://corymccartan.com/bases/reference/b_tpsob.md) :
+  Tensor-product Sobolev space basis
+
+## Kernels
+
+- [`k_rbf()`](http://corymccartan.com/bases/reference/kernels.md)
+  [`k_lapl()`](http://corymccartan.com/bases/reference/kernels.md)
+  [`k_rq()`](http://corymccartan.com/bases/reference/kernels.md)
+  [`k_matern()`](http://corymccartan.com/bases/reference/kernels.md)
+  [`k_per()`](http://corymccartan.com/bases/reference/kernels.md) :
+  Kernel functions
+- [`` `*`( ``*`<kernel>`*`)`](http://corymccartan.com/bases/reference/kernel-arith.md)
+  [`` `+`( ``*`<kernel>`*`)`](http://corymccartan.com/bases/reference/kernel-arith.md)
+  : Kernel arithmetic
+
+## Modeling
+
+Functions for modeling and interfacing with other modeling packages.
+
+- [`ridge()`](http://corymccartan.com/bases/reference/ridge.md)
+  [`fitted(`*`<ridge>`*`)`](http://corymccartan.com/bases/reference/ridge.md)
+  [`coef(`*`<ridge>`*`)`](http://corymccartan.com/bases/reference/ridge.md)
+  [`predict(`*`<ridge>`*`)`](http://corymccartan.com/bases/reference/ridge.md)
+  : Ridge regression
+
+- [`bases_mgcv`](http://corymccartan.com/bases/reference/bases_mgcv.md)
+  :
+
+  `mgcv` integration
+
+- [`step_basis()`](http://corymccartan.com/bases/reference/step_basis.md)
+  : Recipe step for basis expansions
+
+# Articles
+
+### All vignettes
+
+- [Other Basis Expansions and
+  Embeddings](http://corymccartan.com/bases/articles/others.md):
+- [Valid
+  Prediction](http://corymccartan.com/bases/articles/prediction.md):

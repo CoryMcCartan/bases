@@ -19,7 +19,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
     <a class="navbar-brand me-2" href="../index.html">bases</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,8 @@ gtag('config', 'G-2KH5JZ6JS1');
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/others.html">Other Basis Expansions and Embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -51,8 +52,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
 
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -63,31 +63,61 @@ gtag('config', 'G-2KH5JZ6JS1');
 
         </dt>
         <dd>Random Fourier feature basis</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="b_bart.html">b_bart()</a></code> <code><a href="b_bart.html">bart_depth_prior()</a></code>
 
         </dt>
         <dd>Bayesian Additive Regression Tree (BART) features</dd>
-      </dl><dl><dt>
+
+        <dt>
+
+          <code><a href="b_conv.html">b_conv()</a></code>
+
+        </dt>
+        <dd>Random convolutional features</dd>
+
+        <dt>
+
+          <code><a href="b_gff.html">b_gff()</a></code>
+
+        </dt>
+        <dd>Graph Fourier Feature basis</dd>
+
+        <dt>
 
           <code><a href="b_inter.html">b_inter()</a></code>
 
         </dt>
         <dd>N-way interaction basis</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="b_ker.html">b_ker()</a></code>
 
         </dt>
         <dd>Exact kernel feature basis</dd>
+
+        <dt>
+
+          <code><a href="b_nn.html">b_nn()</a></code>
+
+        </dt>
+        <dd>Neural network basis</dd>
+
+        <dt>
+
+          <code><a href="b_tpsob.html">b_tpsob()</a></code>
+
+        </dt>
+        <dd>Tensor-product Sobolev space basis</dd>
       </dl></div><div class="section level2">
       <h2 id="kernels">Kernels<a class="anchor" aria-label="anchor" href="#kernels"></a></h2>
 
 
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -98,7 +128,8 @@ gtag('config', 'G-2KH5JZ6JS1');
 
         </dt>
         <dd>Kernel functions</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="kernel-arith.html">`*`(<i>&lt;kernel&gt;</i>)</a></code> <code><a href="kernel-arith.html">`+`(<i>&lt;kernel&gt;</i>)</a></code>
 
@@ -109,8 +140,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
       <div class="section-desc"><p>Functions for modeling and interfacing with other modeling packages.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -121,7 +151,15 @@ gtag('config', 'G-2KH5JZ6JS1');
 
         </dt>
         <dd>Ridge regression</dd>
-      </dl><dl><dt>
+
+        <dt>
+
+          <code><a href="bases_mgcv.html">bases_mgcv</a></code>
+
+        </dt>
+        <dd><code>mgcv</code> integration</dd>
+
+        <dt>
 
           <code><a href="step_basis.html">step_basis()</a></code>
 
@@ -137,7 +175,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

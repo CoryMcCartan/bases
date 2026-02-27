@@ -22,8 +22,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Basis Expansions for Regression Modeling">
-<meta name="description" content="Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi &amp; Recht, 2007) &lt;https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf&gt;, exact kernel / Gaussian process feature maps, Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) &lt;doi:10.1214/09-AOAS285&gt; prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.">
-<meta property="og:description" content="Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi &amp; Recht, 2007) &lt;https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf&gt;, exact kernel / Gaussian process feature maps, Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) &lt;doi:10.1214/09-AOAS285&gt; prior features, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.">
+<meta name="description" content="Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi &amp; Recht, 2007) &lt;https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf&gt;, exact kernel / Gaussian process feature maps, prior features for Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) &lt;doi:10.1214/09-AOAS285&gt;, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.">
+<meta property="og:description" content="Provides various basis expansions for flexible regression modeling, including random Fourier features (Rahimi &amp; Recht, 2007) &lt;https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf&gt;, exact kernel / Gaussian process feature maps, prior features for Bayesian Additive Regression Trees (BART) (Chipman et al., 2010) &lt;doi:10.1214/09-AOAS285&gt;, and a helpful interface for n-way interactions. The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them. Along with the basis expansions, a number of kernel functions are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality is included as well.">
 <meta property="og:image" content="http://corymccartan.com/bases/logo.png">
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-2KH5JZ6JS1"></script><script>
 window.dataLayer = window.dataLayer || [];
@@ -41,7 +41,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
     <a class="navbar-brand me-2" href="index.html">bases</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@ gtag('config', 'G-2KH5JZ6JS1');
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/prediction.html">Valid Prediction</a></li>
+<li><a class="dropdown-item" href="articles/others.html">Other Basis Expansions and Embeddings</a></li>
+    <li><a class="dropdown-item" href="articles/prediction.html">Valid Prediction</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -80,9 +81,23 @@ gtag('config', 'G-2KH5JZ6JS1');
 </div>
 <!-- badges: start -->
 
-<p><strong>bases</strong> provides various basis expansions for flexible regression modeling, including random Fourier features (<code><a href="reference/b_rff.html">?b_rff</a></code>), exact kernel / Gaussian process feature maps (<code><a href="reference/b_ker.html">?b_ker</a></code>), Bayesian Additive Regression Trees prior features (<code><a href="reference/b_bart.html">?b_bart</a></code>), and a helpful interface for n-way interactions (<code><a href="reference/b_inter.html">?b_inter</a></code>). The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them.</p>
+<p><strong>bases</strong> provides various basis expansions for flexible regression modeling, including:</p>
+<ul>
+<li>random Fourier features (<code><a href="reference/b_rff.html">?b_rff</a></code>)</li>
+<li>exact kernel / Gaussian process feature maps (<code><a href="reference/b_ker.html">?b_ker</a></code>)</li>
+<li>Bayesian additive regression trees (BART) prior features (<code><a href="reference/b_bart.html">?b_bart</a></code>)</li>
+<li>neural network features (<code><a href="reference/b_nn.html">?b_nn</a></code>)</li>
+<li>graph Fourier features (<code><a href="reference/b_gff.html">?b_gff</a></code>)</li>
+<li>random convolutional image features (<code><a href="reference/b_conv.html">?b_conv</a></code>)</li>
+<li>a helpful interface for n-way interactions (<code><a href="reference/b_inter.html">?b_inter</a></code>)</li>
+</ul>
+<p>The provided functions may be used within any modeling formula, allowing the use of kernel methods and other basis expansions in modeling functions that do not otherwise support them.</p>
 <p>Along with the basis expansions, a number of kernel functions (<code><a href="reference/kernels.html">?kernels</a></code>) are also provided, which support kernel arithmetic to form new kernels. Basic ridge regression functionality (<code><a href="reference/ridge.html">?ridge</a></code>) is included as well.</p>
-<p>Finally, the package provides a <a href="https://recipes.tidymodels.org/" class="external-link">recipes</a>-friendly interface, so that these basis expansions can be combined with other transformations and used within the <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> framework.</p>
+<p>Finally, the package provides two ways of interfacing with more complex modeling workflows:</p>
+<ol style="list-style-type: decimal">
+<li><p>Integration with <code>mgcv</code>, so that basis expansions can be used as smooth terms within <code>s()</code>. This enables fitting different levels of penalization to different basis expansions.</p></li>
+<li><p>A <a href="https://recipes.tidymodels.org/" class="external-link">recipes</a>-friendly interface, so that these basis expansions can be combined with other transformations and used within the <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> framework.</p></li>
+</ol>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -103,7 +118,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 <span></span>
 <span><span class="co"># Box &amp; Jenkins (1976) sales data</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">150</span></span>
-<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BJsales</span><span class="op">)</span> </span>
+<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BJsales</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="reference/b_rff.html">b_rff</a></span><span class="op">(</span><span class="va">x</span>, p <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="co"># 5 random features</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -180,7 +195,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

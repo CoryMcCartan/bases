@@ -23,7 +23,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
     <a class="navbar-brand me-2" href="../index.html">bases</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,8 @@ gtag('config', 'G-2KH5JZ6JS1');
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/others.html">Other Basis Expansions and Embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -48,7 +49,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Recipe step for basis expansions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/CoryMcCartan/bases/blob/main/R/recipes.R" class="external-link"><code>R/recipes.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CoryMcCartan/bases/blob/v0.2.0/R/recipes.R" class="external-link"><code>R/recipes.R</code></a></small>
       <div class="d-none name"><code>step_basis.Rd</code></div>
     </div>
 
@@ -145,18 +146,18 @@ of any existing operations.</p>
 <span class="r-in"><span>                     options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">5</span>, kernel <span class="op">=</span> <span class="fu"><a href="kernels.html">k_rbf</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, stdize<span class="op">=</span><span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">recipes</span><span class="fu">::</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/bake.html" class="external-link">bake</a></span><span class="op">(</span><span class="fu">recipes</span><span class="fu">::</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">rec_rff</span><span class="op">)</span>, new_data<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,000 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      mag depth b_rff1 b_rff2 b_rff3 b_rff4  b_rff5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   4.8   562 -<span style="color: #BB0000;">0.361</span>  0.121 -<span style="color: #BB0000;">0.302</span>  0.351 -<span style="color: #BB0000;">0.081</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>   4.2   650 -<span style="color: #BB0000;">0.297</span>  0.111 -<span style="color: #BB0000;">0.428</span>  0.370 -<span style="color: #BB0000;">0.178</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>   5.4    42  0.404 -<span style="color: #BB0000;">0.331</span>  0.428 -<span style="color: #BB0000;">0.398</span> -<span style="color: #BB0000;">0.175</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>   4.1   626 -<span style="color: #BB0000;">0.390</span> -<span style="color: #BB0000;">0.397</span> -<span style="color: #BB0000;">0.260</span>  0.423  0.411 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>   4     649 -<span style="color: #BB0000;">0.379</span>  0.154 -<span style="color: #BB0000;">0.189</span>  0.325 -<span style="color: #BB0000;">0.051</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   4     195 -<span style="color: #BB0000;">0.431</span>  0.203  0.444  0.218  0.307 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   4.8    82 -<span style="color: #BB0000;">0.438</span> -<span style="color: #BB0000;">0.425</span> -<span style="color: #BB0000;">0.441</span>  0.349  0.446 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   4.4   194  0.249 -<span style="color: #BB0000;">0.447</span> -<span style="color: #BB0000;">0.299</span> -<span style="color: #BB0000;">0.318</span>  0.414 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   4.7   211  0.115 -<span style="color: #BB0000;">0.432</span> -<span style="color: #BB0000;">0.357</span> -<span style="color: #BB0000;">0.245</span>  0.447 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   4.3   622 -<span style="color: #BB0000;">0.425</span> -<span style="color: #BB0000;">0.430</span> -<span style="color: #BB0000;">0.285</span>  0.212  0.383 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      mag depth  b_rff1  b_rff2  b_rff3   b_rff4 b_rff5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   4.8   562 -<span style="color: #BB0000;">0.426</span>   0.445  -<span style="color: #BB0000;">0.406</span>  -<span style="color: #BB0000;">0.414</span>   -<span style="color: #BB0000;">0.419</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>   4.2   650 -<span style="color: #BB0000;">0.446</span>   0.390  -<span style="color: #BB0000;">0.388</span>  -<span style="color: #BB0000;">0.377</span>   -<span style="color: #BB0000;">0.374</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>   5.4    42  0.249   0.419  -<span style="color: #BB0000;">0.206</span>   0.008<span style="text-decoration: underline;">33</span>  0.123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>   4.1   626  0.121   0.350  -<span style="color: #BB0000;">0.447</span>   0.194   -<span style="color: #BB0000;">0.304</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>   4     649 -<span style="color: #BB0000;">0.404</span>   0.445  -<span style="color: #BB0000;">0.412</span>  -<span style="color: #BB0000;">0.438</span>   -<span style="color: #BB0000;">0.438</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>   4     195  0.124  -<span style="color: #BB0000;">0.061</span><span style="color: #BB0000; text-decoration: underline;">6</span> -<span style="color: #BB0000;">0.447</span>  -<span style="color: #BB0000;">0.382</span>   -<span style="color: #BB0000;">0.345</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>   4.8    82 -<span style="color: #BB0000;">0.384</span>   0.429  -<span style="color: #BB0000;">0.388</span>   0.174    0.402</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   4.4   194  0.160  -<span style="color: #BB0000;">0.292</span>   0.031<span style="text-decoration: underline;">7</span> -<span style="color: #BB0000;">0.109</span>   -<span style="color: #BB0000;">0.118</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>   4.7   211 -<span style="color: #BB0000;">0.046</span><span style="color: #BB0000; text-decoration: underline;">2</span> -<span style="color: #BB0000;">0.380</span>   0.084<span style="text-decoration: underline;">9</span> -<span style="color: #BB0000;">0.241</span>   -<span style="color: #BB0000;">0.100</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>   4.3   622 -<span style="color: #BB0000;">0.111</span>   0.413  -<span style="color: #BB0000;">0.442</span>   0.425    0.120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 990 more rows</span></span>
 </code></pre></div>
     </div>
@@ -169,7 +170,7 @@ of any existing operations.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

@@ -31,7 +31,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 
     <a class="navbar-brand me-2" href="../index.html">bases</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,8 @@ gtag('config', 'G-2KH5JZ6JS1');
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/others.html">Other Basis Expansions and Embeddings</a></li>
+    <li><a class="dropdown-item" href="../articles/prediction.html">Valid Prediction</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -56,7 +57,7 @@ gtag('config', 'G-2KH5JZ6JS1');
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Bayesian Additive Regression Tree (BART) features</h1>
-      <small class="dont-index">Source: <a href="https://github.com/CoryMcCartan/bases/blob/main/R/b_bart.R" class="external-link"><code>R/b_bart.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/CoryMcCartan/bases/blob/v0.2.0/R/b_bart.R" class="external-link"><code>R/b_bart.R</code></a></small>
       <div class="d-none name"><code>b_bart.Rd</code></div>
     </div>
 
@@ -79,6 +80,7 @@ range of each variable.</p>
 <span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  drop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_drop <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  ranges <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -122,6 +124,12 @@ length equal to <code>sum(depths)</code>.</p></dd>
 <dd><p>Columns in the calculated indicator matrix to drop. By default,
 any leaves which match zero input rows are dropped.  If provided, overrides
 this default.</p></dd>
+
+
+<dt id="arg-min-drop">min_drop<a class="anchor" aria-label="anchor" href="#arg-min-drop"></a></dt>
+<dd><p>Controls the default dropping of columns. Leaves which match
+<code>min_drop</code> or fewer input rows are dropped. Defaults to 0, so only empty
+leaves are dropped.</p></dd>
 
 
 <dt id="arg-ranges">ranges<a class="anchor" aria-label="anchor" href="#arg-ranges"></a></dt>
@@ -187,7 +195,7 @@ March 2010. https://doi.org/10.1214/09-AOAS285</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
