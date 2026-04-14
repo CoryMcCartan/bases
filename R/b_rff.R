@@ -154,7 +154,7 @@ b_rff <- function(
         abort("Number of columns in `freqs` must match length of `phases`")
     }
 
-    m = cos(x %*% freqs + rep(phases, each = n)) / sqrt(p)
+    m = cos(x %*% freqs + rep(phases, each = n)) / sqrt(length(phases))
     attr(m, "freqs") = freqs
     attr(m, "phases") = phases
     attr(m, "shift") = std$shift
