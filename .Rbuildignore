@@ -12,3 +12,4 @@
 ^compile_commands\.json$
 ^CRAN-SUBMISSION$
 ^todo\.md$
+^revdep$

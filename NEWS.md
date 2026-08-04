@@ -1,6 +1,7 @@
 # bases 0.2.1
 
 * Updated methods references for random tree/BART features
+* Fixed normalizing bug in `b_rff()` when `freqs`/`phases` were passed manually
 
 # bases 0.2.0
 
