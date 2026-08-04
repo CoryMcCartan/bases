@@ -1,6 +1,6 @@
 Package: bases
 Title: Basis Expansions for Regression Modeling
-Version: 0.2.0
+Version: 0.2.1
 Authors@R:
     person("Cory", "McCartan", , "mccartan@psu.edu", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-6251-669X"))
@@ -8,7 +8,7 @@ Description: Provides various basis expansions for flexible regression modeling,
     including random Fourier features (Rahimi & Recht, 2007)
     <https://proceedings.neurips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf>,
     exact kernel / Gaussian process feature maps, prior features for Bayesian
-    Additive Regression Trees (BART) (Chipman et al., 2010) <doi:10.1214/09-AOAS285>,
+    Additive Regression Trees (BART) (McCartan & Huang, 2026) <doi:10.48550/arXiv.2607.28844>,
     and a helpful interface for n-way interactions. The provided functions may
     be used within any modeling formula, allowing the use of kernel methods and
     other basis expansions in modeling functions that do not otherwise support
@@ -36,10 +36,10 @@ LinkingTo:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 URL: https://corymccartan.com/bases/,
     https://github.com/CoryMcCartan/bases/
 BugReports: https://github.com/CoryMcCartan/bases/issues
 Config/testthat/edition: 3
 Config/build/compilation-database: true
+Config/roxygen2/version: 8.0.0

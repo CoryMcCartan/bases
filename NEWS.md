@@ -1,3 +1,7 @@
+# bases 0.2.1
+
+* Updated methods references for random tree/BART features
+
 # bases 0.2.0
 
 * `mgcv` smooth interface via `s()` for more flexible penalization

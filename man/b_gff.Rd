@@ -7,7 +7,7 @@
 b_gff(x, p = min(length(x) - 1L, 50), symmetric = FALSE)
 }
 \arguments{
-\item{x}{An integer-indexed adjacency list, \link[igraph:aaa-igraph-package]{igraph::igraph}, or \link[adj:adj]{adj::adj} object.}
+\item{x}{An integer-indexed adjacency list, \link[igraph:igraph-package]{igraph::igraph}, or \link[adj:adj]{adj::adj} object.}
 
 \item{p}{The number of features to generate.}
 

@@ -4,8 +4,7 @@
 
 
 ## Test environments
-* local R installation (macOS), R 4.5.0
-* win-builder (devel)
+* local R installation (macOS), R 4.6.0
 * windows-latest (on gh-actions), (release)
 * macos-latest (on gh-actions), (release)
 * ubuntu-latest (on gh-actions), (release)

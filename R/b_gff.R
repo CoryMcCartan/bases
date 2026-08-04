@@ -4,7 +4,7 @@
 #' which can be thought of as a generalization of the Fourier basis to
 #' graph-structured data.
 #'
-#' @param x An integer-indexed adjacency list, [igraph::igraph], or [adj::adj] object.
+#' @param x An integer-indexed adjacency list, [igraph::igraph][igraph-package], or [adj::adj] object.
 #' @param p The number of features to generate.
 #' @param symmetric Whether `x` is assumed symmetric.
 #'

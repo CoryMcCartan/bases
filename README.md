@@ -15,7 +15,7 @@ modeling, including:
 
 - random Fourier features (`?b_rff`)
 - exact kernel / Gaussian process feature maps (`?b_ker`)
-- Bayesian additive regression trees (BART) prior features (`?b_bart`)
+- random tree features (`?b_bart`)
 - neural network features (`?b_nn`)
 - graph Fourier features (`?b_gff`)
 - random convolutional image features (`?b_conv`)
@@ -110,4 +110,4 @@ for (i in 1:20) {
 }
 ```
 
-<img src="man/figures/README-rbf-plot-1.png" width="100%" />
+<img src="man/figures/README-rbf-plot-1.png" alt="" width="100%" />
