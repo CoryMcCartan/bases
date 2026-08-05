@@ -1,6 +1,17 @@
 # Changelog
 
+## bases 0.2.1
+
+CRAN release: 2026-08-04
+
+- Updated methods references for random tree/BART features
+- Fixed normalizing bug in
+  [`b_rff()`](http://corymccartan.com/bases/reference/b_rff.md) when
+  `freqs`/`phases` were passed manually
+
 ## bases 0.2.0
+
+CRAN release: 2026-02-27
 
 - `mgcv` smooth interface via `s()` for more flexible penalization
 - New [`b_nn()`](http://corymccartan.com/bases/reference/b_nn.md) for

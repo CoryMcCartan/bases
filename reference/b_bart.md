@@ -1,12 +1,13 @@
-# Bayesian Additive Regression Tree (BART) features
+# Random tree features (approximate BART)
 
-Generates random features from a BART prior on symmetric trees.
-Equivalently, the features are the interaction of a small number of
-indicator functions. The number of interacted indicators is the depth of
-the symmetric tree, and is drawn from a prior on the tree depth which is
-calibrated to match the traditional BART prior of Chipman et al. (2010).
-The variable at each tree node is selected uniformly, and thresholds are
-selected uniformly from the range of each variable.
+Generates random features from a Bayesian Additive Regression Trees
+(BART) prior on symmetric trees. Equivalently, the features are the
+interaction of a small number of indicator functions. The number of
+interacted indicators is the depth of the symmetric tree, and is drawn
+from a prior on the tree depth which is calibrated to match the
+traditional BART prior of Chipman et al. (2010). The variable at each
+tree node is selected uniformly, and thresholds are selected uniformly
+from the range of each variable.
 
 ## Usage
 
@@ -96,9 +97,13 @@ A matrix of indicator variables encoding the random features.
 
 ## References
 
-Hugh A. Chipman. Edward I. George. Robert E. McCulloch. "BART: Bayesian
-additive regression trees." Ann. Appl. Stat. 4 (1) 266 - 298, March
-2010. https://doi.org/10.1214/09-AOAS285
+McCartan, C., & Huang, M. (2026). Seeing the forest for the trees: The
+Gaussian process limit of BART. *arXiv preprint*.
+[doi:10.48550/arXiv.2607.28844](https://doi.org/10.48550/arXiv.2607.28844)
+
+Hugh A. Chipman, Edward I. George, & Robert E. McCulloch (2010). BART:
+Bayesian additive regression trees. *Ann. Appl. Stat.* 4 (1).
+[doi:10.1214/09-AOAS285](https://doi.org/10.1214/09-AOAS285)
 
 ## Examples
 

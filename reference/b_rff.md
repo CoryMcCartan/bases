@@ -120,7 +120,7 @@ plot(fitted(m), quakes$depth)
 m500 = ridge(depth ~ b_rff(lat, long, p = 500), quakes)
 c(default = m$penalty, p500 = m500$penalty)
 #>      default         p500 
-#> 2.124304e-06 5.353267e-05 
+#> 1.483577e-07 1.758357e-04 
 
 # A shorter length scale fits the data better (R^2)
 m_025 = ridge(depth ~ b_rff(lat, long, kernel = k_rbf(scale = 0.25)), quakes)
@@ -129,5 +129,5 @@ c(
   len_025 = cor(quakes$depth, fitted(m_025))^2
 )
 #>     len_1   len_025 
-#> 0.9185883 0.9345562 
+#> 0.9210711 0.9355007 
 ```

@@ -6,7 +6,7 @@
   Fourier feature basis
 - [`b_bart()`](http://corymccartan.com/bases/reference/b_bart.md)
   [`bart_depth_prior()`](http://corymccartan.com/bases/reference/b_bart.md)
-  : Bayesian Additive Regression Tree (BART) features
+  : Random tree features (approximate BART)
 - [`b_conv()`](http://corymccartan.com/bases/reference/b_conv.md) :
   Random convolutional features
 - [`b_gff()`](http://corymccartan.com/bases/reference/b_gff.md) : Graph

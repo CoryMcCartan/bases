@@ -14,8 +14,9 @@ b_gff(x, p = min(length(x) - 1L, 50), symmetric = FALSE)
 
 - x:
 
-  An integer-indexed adjacency list, igraph::igraph, or
-  [adj::adj](https://alarm-redist.org/adj/reference/adj.html) object.
+  An integer-indexed adjacency list,
+  [igraph::igraph](https://r.igraph.org/reference/aaa-igraph-package.html),
+  or [adj::adj](https://alarm-redist.org/adj/reference/adj.html) object.
 
 - p:
 

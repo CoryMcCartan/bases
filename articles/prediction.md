@@ -28,6 +28,7 @@ modeling context, we’ll fit a model with
 formula.
 
 ``` r
+
 library(bases)
 data(mtcars)
 
@@ -39,6 +40,7 @@ will yield the same predictions, even if the `newdata` argument is not
 empty.
 
 ``` r
+
 all.equal(predict(m), predict(m, newdata = mtcars))
 #> [1] TRUE
 all.equal(predict(m, newdata = mtcars[5:10, ]), 
@@ -51,6 +53,7 @@ The same is true if
 outside of a formula.
 
 ``` r
+
 B = with(mtcars, b_rff(cyl, disp, hp, wt, p = 10))
 
 all.equal(B, predict(B))

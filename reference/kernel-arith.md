@@ -45,8 +45,8 @@ print(k_add)
 #> {
 #>     k1(x, y) + k2(x, y)
 #> }
-#> <bytecode: 0x562ec8babed0>
-#> <environment: 0x562ec8ba6c00>
+#> <bytecode: 0x56273ed936b0>
+#> <environment: 0x56273ed94130>
 #> attr(,"name")
 #> [1] "per + rbf"
 image(k_add(x, x))

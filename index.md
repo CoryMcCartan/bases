@@ -7,7 +7,7 @@ modeling, including:
   ([`?b_rff`](http://corymccartan.com/bases/reference/b_rff.md))
 - exact kernel / Gaussian process feature maps
   ([`?b_ker`](http://corymccartan.com/bases/reference/b_ker.md))
-- Bayesian additive regression trees (BART) prior features
+- random tree features
   ([`?b_bart`](http://corymccartan.com/bases/reference/b_bart.md))
 - neural network features
   ([`?b_nn`](http://corymccartan.com/bases/reference/b_nn.md))
@@ -46,12 +46,14 @@ modeling workflows:
 You can install **bases** from CRAN:
 
 ``` r
+
 install.packages("bases")
 ```
 
 You can install the development version with
 
 ``` r
+
 remotes::install_github("CoryMcCartan/bases")
 ```
 
@@ -70,6 +72,7 @@ default kernel is a Gaussian/RBF kernel with length scale 1 which is
 applied to predictors after rescaling them to have unit variance.
 
 ``` r
+
 library(bases)
 
 # Box & Jenkins (1976) sales data
@@ -93,6 +96,7 @@ common kernels are provided with the package; see
 [`?kernels`](http://corymccartan.com/bases/reference/kernels.md).
 
 ``` r
+
 b_rff(x, kernel = k_matern(scale = 0.1, nu = 5/2))
 b_rff(x, kernel = k_rq(scale = 2, alpha = 2))
 ```
@@ -104,6 +108,7 @@ a simple linear model, using the
 provided in the package.
 
 ``` r
+
 k = k_rbf(scale = 0.2)
 plot(x, y, xlab = "Month", ylab = "Sales")
 lines(x, fitted(lm(y ~ x)), lty = "dashed", lwd = 1.5)
