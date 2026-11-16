@@ -5,13 +5,6 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// bart.cpp
-integers_matrix<> forest_mat(const doubles_matrix<> x, const integers depths, const integers vars, const doubles thresh);
-extern "C" SEXP _bases_forest_mat(SEXP x, SEXP depths, SEXP vars, SEXP thresh) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(forest_mat(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x), cpp11::as_cpp<cpp11::decay_t<const integers>>(depths), cpp11::as_cpp<cpp11::decay_t<const integers>>(vars), cpp11::as_cpp<cpp11::decay_t<const doubles>>(thresh)));
-  END_CPP11
-}
 // tpsob.cpp
 integers_matrix<> mult_partition(int n, int k);
 extern "C" SEXP _bases_mult_partition(SEXP n, SEXP k) {
@@ -22,7 +15,6 @@ extern "C" SEXP _bases_mult_partition(SEXP n, SEXP k) {
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_bases_forest_mat",     (DL_FUNC) &_bases_forest_mat,     4},
     {"_bases_mult_partition", (DL_FUNC) &_bases_mult_partition, 2},
     {NULL, NULL, 0}
 };

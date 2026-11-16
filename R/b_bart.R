@@ -92,7 +92,7 @@ b_bart <- function(
         abort("`thresh` and `vars` must have the same length")
     }
 
-    m = forest_mat(x, as.integer(depths), vars, thresh)
+    m = forest_mat(x, as.integer(depths), vars, thresh, sum(bitwShiftL(1L, depths)))
     if (is.null(drop)) {
         if (!is.numeric(min_drop) || length(min_drop) != 1 || min_drop < 0) {
             abort("`min_drop` must be a single non-negative integer")
@@ -149,6 +149,60 @@ makepredictcall.b_bart <- function(var, call) {
     }
     call
 }
+
+# Indicator matrix for symmetric trees; p is the total number of leaves.
+forest_mat <- quick(
+    function(x, depths, vars, thresh, p) {
+        declare(
+            type(x = double(NA, NA)),
+            type(depths = integer(NA)),
+            type(vars = integer(NA)),
+            type(thresh = double(NA)),
+            type(p = integer(1))
+        )
+
+        out = matrix(0L, nrow(x), p)
+        idx = integer(nrow(x))
+        vt_off = 0L
+        out_off = 0L
+
+        # Process each tree
+        for (t in seq_along(depths)) {
+            # Reset row-wise leaf indices
+            for (i in seq_len(nrow(x))) {
+                idx[i] = 0L
+            }
+
+            # Process each split
+            for (k in seq_len(depths[t])) {
+                j = vars[vt_off + k]
+                bit = as.integer(2L^(k - 1L))
+
+                # Add the split outcome to each leaf index
+                for (i in seq_len(nrow(x))) {
+                    idx[i] = idx[i] +
+                        as.integer(x[i, j] <= thresh[vt_off + k]) * bit
+                }
+            }
+
+            nc = as.integer(2L^depths[t])
+
+            # Fill one indicator column per leaf
+            for (j in seq_len(nc)) {
+                # Mark rows belonging to this leaf
+                for (i in seq_len(nrow(x))) {
+                    out[i, out_off + j] = as.integer(idx[i] == j - 1L)
+                }
+            }
+
+            vt_off = vt_off + depths[t]
+            out_off = out_off + nc
+        }
+
+        out
+    },
+    "forest_mat"
+)
 
 # # matching the prior to the default BART prior
 # function() {

@@ -1,3 +1,64 @@
+subroutine forest_mat(x, depths, vars, thresh, p, out, depths__len_, thresh__len_, vars__len_, x__dim_1_, x__dim_2_) bind(c)
+  use iso_c_binding, only: c_double, c_int, c_ptrdiff_t
+  implicit none
+
+  ! manifest start
+  ! sizes
+  integer(c_int), intent(in), value :: x__dim_1_
+  integer(c_int), intent(in), value :: x__dim_2_
+  integer(c_ptrdiff_t), intent(in), value :: depths__len_
+  integer(c_ptrdiff_t), intent(in), value :: vars__len_
+  integer(c_ptrdiff_t), intent(in), value :: thresh__len_
+
+  ! args
+  real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
+  integer(c_int), intent(in) :: depths(depths__len_)
+  integer(c_int), intent(in) :: vars(vars__len_)
+  real(c_double), intent(in) :: thresh(thresh__len_)
+  integer(c_int), intent(in) :: p
+  integer(c_int), intent(out) :: out(x__dim_1_, p)
+
+  ! locals
+  integer(c_int), allocatable :: idx(:)
+  integer(c_int) :: vt_off
+  integer(c_int) :: out_off
+  integer(c_int) :: t
+  integer(c_int) :: i
+  integer(c_int) :: k
+  integer(c_int) :: j
+  integer(c_int) :: bit
+  integer(c_int) :: nc
+  ! manifest end
+
+  allocate(idx(x__dim_1_))
+
+
+  out = 0_c_int
+  idx = 0
+  vt_off = 0_c_int
+  out_off = 0_c_int
+  do t = 1, size(depths)
+    do i = 1, size(x, 1)
+      idx(i) = 0_c_int
+    end do
+    do k = 1, depths(t)
+      j = vars((vt_off + k))
+      bit = (2_c_int ** ((k - 1_c_int)))
+      do i = 1, size(x, 1)
+        idx(i) = (idx(i) + (merge(1_c_int, 0_c_int, (x(i, j) <= thresh((vt_off + k)))) * bit))
+      end do
+    end do
+    nc = (2_c_int ** depths(t))
+    do j = 1, nc
+      do i = 1, size(x, 1)
+        out(i, (out_off + j)) = merge(1_c_int, 0_c_int, (idx(i) == (j - 1_c_int)))
+      end do
+    end do
+    vt_off = (vt_off + depths(t))
+    out_off = (out_off + nc)
+  end do
+end subroutine
+
 subroutine im2col(x, h, w, channels, size, stride, out, x__len_) bind(c)
   use iso_c_binding, only: c_double, c_int, c_ptrdiff_t
   implicit none

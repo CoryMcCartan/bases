@@ -5,6 +5,104 @@
 #include <R_ext/Random.h>
 
 
+extern void forest_mat(
+  const double* const x__,
+  const int* const depths__,
+  const int* const vars__,
+  const double* const thresh__,
+  const int* const p__,
+  int* const out__,
+  const R_xlen_t depths__len_,
+  const R_xlen_t thresh__len_,
+  const R_xlen_t vars__len_,
+  const R_len_t x__dim_1_,
+  const R_len_t x__dim_2_);
+
+SEXP forest_mat_(SEXP _args) {
+  // x
+  _args = CDR(_args);
+  SEXP x = CAR(_args);
+  if (TYPEOF(x) != REALSXP) {
+    Rf_error("typeof(x) must be 'double', not '%s'", Rf_type2char(TYPEOF(x)));
+  }
+  const double* const x__ = REAL(x);
+  const int* const x__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(x, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "x must be a 2D-array, but length(dim(x)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int x__dim_1_ = x__dim_[0];
+  const int x__dim_2_ = x__dim_[1];
+
+  // depths
+  _args = CDR(_args);
+  SEXP depths = CAR(_args);
+  if (TYPEOF(depths) != INTSXP) {
+    Rf_error("typeof(depths) must be 'integer', not '%s'", Rf_type2char(TYPEOF(depths)));
+  }
+  const int* const depths__ = INTEGER(depths);
+  const R_xlen_t depths__len_ = Rf_xlength(depths);
+
+  // vars
+  _args = CDR(_args);
+  SEXP vars = CAR(_args);
+  if (TYPEOF(vars) != INTSXP) {
+    Rf_error("typeof(vars) must be 'integer', not '%s'", Rf_type2char(TYPEOF(vars)));
+  }
+  const int* const vars__ = INTEGER(vars);
+  const R_xlen_t vars__len_ = Rf_xlength(vars);
+
+  // thresh
+  _args = CDR(_args);
+  SEXP thresh = CAR(_args);
+  if (TYPEOF(thresh) != REALSXP) {
+    Rf_error("typeof(thresh) must be 'double', not '%s'", Rf_type2char(TYPEOF(thresh)));
+  }
+  const double* const thresh__ = REAL(thresh);
+  const R_xlen_t thresh__len_ = Rf_xlength(thresh);
+
+  // p
+  _args = CDR(_args);
+  SEXP p = CAR(_args);
+  if (TYPEOF(p) != INTSXP) {
+    Rf_error("typeof(p) must be 'integer', not '%s'", Rf_type2char(TYPEOF(p)));
+  }
+  const int* const p__ = INTEGER(p);
+  const R_xlen_t p__len_ = Rf_xlength(p);
+
+  if (p__len_ != 1)
+    Rf_error("length(p) must be 1, not %0.f",
+              (double)p__len_);
+  const int _as_int_p = Rf_asInteger(p);
+  const R_xlen_t out__len_ = (x__dim_1_) * (_as_int_p);
+  SEXP out = PROTECT(Rf_allocVector(INTSXP, out__len_));
+  int* out__ = INTEGER(out);
+  {
+    const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
+    int* const _dim = INTEGER(_dim_sexp);
+    _dim[0] = x__dim_1_;
+    _dim[1] = _as_int_p;
+    Rf_dimgets(out, _dim_sexp);
+  }
+
+  forest_mat(
+    x__,
+    depths__,
+    vars__,
+    thresh__,
+    p__,
+    out__,
+    depths__len_,
+    thresh__len_,
+    vars__len_,
+    x__dim_1_,
+    x__dim_2_);
+
+  UNPROTECT(2);
+  return out;
+}
+
 extern void im2col(
   const double* const x__,
   const int* const h__,
@@ -326,6 +424,7 @@ SEXP dist_l1_mat_(SEXP _args) {
 }
 
 static const R_ExternalMethodDef QuickrEntries[] = {
+  {"forest_mat_", (DL_FUNC) &forest_mat_, -1},
   {"im2col_", (DL_FUNC) &im2col_, -1},
   {"pool_max_", (DL_FUNC) &pool_max_, -1},
   {"row_prod_", (DL_FUNC) &row_prod_, -1},
