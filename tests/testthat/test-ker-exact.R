@@ -18,7 +18,7 @@ test_that("predict() method works correctly", {
     x = seq_along(y)
     xn = c(0:20, 150:200)
 
-    m = lm(y ~ b_ker(x))
+    m = ridge(y ~ b_ker(x))
 
     expect_equal(predict(m), fitted(m), tolerance = 1e-4)
     expect_equal(predict(m), predict(m, list(x = x)))
