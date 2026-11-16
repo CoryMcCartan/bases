@@ -80,3 +80,105 @@ subroutine pool_max(x, out, x__dim_1_, x__dim_2_) bind(c)
     out(j) = best
   end do
 end subroutine
+
+subroutine row_prod(x, out, x__dim_1_, x__dim_2_) bind(c)
+  use iso_c_binding, only: c_double, c_int
+  implicit none
+
+  ! manifest start
+  ! sizes
+  integer(c_int), intent(in), value :: x__dim_1_
+  integer(c_int), intent(in), value :: x__dim_2_
+
+  ! args
+  real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
+  real(c_double), intent(out) :: out(x__dim_1_)
+
+  ! locals
+  integer(c_int) :: i
+  integer(c_int) :: j
+  ! manifest end
+
+
+  out = 0
+  do i = 1, size(x, 1)
+    out(i) = x(i, 1_c_int)
+  end do
+  do j = 1, (size(x, 2) - 1_c_int)
+    do i = 1, size(x, 1)
+      out(i) = (out(i) * x(i, (j + 1_c_int)))
+    end do
+  end do
+end subroutine
+
+subroutine dist_l2_mat(x, y, out, x__dim_1_, x__dim_2_, y__dim_1_) bind(c)
+  use iso_c_binding, only: c_double, c_int
+  implicit none
+
+  ! manifest start
+  ! sizes
+  integer(c_int), intent(in), value :: x__dim_1_
+  integer(c_int), intent(in), value :: x__dim_2_
+  integer(c_int), intent(in), value :: y__dim_1_
+
+  ! args
+  real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
+  real(c_double), intent(in) :: y(y__dim_1_, x__dim_2_)
+  real(c_double), intent(out) :: out(x__dim_1_, y__dim_1_)
+
+  ! locals
+  integer(c_int) :: j
+  integer(c_int) :: i
+  real(c_double) :: acc
+  integer(c_int) :: k
+  real(c_double) :: diff
+  ! manifest end
+
+
+  out = 0.0_c_double
+  do j = 1, size(y, 1)
+    do i = 1, size(x, 1)
+      acc = 0.0_c_double
+      do k = 1, size(x, 2)
+        diff = (x(i, k) - y(j, k))
+        acc = (acc + (diff * diff))
+      end do
+      out(i, j) = acc
+    end do
+  end do
+end subroutine
+
+subroutine dist_l1_mat(x, y, out, x__dim_1_, x__dim_2_, y__dim_1_) bind(c)
+  use iso_c_binding, only: c_double, c_int
+  implicit none
+
+  ! manifest start
+  ! sizes
+  integer(c_int), intent(in), value :: x__dim_1_
+  integer(c_int), intent(in), value :: x__dim_2_
+  integer(c_int), intent(in), value :: y__dim_1_
+
+  ! args
+  real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
+  real(c_double), intent(in) :: y(y__dim_1_, x__dim_2_)
+  real(c_double), intent(out) :: out(x__dim_1_, y__dim_1_)
+
+  ! locals
+  integer(c_int) :: j
+  integer(c_int) :: i
+  real(c_double) :: acc
+  integer(c_int) :: k
+  ! manifest end
+
+
+  out = 0.0_c_double
+  do j = 1, size(y, 1)
+    do i = 1, size(x, 1)
+      acc = 0.0_c_double
+      do k = 1, size(x, 2)
+        acc = (acc + abs((x(i, k) - y(j, k))))
+      end do
+      out(i, j) = acc
+    end do
+  end do
+end subroutine

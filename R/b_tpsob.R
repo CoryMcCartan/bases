@@ -82,6 +82,24 @@ makepredictcall.b_tpsob <- function(var, call) {
     call
 }
 
+# Row products; x must have at least one column.
+row_prod <- quick(
+    function(x) {
+        declare(type(x = double(NA, NA)))
+        out = numeric(nrow(x))
+        for (i in seq_len(nrow(x))) {
+            out[i] = x[i, 1L]
+        }
+        for (j in seq_len(ncol(x) - 1L)) {
+            for (i in seq_len(nrow(x))) {
+                out[i] = out[i] * x[i, j + 1L]
+            }
+        }
+        out
+    },
+    "row_prod"
+)
+
 make_index_mat <- function(d, p) {
     out = matrix(nrow = p, ncol = d)
     prod = 2L

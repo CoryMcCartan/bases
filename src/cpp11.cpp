@@ -12,20 +12,6 @@ extern "C" SEXP _bases_forest_mat(SEXP x, SEXP depths, SEXP vars, SEXP thresh) {
     return cpp11::as_sexp(forest_mat(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x), cpp11::as_cpp<cpp11::decay_t<const integers>>(depths), cpp11::as_cpp<cpp11::decay_t<const integers>>(vars), cpp11::as_cpp<cpp11::decay_t<const doubles>>(thresh)));
   END_CPP11
 }
-// dist.cpp
-doubles_matrix<> dist_l2(const doubles_matrix<> x, const doubles_matrix<> y);
-extern "C" SEXP _bases_dist_l2(SEXP x, SEXP y) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(dist_l2(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x), cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(y)));
-  END_CPP11
-}
-// dist.cpp
-doubles_matrix<> dist_l1(const doubles_matrix<> x, const doubles_matrix<> y);
-extern "C" SEXP _bases_dist_l1(SEXP x, SEXP y) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(dist_l1(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x), cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(y)));
-  END_CPP11
-}
 // tpsob.cpp
 integers_matrix<> mult_partition(int n, int k);
 extern "C" SEXP _bases_mult_partition(SEXP n, SEXP k) {
@@ -33,21 +19,11 @@ extern "C" SEXP _bases_mult_partition(SEXP n, SEXP k) {
     return cpp11::as_sexp(mult_partition(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<int>>(k)));
   END_CPP11
 }
-// tpsob.cpp
-doubles row_prod(const doubles_matrix<> x);
-extern "C" SEXP _bases_row_prod(SEXP x) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(row_prod(cpp11::as_cpp<cpp11::decay_t<const doubles_matrix<>>>(x)));
-  END_CPP11
-}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_bases_dist_l1",        (DL_FUNC) &_bases_dist_l1,        2},
-    {"_bases_dist_l2",        (DL_FUNC) &_bases_dist_l2,        2},
     {"_bases_forest_mat",     (DL_FUNC) &_bases_forest_mat,     4},
     {"_bases_mult_partition", (DL_FUNC) &_bases_mult_partition, 2},
-    {"_bases_row_prod",       (DL_FUNC) &_bases_row_prod,       1},
     {NULL, NULL, 0}
 };
 }

@@ -4,7 +4,8 @@ test_that("Tensor product indices are generated correctly", {
     # code to recreate:
     # i0 = Sieve::create_index_matrix(d, p + 1L, interaction_order = p)
     # i0 = i0[1L + seq_len(p), -1, drop = FALSE]
-    i0 = structure(c(2, 1, 1, 3, 1, 1, 2, 2, 1, 4, 1, 1, 5, 1, 1, 2, 2,
+    i0 = structure(
+        c(2, 1, 1, 3, 1, 1, 2, 2, 1, 4, 1, 1, 5, 1, 1, 2, 2,
         1, 3, 3, 1, 6, 1, 1, 7, 1, 1, 2, 2, 2, 1, 4, 4, 1, 8, 1, 1, 3,
         3, 1, 9, 1, 1, 2, 2, 1, 5, 5, 1, 10, 1, 1, 11, 1, 1, 2, 2, 3,
         2, 2, 1, 6, 6, 1, 3, 3, 1, 4, 4, 1, 12, 1, 1, 1, 2, 1, 1, 3,
@@ -15,7 +16,8 @@ test_that("Tensor product indices are generated correctly", {
         5, 1, 3, 3, 1, 2, 2, 1, 1, 6, 1, 1, 7, 2, 1, 4, 4, 1, 2, 2, 1,
         1, 8, 1, 3, 3, 1, 1, 9, 1, 5, 5, 1, 2, 2, 1, 1, 10, 1, 1, 11,
         3, 2, 2, 1, 6, 6, 1, 2, 2, 1, 4, 4, 1, 3, 3, 1, 1, 12),
-        dim = c(73L, 3L))
+        dim = c(73L, 3L)
+    )
 
     i1 = make_index_mat(d, p)
     storage.mode(i1) = "double"

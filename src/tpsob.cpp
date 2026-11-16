@@ -41,24 +41,3 @@ integers_matrix<> mult_partition(int n, int k) {
     }
     return out;
 }
-
-/*
- * Row products
- */
-[[cpp11::register]]
-doubles row_prod(const doubles_matrix<> x) {
-    int n = x.nrow();
-    int p = x.ncol();
-    writable::doubles out(n);
-
-    for (int i = 0; i < n; i++) {
-        out[i] = x(i, 0);
-    }
-    for (int j = 1; j < p; j++) {
-        for (int i = 0; i < n; i++) {
-            out[i] *= x(i, j);
-        }
-    }
-
-    return out;
-}

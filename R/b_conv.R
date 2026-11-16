@@ -145,8 +145,12 @@ b_conv <- function(
 
         # Convolve: multiply im2col() by kernels
         im_mat = im2col(
-            as.double(img), info$h, info$w, info$c,
-            as.integer(size), as.integer(stride)
+            as.double(img),
+            info$h,
+            info$w,
+            info$c,
+            as.integer(size),
+            as.integer(stride)
         )
         conv_output = im_mat %*% kernels
 
@@ -154,8 +158,10 @@ b_conv <- function(
         if (identical(activation, mean)) {
             colMeans(conv_output)
         } else if (
-            identical(activation, max) && !is.complex(conv_output) &&
-                nrow(conv_output) > 0 && !anyNA(conv_output)
+            identical(activation, max) &&
+                !is.complex(conv_output) &&
+                nrow(conv_output) > 0 &&
+                !anyNA(conv_output)
         ) {
             pool_max(conv_output)
         } else {
@@ -222,54 +228,60 @@ makepredictcall.b_conv <- function(var, call) {
 # Convert an image to patches; dimensions and stride must already be validated.
 # Takes a double pixel vector and integer dimensions, kernel size, and stride.
 # Rows index valid positions within each channel; columns index kernel pixels.
-im2col <- quick(function(x, h, w, channels, size, stride) {
-    declare(
-        type(x = double(NA)),
-        type(h = integer(1)),
-        type(w = integer(1)),
-        type(channels = integer(1)),
-        type(size = integer(1)),
-        type(stride = integer(1)),
-        type(out = double(
-            ((h - size) %/% stride + 1L) * ((w - size) %/% stride + 1L) * channels,
-            size * size
-        ))
-    )
-    h_out = (h - size) %/% stride + 1L
-    w_out = (w - size) %/% stride + 1L
-    out = matrix(0, h_out * w_out * channels, size * size)
+im2col <- quick(
+    function(x, h, w, channels, size, stride) {
+        declare(
+            type(x = double(NA)),
+            type(h = integer(1)),
+            type(w = integer(1)),
+            type(channels = integer(1)),
+            type(size = integer(1)),
+            type(stride = integer(1)),
+            type(
+                out = double(
+                    ((h - size) %/% stride + 1L) * ((w - size) %/% stride + 1L) * channels,
+                    size * size
+                )
+            )
+        )
+        h_out = (h - size) %/% stride + 1L
+        w_out = (w - size) %/% stride + 1L
+        out = matrix(0, h_out * w_out * channels, size * size)
 
-    # Write contiguous columns of the patch matrix.
-    for (k_j in seq_len(size)) {
-        for (k_i in seq_len(size)) {
-            out_col = k_i + size * (k_j - 1L)
-            for (ch in seq_len(channels)) {
-                for (j in seq_len(w_out)) {
-                    for (i in seq_len(h_out)) {
-                        out_row = i + h_out * ((j - 1L) + w_out * (ch - 1L))
-                        idx_in = (i - 1L) * stride + h * (
-                            (j - 1L) * stride + w * (ch - 1L)
-                        )
-                        out[out_row, out_col] = x[idx_in + k_i + h * (k_j - 1L)]
+        # Write contiguous columns of the patch matrix.
+        for (k_j in seq_len(size)) {
+            for (k_i in seq_len(size)) {
+                out_col = k_i + size * (k_j - 1L)
+                for (ch in seq_len(channels)) {
+                    for (j in seq_len(w_out)) {
+                        for (i in seq_len(h_out)) {
+                            out_row = i + h_out * ((j - 1L) + w_out * (ch - 1L))
+                            idx_in = (i - 1L) * stride + h * ((j - 1L) * stride + w * (ch - 1L))
+                            out[out_row, out_col] = x[idx_in + k_i + h * (k_j - 1L)]
+                        }
                     }
                 }
             }
         }
-    }
-    out
-}, "im2col")
+        out
+    },
+    "im2col"
+)
 
 # Column maxima without copying the response matrix or extracting columns.
 # Input must be a real matrix with at least one row and no missing values.
-pool_max <- quick(function(x) {
-    declare(type(x = double(NA, NA)))
-    out = numeric(ncol(x))
-    for (j in seq_len(ncol(x))) {
-        best = x[1L, j]
-        for (i in seq_len(nrow(x))) {
-            if (x[i, j] > best) best = x[i, j]
+pool_max <- quick(
+    function(x) {
+        declare(type(x = double(NA, NA)))
+        out = numeric(ncol(x))
+        for (j in seq_len(ncol(x))) {
+            best = x[1L, j]
+            for (i in seq_len(nrow(x))) {
+                if (x[i, j] > best) best = x[i, j]
+            }
+            out[j] = best
         }
-        out[j] = best
-    }
-    out
-}, "pool_max")
+        out
+    },
+    "pool_max"
+)

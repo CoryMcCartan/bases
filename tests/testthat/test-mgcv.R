@@ -122,8 +122,7 @@ test_that("mgcv xt arguments are forwarded", {
     dat$y <- sin(dat$x1 * 2 * pi) + rnorm(n, sd = 0.1)
 
     m <- mgcv::gam(
-        y ~ s(x1, x2, bs = "b_rff", k = 50,
-              xt = list(kernel = k_rbf(0.5))),
+        y ~ s(x1, x2, bs = "b_rff", k = 50, xt = list(kernel = k_rbf(0.5))),
         data = dat
     )
     expect_s3_class(m, "gam")

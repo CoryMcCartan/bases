@@ -152,9 +152,185 @@ SEXP pool_max_(SEXP _args) {
   return out;
 }
 
+extern void row_prod(
+  const double* const x__,
+  double* const out__,
+  const R_len_t x__dim_1_,
+  const R_len_t x__dim_2_);
+
+SEXP row_prod_(SEXP _args) {
+  // x
+  _args = CDR(_args);
+  SEXP x = CAR(_args);
+  if (TYPEOF(x) != REALSXP) {
+    Rf_error("typeof(x) must be 'double', not '%s'", Rf_type2char(TYPEOF(x)));
+  }
+  const double* const x__ = REAL(x);
+  const int* const x__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(x, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "x must be a 2D-array, but length(dim(x)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int x__dim_1_ = x__dim_[0];
+  const int x__dim_2_ = x__dim_[1];
+
+  const R_xlen_t out__len_ = x__dim_1_;
+  SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
+  double* out__ = REAL(out);
+
+  row_prod(
+    x__,
+    out__,
+    x__dim_1_,
+    x__dim_2_);
+
+  UNPROTECT(1);
+  return out;
+}
+
+extern void dist_l2_mat(
+  const double* const x__,
+  const double* const y__,
+  double* const out__,
+  const R_len_t x__dim_1_,
+  const R_len_t x__dim_2_,
+  const R_len_t y__dim_1_);
+
+SEXP dist_l2_mat_(SEXP _args) {
+  // x
+  _args = CDR(_args);
+  SEXP x = CAR(_args);
+  if (TYPEOF(x) != REALSXP) {
+    Rf_error("typeof(x) must be 'double', not '%s'", Rf_type2char(TYPEOF(x)));
+  }
+  const double* const x__ = REAL(x);
+  const int* const x__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(x, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "x must be a 2D-array, but length(dim(x)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int x__dim_1_ = x__dim_[0];
+  const int x__dim_2_ = x__dim_[1];
+
+  // y
+  _args = CDR(_args);
+  SEXP y = CAR(_args);
+  if (TYPEOF(y) != REALSXP) {
+    Rf_error("typeof(y) must be 'double', not '%s'", Rf_type2char(TYPEOF(y)));
+  }
+  const double* const y__ = REAL(y);
+  const int* const y__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(y, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "y must be a 2D-array, but length(dim(y)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int y__dim_1_ = y__dim_[0];
+  const int y__dim_2_ = y__dim_[1];
+
+  if (x__dim_2_ != y__dim_2_)
+    Rf_error("dim(y)[2] must equal dim(x)[2],"
+             " but are %0.f and %0.f",
+              (double)y__dim_2_, (double)x__dim_2_);
+  const R_xlen_t out__len_ = (x__dim_1_) * (y__dim_1_);
+  SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
+  double* out__ = REAL(out);
+  {
+    const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
+    int* const _dim = INTEGER(_dim_sexp);
+    _dim[0] = x__dim_1_;
+    _dim[1] = y__dim_1_;
+    Rf_dimgets(out, _dim_sexp);
+  }
+
+  dist_l2_mat(
+    x__,
+    y__,
+    out__,
+    x__dim_1_,
+    x__dim_2_,
+    y__dim_1_);
+
+  UNPROTECT(2);
+  return out;
+}
+
+extern void dist_l1_mat(
+  const double* const x__,
+  const double* const y__,
+  double* const out__,
+  const R_len_t x__dim_1_,
+  const R_len_t x__dim_2_,
+  const R_len_t y__dim_1_);
+
+SEXP dist_l1_mat_(SEXP _args) {
+  // x
+  _args = CDR(_args);
+  SEXP x = CAR(_args);
+  if (TYPEOF(x) != REALSXP) {
+    Rf_error("typeof(x) must be 'double', not '%s'", Rf_type2char(TYPEOF(x)));
+  }
+  const double* const x__ = REAL(x);
+  const int* const x__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(x, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "x must be a 2D-array, but length(dim(x)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int x__dim_1_ = x__dim_[0];
+  const int x__dim_2_ = x__dim_[1];
+
+  // y
+  _args = CDR(_args);
+  SEXP y = CAR(_args);
+  if (TYPEOF(y) != REALSXP) {
+    Rf_error("typeof(y) must be 'double', not '%s'", Rf_type2char(TYPEOF(y)));
+  }
+  const double* const y__ = REAL(y);
+  const int* const y__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(y, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "y must be a 2D-array, but length(dim(y)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int y__dim_1_ = y__dim_[0];
+  const int y__dim_2_ = y__dim_[1];
+
+  if (x__dim_2_ != y__dim_2_)
+    Rf_error("dim(y)[2] must equal dim(x)[2],"
+             " but are %0.f and %0.f",
+              (double)y__dim_2_, (double)x__dim_2_);
+  const R_xlen_t out__len_ = (x__dim_1_) * (y__dim_1_);
+  SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
+  double* out__ = REAL(out);
+  {
+    const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
+    int* const _dim = INTEGER(_dim_sexp);
+    _dim[0] = x__dim_1_;
+    _dim[1] = y__dim_1_;
+    Rf_dimgets(out, _dim_sexp);
+  }
+
+  dist_l1_mat(
+    x__,
+    y__,
+    out__,
+    x__dim_1_,
+    x__dim_2_,
+    y__dim_1_);
+
+  UNPROTECT(2);
+  return out;
+}
+
 static const R_ExternalMethodDef QuickrEntries[] = {
   {"im2col_", (DL_FUNC) &im2col_, -1},
   {"pool_max_", (DL_FUNC) &pool_max_, -1},
+  {"row_prod_", (DL_FUNC) &row_prod_, -1},
+  {"dist_l2_mat_", (DL_FUNC) &dist_l2_mat_, -1},
+  {"dist_l1_mat_", (DL_FUNC) &dist_l1_mat_, -1},
   {NULL, NULL, 0}
 };
 

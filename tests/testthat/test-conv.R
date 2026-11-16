@@ -10,7 +10,7 @@ test_that("b_conv() works with grayscale images", {
 })
 
 test_that("b_conv() works with 3D color images", {
-    images = lapply(1:10, function(i) array(runif(20*20*3), dim = c(20, 20, 3)))
+    images = lapply(1:10, function(i) array(runif(20 * 20 * 3), dim = c(20, 20, 3)))
 
     feats = b_conv(images, p = 5, size = 3)
 
@@ -34,18 +34,18 @@ test_that("b_conv() handles images of different sizes", {
 })
 
 test_that("b_conv() 'rnorm' kernel generation works", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     feats = b_conv(images, p = 10, size = 3, kernel_gen = "rnorm")
 
     expect_equal(ncol(feats), 10)
     kernels = attr(feats, "kernels")
-    expect_equal(nrow(kernels), 9)  # 3x3 kernel for grayscale
+    expect_equal(nrow(kernels), 9) # 3x3 kernel for grayscale
     expect_equal(ncol(kernels), 10)
 })
 
 test_that("b_conv() 'patch' kernel generation works", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     feats = b_conv(images, p = 10, size = 3, kernel_gen = "patch")
 
@@ -61,7 +61,7 @@ test_that("b_conv() 'patch' kernel generation works", {
 })
 
 test_that("b_conv() pooling with different functions works", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     feats_max = b_conv(images, p = 5, size = 3, activation = max)
     feats_mean = b_conv(images, p = 5, size = 3, activation = mean)
@@ -73,7 +73,7 @@ test_that("b_conv() pooling with different functions works", {
 })
 
 test_that("b_conv() multivariate pooling works", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     # Pooling function that returns two values
     multi_pool = function(x) c(max(x), min(x))
@@ -81,11 +81,11 @@ test_that("b_conv() multivariate pooling works", {
     feats = b_conv(images, p = 3, size = 3, activation = multi_pool)
 
     expect_equal(nrow(feats), 5)
-    expect_equal(ncol(feats), 6)  # 3 kernels * 2 values each
+    expect_equal(ncol(feats), 6) # 3 kernels * 2 values each
 })
 
 test_that("b_conv() standardization works correctly", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     feats_scale = b_conv(images, p = 5, size = 3, stdize = "scale")
     feats_none = b_conv(images, p = 5, size = 3, stdize = "none")
@@ -116,7 +116,7 @@ test_that("b_conv() errors on invalid inputs", {
 })
 
 test_that("predict.b_conv() works on training data", {
-    images = lapply(1:10, function(i) matrix(runif(20*20), 20, 20))
+    images = lapply(1:10, function(i) matrix(runif(20 * 20), 20, 20))
 
     B = b_conv(images, p = 5, size = 3)
 
@@ -124,8 +124,8 @@ test_that("predict.b_conv() works on training data", {
 })
 
 test_that("predict.b_conv() works with new data", {
-    images_train = lapply(1:10, function(i) matrix(runif(20*20), 20, 20))
-    images_test = lapply(1:5, function(i) matrix(runif(20*20), 20, 20))
+    images_train = lapply(1:10, function(i) matrix(runif(20 * 20), 20, 20))
+    images_test = lapply(1:5, function(i) matrix(runif(20 * 20), 20, 20))
 
     y = rnorm(10)
     m = lm(y ~ b_conv(images_train, p = 5, size = 3))
@@ -137,8 +137,8 @@ test_that("predict.b_conv() works with new data", {
 })
 
 test_that("predict.b_conv() works with different image sizes", {
-    images_train = lapply(1:10, function(i) matrix(runif(20*20), 20, 20))
-    images_test = lapply(1:5, function(i) matrix(runif(25*25), 25, 25))
+    images_train = lapply(1:10, function(i) matrix(runif(20 * 20), 20, 20))
+    images_test = lapply(1:5, function(i) matrix(runif(25 * 25), 25, 25))
 
     y = rnorm(10)
     m = lm(y ~ b_conv(images_train, p = 5, size = 3))
@@ -150,7 +150,7 @@ test_that("predict.b_conv() works with different image sizes", {
 })
 
 test_that("predict.b_conv() is reproducible with same data", {
-    images = lapply(1:10, function(i) matrix(runif(20*20), 20, 20))
+    images = lapply(1:10, function(i) matrix(runif(20 * 20), 20, 20))
 
     B = b_conv(images, p = 5, size = 3)
 
@@ -161,7 +161,7 @@ test_that("predict.b_conv() is reproducible with same data", {
 })
 
 test_that("b_conv() works with stride parameter", {
-    images = lapply(1:5, function(i) matrix(runif(20*20), 20, 20))
+    images = lapply(1:5, function(i) matrix(runif(20 * 20), 20, 20))
 
     feats_stride1 = b_conv(images, p = 5, size = 3, stride = 1)
     feats_stride2 = b_conv(images, p = 5, size = 3, stride = 2)
@@ -187,8 +187,11 @@ test_that("b_conv() retains all valid strided patches", {
                 }
             }
             feats = b_conv(
-                list(img), kernels = matrix(c(kernel), ncol = 1),
-                size = size, stride = stride, activation = identity,
+                list(img),
+                kernels = matrix(c(kernel), ncol = 1),
+                size = size,
+                stride = stride,
+                activation = identity,
                 stdize = "none"
             )
             expect_equal(as.numeric(feats), expected)
@@ -196,14 +199,17 @@ test_that("b_conv() retains all valid strided patches", {
     }
 
     feats = b_conv(
-        list(matrix(as.double(1:9), 3, 3)), kernels = matrix(1, 9, 1),
-        stride = 4, activation = identity, stdize = "none"
+        list(matrix(as.double(1:9), 3, 3)),
+        kernels = matrix(1, 9, 1),
+        stride = 4,
+        activation = identity,
+        stdize = "none"
     )
     expect_equal(as.numeric(feats), 45)
 })
 
 test_that("b_conv() integrates with ridge()", {
-    images = lapply(1:20, function(i) matrix(runif(15*15), 15, 15))
+    images = lapply(1:20, function(i) matrix(runif(15 * 15), 15, 15))
     y = rnorm(20)
 
     m = ridge(y ~ b_conv(images, p = 10, size = 3))
@@ -213,7 +219,7 @@ test_that("b_conv() integrates with ridge()", {
 })
 
 test_that("b_conv() with custom kernels works", {
-    images = lapply(1:5, function(i) matrix(runif(10*10), 10, 10))
+    images = lapply(1:5, function(i) matrix(runif(10 * 10), 10, 10))
 
     # Provide custom kernels
     custom_kernels = matrix(rnorm(9 * 4), nrow = 9, ncol = 4)
@@ -228,8 +234,13 @@ test_that("b_conv() infers size from custom kernels before checking images", {
     img = matrix(as.double(1:12), 3, 4)
     kernels = matrix(1, 4, 2)
     feats = b_conv(
-        list(img), kernels = kernels, size = 100, p = 99,
-        kernel_gen = "unused", activation = mean, stdize = "none"
+        list(img),
+        kernels = kernels,
+        size = 100,
+        p = 99,
+        kernel_gen = "unused",
+        activation = mean,
+        stdize = "none"
     )
 
     expect_equal(attr(feats, "size"), 2)
@@ -255,7 +266,7 @@ test_that("b_conv() infers size from custom kernels before checking images", {
 })
 
 test_that("b_conv() with 3D images has correct kernel size", {
-    images = lapply(1:5, function(i) array(runif(10*10*3), dim = c(10, 10, 3)))
+    images = lapply(1:5, function(i) array(runif(10 * 10 * 3), dim = c(10, 10, 3)))
 
     feats = b_conv(images, p = 5, size = 3, kernel_gen = "rnorm")
 
@@ -320,21 +331,30 @@ test_that("b_conv() preserves max pooling results", {
     kernels = matrix(c(-1, 2, -3, 4, 2, 3, 4, 5), 4, 2)
     fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
     reference = b_conv(
-        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+        images,
+        kernels = kernels,
+        activation = function(x) max(x),
+        stdize = "none"
     )
     expect_identical(as.numeric(fast), as.numeric(reference))
 
     kernels[1, 1] = NaN
     fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
     reference = b_conv(
-        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+        images,
+        kernels = kernels,
+        activation = function(x) max(x),
+        stdize = "none"
     )
     expect_identical(as.numeric(fast), as.numeric(reference))
 
     kernels[1, 1] = NA_real_
     fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
     reference = b_conv(
-        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+        images,
+        kernels = kernels,
+        activation = function(x) max(x),
+        stdize = "none"
     )
     expect_identical(as.numeric(fast), as.numeric(reference))
 })

@@ -4,18 +4,6 @@ forest_mat <- function(x, depths, vars, thresh) {
   .Call(`_bases_forest_mat`, x, depths, vars, thresh)
 }
 
-dist_l2 <- function(x, y) {
-  .Call(`_bases_dist_l2`, x, y)
-}
-
-dist_l1 <- function(x, y) {
-  .Call(`_bases_dist_l1`, x, y)
-}
-
 mult_partition <- function(n, k) {
   .Call(`_bases_mult_partition`, n, k)
-}
-
-row_prod <- function(x) {
-  .Call(`_bases_row_prod`, x)
 }
