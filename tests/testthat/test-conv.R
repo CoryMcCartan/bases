@@ -289,6 +289,7 @@ test_that("makepredictcall.b_conv() preserves attributes", {
     expect_true(!is.null(new_call$scale))
     expect_true(!is.null(new_call$size))
     expect_true(!is.null(new_call$stride))
+    expect_identical(new_call$pool_grid, c(1L, 1L))
 })
 
 test_that("im2col() matches direct patch extraction", {
@@ -316,14 +317,146 @@ test_that("im2col() matches direct patch extraction", {
 })
 
 test_that("pool_max() matches columnwise max", {
+    global_max = function(x) {
+        c(pool_max(
+        x, as.integer(nrow(x)), 1L, 1L, c(1L, as.integer(nrow(x)) + 1L), 1:2
+    ))
+    }
     for (dims in list(c(7, 4), c(1, 4), c(7, 1))) {
         x = matrix(rnorm(prod(dims)), dims[1], dims[2])
-        expect_identical(pool_max(x), c(apply(x, 2, max)))
+        expect_identical(global_max(x), c(apply(x, 2, max)))
     }
 
     x = matrix(c(-Inf, -Inf, -3, 2, Inf, 1), 2, 3)
-    expect_identical(pool_max(x), c(-Inf, 2, Inf))
-    expect_identical(pool_max(matrix(numeric(), 3, 0)), numeric())
+    expect_identical(global_max(x), c(-Inf, 2, Inf))
+    expect_identical(global_max(matrix(numeric(), 3, 0)), numeric())
+})
+
+test_that("pool_grid pools the correct spatial regions in the documented order", {
+    img = array(as.double(seq_len(9 * 13 * 3)), c(9, 13, 3))
+    kernels = matrix(c(seq_len(9), -seq_len(9)), 9, 2)
+    grid = c(3, 4)
+    starts_h = seq(1, 9 - 3 + 1, by = 2)
+    starts_w = seq(1, 13 - 3 + 1, by = 2)
+    maps = array(0, c(length(starts_h), length(starts_w), 3, 2))
+    for (k in 1:2) {
+        for (ch in 1:3) {
+            for (j in seq_along(starts_w)) {
+                for (i in seq_along(starts_h)) {
+                    patch = img[starts_h[i] + 0:2, starts_w[j] + 0:2, ch]
+                    maps[i, j, ch, k] = sum(c(patch) * kernels[, k])
+                }
+            }
+        }
+    }
+    for (activation in list(max, mean, function(x) c(max(x), min(x)))) {
+        expected = c()
+        for (k in 1:2) {
+            for (j in seq_len(grid[2])) {
+                for (i in seq_len(grid[1])) {
+                    rows = seq(
+                        ceiling((i - 1) * dim(maps)[1] / grid[1]) + 1,
+                        ceiling(i * dim(maps)[1] / grid[1])
+                    )
+                    cols = seq(
+                        ceiling((j - 1) * dim(maps)[2] / grid[2]) + 1,
+                        ceiling(j * dim(maps)[2] / grid[2])
+                    )
+                    expected = c(expected, activation(c(maps[rows, cols, , k])))
+                }
+            }
+        }
+        actual = b_conv(
+            list(img),
+            kernels = kernels,
+            stride = 2,
+            activation = activation,
+            pool_grid = grid,
+            stdize = "none"
+        )
+        expect_equal(as.numeric(actual), expected)
+    }
+})
+
+test_that("pool_grid accepts scalar grids and rejects invalid or empty cells", {
+    images = list(matrix(runif(10 * 12), 10, 12))
+    kernels = matrix(rnorm(9 * 2), 9, 2)
+    scalar = b_conv(images, kernels = kernels, pool_grid = 4)
+    vector = b_conv(images, kernels = kernels, pool_grid = c(4, 4))
+    expect_identical(as.numeric(scalar), as.numeric(vector))
+    expect_equal(dim(scalar), c(1, 32))
+    expect_identical(attr(scalar, "pool_grid"), c(4L, 4L))
+
+    invalid = list(0, -1, 1.5, NA, NaN, Inf, "4", numeric(), 1:3, TRUE, 1+0i, 1e10)
+    for (grid in invalid) {
+        expect_error(b_conv(images, pool_grid = grid), "`pool_grid` must be")
+    }
+    expect_error(b_conv(images, pool_grid = c(9, 2)), "response-map dimensions")
+    expect_error(b_conv(images, stride = 2, pool_grid = 5), "response-map dimensions")
+})
+
+test_that("global grid pooling preserves max, mean, and custom summaries", {
+    images = list(matrix(rnorm(8 * 9), 8, 9), array(rnorm(10 * 11 * 2), c(10, 11, 2)))
+    kernels = matrix(rnorm(4 * 3), 4, 3)
+    for (activation in list(max, mean, function(x) c(mean(x), sd(x)))) {
+        out = b_conv(images, kernels = kernels, activation = activation, stdize = "none")
+        for (i in seq_along(images)) {
+            img = images[[i]]
+            d = dim(img)
+            if (length(d) == 2) {
+                d = c(d, 1L)
+            }
+            responses = im2col(as.double(img), d[1], d[2], d[3], 2L, 1L) %*% kernels
+            expect_equal(as.numeric(out[i, ]), c(apply(responses, 2, activation)))
+        }
+    }
+})
+
+test_that("grid pooling preserves missing and complex response behavior", {
+    images = list(matrix(rnorm(8 * 9), 8, 9))
+    for (value in list(NA_real_, NaN, 1+1i)) {
+        kernels = matrix(c(value, 2, 3, 4), 4, 1)
+        for (activation in if (is.complex(value)) list(mean) else list(max, mean)) {
+            out = b_conv(
+                images,
+                kernels = kernels,
+                activation = activation,
+                pool_grid = c(2, 3),
+                stdize = "none"
+            )
+            ref = b_conv(
+                images,
+                kernels = kernels,
+                activation = function(x) activation(x),
+                pool_grid = c(2, 3),
+                stdize = "none"
+            )
+            expect_identical(as.vector(out), as.vector(ref))
+        }
+    }
+    expect_error(
+        b_conv(images, kernels = matrix(1 + 1i, 4, 1), pool_grid = 2, stdize = "none"),
+        "complex"
+    )
+})
+
+test_that("prediction freezes pool_grid and supports different image sizes", {
+    images = lapply(1:20, function(i) matrix(runif(10 * 12), 10, 12))
+    new_images = lapply(1:5, function(i) matrix(runif(12 * 14), 12, 14))
+    grid = c(2, 3)
+    B = b_conv(images, p = 2, pool_grid = grid)
+    grid = 1
+    pred = predict(B, newdata = list(images = new_images))
+    expect_equal(dim(pred), c(5, 12))
+    expect_identical(attr(pred, "pool_grid"), c(2L, 3L))
+
+    y = rnorm(20)
+    fit = lm(y ~ b_conv(images, p = 2, pool_grid = c(2, 3)))
+    expect_length(predict(fit, newdata = list(images = new_images)), 5)
+
+    old = b_conv(images, p = 2)
+    attr(old, "pool_grid") = NULL
+    expect_equal(ncol(predict(old, newdata = list(images = new_images))), 2)
 })
 
 test_that("b_conv() preserves max pooling results", {

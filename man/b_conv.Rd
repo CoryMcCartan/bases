@@ -14,7 +14,8 @@ b_conv(
   stdize = c("scale", "box", "symbox", "none"),
   kernels = NULL,
   shift = NULL,
-  scale = NULL
+  scale = NULL,
+  pool_grid = 1
 )
 }
 \arguments{
@@ -35,7 +36,8 @@ pixels to skip between kernel applications. Default is 1.}
 to generate kernels with entries drawn i.i.d. from a standard Normal
 distribution, or \code{"patch"} to extract random patches from the input images.}
 
-\item{activation}{A function to pool the convolution outputs for each kernel.
+\item{activation}{A function to pool convolution outputs within each cell of
+\code{pool_grid}, separately for each kernel.
 Defaults to \code{\link[=max]{max()}}. The function should accept a numeric vector and return
 a scalar or vector of pooled values. Common choices include \code{\link[=max]{max()}},
 \code{\link[=mean]{mean()}}, functions like the proportion of positive values (PPV), which
@@ -58,11 +60,17 @@ overrides those calculated according to \code{stdize}.}
 
 \item{scale}{Vector of scales, or single scale value, to use. If provided,
 overrides those calculated according to \code{stdize}.}
+
+\item{pool_grid}{Number of spatial pooling cells. A positive integer specifies
+a square grid; a two-element vector specifies the numbers of cell rows and
+columns. The default, 1, pools globally. Color channels are pooled together
+within each spatial cell.}
 }
 \value{
 A matrix of random convolutional features with one row per image in
-\code{x} and one column per kernel (or more columns if \code{activation} is
-multivariate).
+\code{x}. Columns are ordered by kernel, then pooling cell (in column-major
+order), then component of \code{activation}. With a scalar activation, each
+kernel contributes one column per pooling cell.
 }
 \description{
 Generates random convolutional features from a list of images.
@@ -86,4 +94,8 @@ image(matrix(m, nrow = 26), col = pal)
 # many kernels (realistic use case)
 m = b_conv(list(x), p = 100, size = 3)
 str(m)
+
+# retain coarse spatial location using a 4x4 pooling grid
+m = b_conv(list(x), p = 100, size = 3, pool_grid = 4)
+dim(m)
 }

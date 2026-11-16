@@ -215,7 +215,14 @@ SEXP im2col_(SEXP _args) {
 
 extern void pool_max(
   const double* const x__,
+  const int* const h__,
+  const int* const w__,
+  const int* const channels__,
+  const int* const row_bounds__,
+  const int* const col_bounds__,
   double* const out__,
+  const R_xlen_t col_bounds__len_,
+  const R_xlen_t row_bounds__len_,
   const R_len_t x__dim_1_,
   const R_len_t x__dim_2_);
 
@@ -236,17 +243,197 @@ SEXP pool_max_(SEXP _args) {
   const int x__dim_1_ = x__dim_[0];
   const int x__dim_2_ = x__dim_[1];
 
-  const R_xlen_t out__len_ = x__dim_2_;
+  // h
+  _args = CDR(_args);
+  SEXP h = CAR(_args);
+  if (TYPEOF(h) != INTSXP) {
+    Rf_error("typeof(h) must be 'integer', not '%s'", Rf_type2char(TYPEOF(h)));
+  }
+  const int* const h__ = INTEGER(h);
+  const R_xlen_t h__len_ = Rf_xlength(h);
+
+  // w
+  _args = CDR(_args);
+  SEXP w = CAR(_args);
+  if (TYPEOF(w) != INTSXP) {
+    Rf_error("typeof(w) must be 'integer', not '%s'", Rf_type2char(TYPEOF(w)));
+  }
+  const int* const w__ = INTEGER(w);
+  const R_xlen_t w__len_ = Rf_xlength(w);
+
+  // channels
+  _args = CDR(_args);
+  SEXP channels = CAR(_args);
+  if (TYPEOF(channels) != INTSXP) {
+    Rf_error("typeof(channels) must be 'integer', not '%s'", Rf_type2char(TYPEOF(channels)));
+  }
+  const int* const channels__ = INTEGER(channels);
+  const R_xlen_t channels__len_ = Rf_xlength(channels);
+
+  // row_bounds
+  _args = CDR(_args);
+  SEXP row_bounds = CAR(_args);
+  if (TYPEOF(row_bounds) != INTSXP) {
+    Rf_error("typeof(row_bounds) must be 'integer', not '%s'", Rf_type2char(TYPEOF(row_bounds)));
+  }
+  const int* const row_bounds__ = INTEGER(row_bounds);
+  const R_xlen_t row_bounds__len_ = Rf_xlength(row_bounds);
+
+  // col_bounds
+  _args = CDR(_args);
+  SEXP col_bounds = CAR(_args);
+  if (TYPEOF(col_bounds) != INTSXP) {
+    Rf_error("typeof(col_bounds) must be 'integer', not '%s'", Rf_type2char(TYPEOF(col_bounds)));
+  }
+  const int* const col_bounds__ = INTEGER(col_bounds);
+  const R_xlen_t col_bounds__len_ = Rf_xlength(col_bounds);
+
+  if (h__len_ != 1)
+    Rf_error("length(h) must be 1, not %0.f",
+              (double)h__len_);
+  if (w__len_ != 1)
+    Rf_error("length(w) must be 1, not %0.f",
+              (double)w__len_);
+  if (channels__len_ != 1)
+    Rf_error("length(channels) must be 1, not %0.f",
+              (double)channels__len_);
+  const R_xlen_t out__len_ = (((row_bounds__len_ - 1) * (col_bounds__len_ - 1))) * (x__dim_2_);
   SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
   double* out__ = REAL(out);
+  {
+    const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
+    int* const _dim = INTEGER(_dim_sexp);
+    _dim[0] = ((row_bounds__len_ - 1) * (col_bounds__len_ - 1));
+    _dim[1] = x__dim_2_;
+    Rf_dimgets(out, _dim_sexp);
+  }
 
   pool_max(
     x__,
+    h__,
+    w__,
+    channels__,
+    row_bounds__,
+    col_bounds__,
     out__,
+    col_bounds__len_,
+    row_bounds__len_,
     x__dim_1_,
     x__dim_2_);
 
-  UNPROTECT(1);
+  UNPROTECT(2);
+  return out;
+}
+
+extern void pool_mean(
+  const double* const x__,
+  const int* const h__,
+  const int* const w__,
+  const int* const channels__,
+  const int* const row_bounds__,
+  const int* const col_bounds__,
+  double* const out__,
+  const R_xlen_t col_bounds__len_,
+  const R_xlen_t row_bounds__len_,
+  const R_len_t x__dim_1_,
+  const R_len_t x__dim_2_);
+
+SEXP pool_mean_(SEXP _args) {
+  // x
+  _args = CDR(_args);
+  SEXP x = CAR(_args);
+  if (TYPEOF(x) != REALSXP) {
+    Rf_error("typeof(x) must be 'double', not '%s'", Rf_type2char(TYPEOF(x)));
+  }
+  const double* const x__ = REAL(x);
+  const int* const x__dim_ = ({
+  SEXP dim_ = Rf_getAttrib(x, R_DimSymbol);
+  if (Rf_length(dim_) != 2) Rf_error(
+    "x must be a 2D-array, but length(dim(x)) is %i",
+    (int) Rf_length(dim_));
+  INTEGER(dim_);});
+  const int x__dim_1_ = x__dim_[0];
+  const int x__dim_2_ = x__dim_[1];
+
+  // h
+  _args = CDR(_args);
+  SEXP h = CAR(_args);
+  if (TYPEOF(h) != INTSXP) {
+    Rf_error("typeof(h) must be 'integer', not '%s'", Rf_type2char(TYPEOF(h)));
+  }
+  const int* const h__ = INTEGER(h);
+  const R_xlen_t h__len_ = Rf_xlength(h);
+
+  // w
+  _args = CDR(_args);
+  SEXP w = CAR(_args);
+  if (TYPEOF(w) != INTSXP) {
+    Rf_error("typeof(w) must be 'integer', not '%s'", Rf_type2char(TYPEOF(w)));
+  }
+  const int* const w__ = INTEGER(w);
+  const R_xlen_t w__len_ = Rf_xlength(w);
+
+  // channels
+  _args = CDR(_args);
+  SEXP channels = CAR(_args);
+  if (TYPEOF(channels) != INTSXP) {
+    Rf_error("typeof(channels) must be 'integer', not '%s'", Rf_type2char(TYPEOF(channels)));
+  }
+  const int* const channels__ = INTEGER(channels);
+  const R_xlen_t channels__len_ = Rf_xlength(channels);
+
+  // row_bounds
+  _args = CDR(_args);
+  SEXP row_bounds = CAR(_args);
+  if (TYPEOF(row_bounds) != INTSXP) {
+    Rf_error("typeof(row_bounds) must be 'integer', not '%s'", Rf_type2char(TYPEOF(row_bounds)));
+  }
+  const int* const row_bounds__ = INTEGER(row_bounds);
+  const R_xlen_t row_bounds__len_ = Rf_xlength(row_bounds);
+
+  // col_bounds
+  _args = CDR(_args);
+  SEXP col_bounds = CAR(_args);
+  if (TYPEOF(col_bounds) != INTSXP) {
+    Rf_error("typeof(col_bounds) must be 'integer', not '%s'", Rf_type2char(TYPEOF(col_bounds)));
+  }
+  const int* const col_bounds__ = INTEGER(col_bounds);
+  const R_xlen_t col_bounds__len_ = Rf_xlength(col_bounds);
+
+  if (h__len_ != 1)
+    Rf_error("length(h) must be 1, not %0.f",
+              (double)h__len_);
+  if (w__len_ != 1)
+    Rf_error("length(w) must be 1, not %0.f",
+              (double)w__len_);
+  if (channels__len_ != 1)
+    Rf_error("length(channels) must be 1, not %0.f",
+              (double)channels__len_);
+  const R_xlen_t out__len_ = (((row_bounds__len_ - 1) * (col_bounds__len_ - 1))) * (x__dim_2_);
+  SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
+  double* out__ = REAL(out);
+  {
+    const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
+    int* const _dim = INTEGER(_dim_sexp);
+    _dim[0] = ((row_bounds__len_ - 1) * (col_bounds__len_ - 1));
+    _dim[1] = x__dim_2_;
+    Rf_dimgets(out, _dim_sexp);
+  }
+
+  pool_mean(
+    x__,
+    h__,
+    w__,
+    channels__,
+    row_bounds__,
+    col_bounds__,
+    out__,
+    col_bounds__len_,
+    row_bounds__len_,
+    x__dim_1_,
+    x__dim_2_);
+
+  UNPROTECT(2);
   return out;
 }
 
@@ -427,6 +614,7 @@ static const R_ExternalMethodDef QuickrEntries[] = {
   {"forest_mat_", (DL_FUNC) &forest_mat_, -1},
   {"im2col_", (DL_FUNC) &im2col_, -1},
   {"pool_max_", (DL_FUNC) &pool_max_, -1},
+  {"pool_mean_", (DL_FUNC) &pool_mean_, -1},
   {"row_prod_", (DL_FUNC) &row_prod_, -1},
   {"dist_l2_mat_", (DL_FUNC) &dist_l2_mat_, -1},
   {"dist_l1_mat_", (DL_FUNC) &dist_l1_mat_, -1},

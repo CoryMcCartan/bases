@@ -19,7 +19,8 @@
 #' @param kernel_gen Method for generating convolutional kernels. Either `"rnorm"`
 #'   to generate kernels with entries drawn i.i.d. from a standard Normal
 #'   distribution, or `"patch"` to extract random patches from the input images.
-#' @param activation A function to pool the convolution outputs for each kernel.
+#' @param activation A function to pool convolution outputs within each cell of
+#'   `pool_grid`, separately for each kernel.
 #'   Defaults to [max()]. The function should accept a numeric vector and return
 #'   a scalar or vector of pooled values. Common choices include [max()],
 #'   [mean()], functions like the proportion of positive values (PPV), which
@@ -29,10 +30,15 @@
 #'   each column is a kernel in column-major format. The number of rows must be
 #'   a positive perfect square, from which the kernel size is inferred. If
 #'   provided, overrides `p`, `size`, and `kernel_gen`.
+#' @param pool_grid Number of spatial pooling cells. A positive integer specifies
+#'   a square grid; a two-element vector specifies the numbers of cell rows and
+#'   columns. The default, 1, pools globally. Color channels are pooled together
+#'   within each spatial cell.
 #'
 #' @returns A matrix of random convolutional features with one row per image in
-#'   `x` and one column per kernel (or more columns if `activation` is
-#'   multivariate).
+#'   `x`. Columns are ordered by kernel, then pooling cell (in column-major
+#'   order), then component of `activation`. With a scalar activation, each
+#'   kernel contributes one column per pooling cell.
 #'
 #' @examples
 #' x = outer(1:28, 1:28, function(x, y) {
@@ -49,6 +55,10 @@
 #' # many kernels (realistic use case)
 #' m = b_conv(list(x), p = 100, size = 3)
 #' str(m)
+#'
+#' # retain coarse spatial location using a 4x4 pooling grid
+#' m = b_conv(list(x), p = 100, size = 3, pool_grid = 4)
+#' dim(m)
 #' @export
 b_conv <- function(
     x,
@@ -60,9 +70,22 @@ b_conv <- function(
     stdize = c("scale", "box", "symbox", "none"),
     kernels = NULL,
     shift = NULL,
-    scale = NULL
+    scale = NULL,
+    pool_grid = 1
 ) {
     stdize = rlang::arg_match(stdize)
+    if (
+        !is.numeric(pool_grid) ||
+            is.complex(pool_grid) ||
+            !length(pool_grid) %in% c(1L, 2L) ||
+            any(!is.finite(pool_grid)) ||
+            any(pool_grid < 1) ||
+            any(pool_grid != floor(pool_grid)) ||
+            any(pool_grid > .Machine$integer.max)
+    ) {
+        abort("`pool_grid` must be a positive integer or a two-element vector of positive integers")
+    }
+    pool_grid = rep_len(as.integer(pool_grid), 2L)
 
     if (!is.list(x)) {
         abort("`x` must be a list of images (matrices or arrays)")
@@ -139,9 +162,17 @@ b_conv <- function(
         }
     }
 
+    cell_cache = new.env(parent = emptyenv())
     features_l = lapply(seq_along(x_std), function(i) {
         img = x_std[[i]]
         info = img_info[[i]]
+        h_out = (info$h - as.integer(size)) %/% as.integer(stride) + 1L
+        w_out = (info$w - as.integer(size)) %/% as.integer(stride) + 1L
+        key = paste(h_out, w_out, info$c, sep = "_")
+        if (!exists(key, cell_cache, inherits = FALSE)) {
+            cell_cache[[key]] = conv_pool_cells(h_out, w_out, info$c, pool_grid)
+        }
+        cells = cell_cache[[key]]
 
         # Convolve: multiply im2col() by kernels
         im_mat = im2col(
@@ -155,17 +186,31 @@ b_conv <- function(
         conv_output = im_mat %*% kernels
 
         # Pool
-        if (identical(activation, mean)) {
-            colMeans(conv_output)
-        } else if (
-            identical(activation, max) &&
+        if (
+            (identical(activation, max) || identical(activation, mean)) &&
                 !is.complex(conv_output) &&
                 nrow(conv_output) > 0 &&
                 !anyNA(conv_output)
         ) {
-            pool_max(conv_output)
+            pool = if (identical(activation, max)) pool_max else pool_mean
+            c(pool(conv_output, cells$h, cells$w, cells$channels,
+                   cells$row_bounds, cells$col_bounds))
         } else {
-            c(apply(conv_output, 2, activation))
+            if (is.null(cells$rows)) {
+                positions = array(seq_len(h_out * w_out * info$c), c(h_out, w_out, info$c))
+                cells$rows = list()
+                for (col in seq_len(pool_grid[2])) {
+                    for (row in seq_len(pool_grid[1])) {
+                        rows = seq.int(cells$row_bounds[row], cells$row_bounds[row + 1L] - 1L)
+                        cols = seq.int(cells$col_bounds[col], cells$col_bounds[col + 1L] - 1L)
+                        cells$rows[[
+                            length(cells$rows) + 1L
+                        ]] = c(positions[rows, cols, , drop = FALSE])
+                    }
+                }
+                cell_cache[[key]] = cells
+            }
+            conv_pool_apply(conv_output, activation, cells$rows)
         }
     })
 
@@ -178,6 +223,7 @@ b_conv <- function(
     attr(m, "scale") = std$scale
     attr(m, "size") = size
     attr(m, "stride") = stride
+    attr(m, "pool_grid") = pool_grid
     attr(m, "call") = rlang::current_call()
     class(m) = c("b_conv", "matrix", "array")
 
@@ -219,7 +265,8 @@ makepredictcall.b_conv <- function(var, call) {
         as.character(call)[1L] == "b_conv" ||
             (is.call(call) && identical(eval(call[[1L]]), b_conv))
     ) {
-        at = attributes(var)[c("kernels", "shift", "scale", "size", "stride")]
+        at = attributes(var)[c("kernels", "shift", "scale", "size", "stride", "pool_grid")]
+        at = at[!vapply(at, is.null, logical(1))]
         call[names(at)] = at
     }
     call
@@ -244,11 +291,12 @@ im2col <- quick(
                 )
             )
         )
+
         h_out = (h - size) %/% stride + 1L
         w_out = (w - size) %/% stride + 1L
         out = matrix(0, h_out * w_out * channels, size * size)
 
-        # Write contiguous columns of the patch matrix.
+        # Write contiguous columns of the patch matrix
         for (k_j in seq_len(size)) {
             for (k_i in seq_len(size)) {
                 out_col = k_i + size * (k_j - 1L)
@@ -263,25 +311,120 @@ im2col <- quick(
                 }
             }
         }
+
         out
     },
     "im2col"
 )
 
-# Column maxima without copying the response matrix or extracting columns.
+# Partition the response map once; reuse these bounds across kernels and images.
+conv_pool_cells <- function(h, w, channels, grid) {
+    if (any(!is.finite(c(h, w))) || any(c(h, w) < 1L)) {
+        abort("`size` and `stride` must produce a nonempty convolution response map")
+    }
+    if (any(grid > c(h, w))) {
+        abort("`pool_grid` cannot exceed the convolution response-map dimensions")
+    }
+    list(
+        h = as.integer(h), w = as.integer(w), channels = as.integer(channels),
+        row_bounds = as.integer(ceiling((0:grid[1]) * h / grid[1]) + 1L),
+        col_bounds = as.integer(ceiling((0:grid[2]) * w / grid[2]) + 1L)
+    )
+}
+
+conv_pool_apply <- function(x, activation, rows) {
+    out = unlist(
+        lapply(seq_len(ncol(x)), function(j) {
+            lapply(rows, function(i) activation(x[i, j]))
+        }),
+        use.names = FALSE
+    )
+    if (is.null(out)) numeric() else out
+}
+
+# Cell maxima without extracting response vectors. A single cell pools globally.
 # Input must be a real matrix with at least one row and no missing values.
 pool_max <- quick(
-    function(x) {
-        declare(type(x = double(NA, NA)))
-        out = numeric(ncol(x))
+    function(x, h, w, channels, row_bounds, col_bounds) {
+        declare(
+            type(x = double(NA, NA)),
+            type(h = integer(1)),
+            type(w = integer(1)),
+            type(channels = integer(1)),
+            type(row_bounds = integer(NA)),
+            type(col_bounds = integer(NA))
+        )
+
+        grid_h = length(row_bounds) - 1L
+        grid_w = length(col_bounds) - 1L
+        out = matrix(0, grid_h * grid_w, ncol(x))
+
+        # Pool each spatial cell for each kernel
         for (j in seq_len(ncol(x))) {
-            best = x[1L, j]
-            for (i in seq_len(nrow(x))) {
-                if (x[i, j] > best) best = x[i, j]
+            for (gc in seq_len(grid_w)) {
+                for (gr in seq_len(grid_h)) {
+                    best = x[row_bounds[gr] + h * (col_bounds[gc] - 1L), j]
+
+                    # Find the maximum across positions and channels
+                    for (ch in seq_len(channels)) {
+                        for (col in col_bounds[gc]:(col_bounds[gc + 1L] - 1L)) {
+                            base = h * (col - 1L + w * (ch - 1L))
+                            for (row in row_bounds[gr]:(row_bounds[gr + 1L] - 1L)) {
+                                if (x[base + row, j] > best) best = x[base + row, j]
+                            }
+                        }
+                    }
+
+                    out[gr + grid_h * (gc - 1L), j] = best
+                }
             }
-            out[j] = best
         }
+
         out
     },
     "pool_max"
+)
+
+pool_mean <- quick(
+    function(x, h, w, channels, row_bounds, col_bounds) {
+        declare(
+            type(x = double(NA, NA)),
+            type(h = integer(1)),
+            type(w = integer(1)),
+            type(channels = integer(1)),
+            type(row_bounds = integer(NA)),
+            type(col_bounds = integer(NA))
+        )
+
+        grid_h = length(row_bounds) - 1L
+        grid_w = length(col_bounds) - 1L
+        out = matrix(0, grid_h * grid_w, ncol(x))
+
+        # Pool each spatial cell for each kernel
+        for (j in seq_len(ncol(x))) {
+            for (gc in seq_len(grid_w)) {
+                for (gr in seq_len(grid_h)) {
+                    total = 0
+                    count = (row_bounds[gr + 1L] - row_bounds[gr]) *
+                        (col_bounds[gc + 1L] - col_bounds[gc]) *
+                        channels
+
+                    # Sum across positions and channels
+                    for (ch in seq_len(channels)) {
+                        for (col in col_bounds[gc]:(col_bounds[gc + 1L] - 1L)) {
+                            base = h * (col - 1L + w * (ch - 1L))
+                            for (row in row_bounds[gr]:(row_bounds[gr + 1L] - 1L)) {
+                                total = total + x[base + row, j]
+                            }
+                        }
+                    }
+
+                    out[gr + grid_h * (gc - 1L), j] = total / count
+                }
+            }
+        }
+
+        out
+    },
+    "pool_mean"
 )

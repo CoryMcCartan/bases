@@ -110,35 +110,119 @@ real(c_double), intent(out) :: out((((int((h - size)) / int(stride) + 1) * (int(
   end do
 end subroutine
 
-subroutine pool_max(x, out, x__dim_1_, x__dim_2_) bind(c)
-  use iso_c_binding, only: c_double, c_int
+subroutine pool_max(x, h, w, channels, row_bounds, col_bounds, out, col_bounds__len_, row_bounds__len_, x__dim_1_, x__dim_2_)&
+& bind(c)
+  use iso_c_binding, only: c_double, c_int, c_ptrdiff_t
   implicit none
 
   ! manifest start
   ! sizes
   integer(c_int), intent(in), value :: x__dim_1_
   integer(c_int), intent(in), value :: x__dim_2_
+  integer(c_ptrdiff_t), intent(in), value :: row_bounds__len_
+  integer(c_ptrdiff_t), intent(in), value :: col_bounds__len_
 
   ! args
   real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
-  real(c_double), intent(out) :: out(x__dim_2_)
+  integer(c_int), intent(in) :: h
+  integer(c_int), intent(in) :: w
+  integer(c_int), intent(in) :: channels
+  integer(c_int), intent(in) :: row_bounds(row_bounds__len_)
+  integer(c_int), intent(in) :: col_bounds(col_bounds__len_)
+  real(c_double), intent(out) :: out(((row_bounds__len_ - 1) * (col_bounds__len_ - 1)), x__dim_2_)
 
   ! locals
+  integer(c_int) :: grid_h
+  integer(c_int) :: grid_w
   integer(c_int) :: j
+  integer(c_int) :: gc
+  integer(c_int) :: gr
   real(c_double) :: best
-  integer(c_int) :: i
+  integer(c_int) :: ch
+  integer(c_int) :: col
+  integer(c_int) :: base
+  integer(c_int) :: row
   ! manifest end
 
 
-  out = 0
+  grid_h = (size(row_bounds) - 1_c_int)
+  grid_w = (size(col_bounds) - 1_c_int)
+  out = 0.0_c_double
   do j = 1, size(x, 2)
-    best = x(1_c_int, j)
-    do i = 1, size(x, 1)
-      if ((x(i, j) > best)) then
-        best = x(i, j)
-      end if
+    do gc = 1, grid_w
+      do gr = 1, grid_h
+        best = x((row_bounds(gr) + (h * ((col_bounds(gc) - 1_c_int)))), j)
+        do ch = 1, channels
+do col = col_bounds(gc), ((col_bounds((gc + 1_c_int)) - 1_c_int)), sign(1, ((col_bounds((gc + 1_c_int)) - 1_c_int))-col_bounds(gc))
+            base = (h * (((col - 1_c_int) + (w * ((ch - 1_c_int))))))
+do row = row_bounds(gr), ((row_bounds((gr + 1_c_int)) - 1_c_int)), sign(1, ((row_bounds((gr + 1_c_int)) - 1_c_int))-row_bounds(gr))
+              if ((x((base + row), j) > best)) then
+                best = x((base + row), j)
+              end if
+            end do
+          end do
+        end do
+        out((gr + (grid_h * ((gc - 1_c_int)))), j) = best
+      end do
     end do
-    out(j) = best
+  end do
+end subroutine
+
+subroutine pool_mean(x, h, w, channels, row_bounds, col_bounds, out, col_bounds__len_, row_bounds__len_, x__dim_1_, x__dim_2_)&
+& bind(c)
+  use iso_c_binding, only: c_double, c_int, c_ptrdiff_t
+  implicit none
+
+  ! manifest start
+  ! sizes
+  integer(c_int), intent(in), value :: x__dim_1_
+  integer(c_int), intent(in), value :: x__dim_2_
+  integer(c_ptrdiff_t), intent(in), value :: row_bounds__len_
+  integer(c_ptrdiff_t), intent(in), value :: col_bounds__len_
+
+  ! args
+  real(c_double), intent(in) :: x(x__dim_1_, x__dim_2_)
+  integer(c_int), intent(in) :: h
+  integer(c_int), intent(in) :: w
+  integer(c_int), intent(in) :: channels
+  integer(c_int), intent(in) :: row_bounds(row_bounds__len_)
+  integer(c_int), intent(in) :: col_bounds(col_bounds__len_)
+  real(c_double), intent(out) :: out(((row_bounds__len_ - 1) * (col_bounds__len_ - 1)), x__dim_2_)
+
+  ! locals
+  integer(c_int) :: grid_h
+  integer(c_int) :: grid_w
+  integer(c_int) :: j
+  integer(c_int) :: gc
+  integer(c_int) :: gr
+  real(c_double) :: total
+  integer(c_int) :: count
+  integer(c_int) :: ch
+  integer(c_int) :: col
+  integer(c_int) :: base
+  integer(c_int) :: row
+  ! manifest end
+
+
+  grid_h = (size(row_bounds) - 1_c_int)
+  grid_w = (size(col_bounds) - 1_c_int)
+  out = 0.0_c_double
+  do j = 1, size(x, 2)
+    do gc = 1, grid_w
+      do gr = 1, grid_h
+        total = 0.0_c_double
+        count = ((((row_bounds((gr + 1_c_int)) - row_bounds(gr))) * ((col_bounds((gc + 1_c_int)) - col_bounds(gc)))) * channels)
+        do ch = 1, channels
+do col = col_bounds(gc), ((col_bounds((gc + 1_c_int)) - 1_c_int)), sign(1, ((col_bounds((gc + 1_c_int)) - 1_c_int))-col_bounds(gc))
+            base = (h * (((col - 1_c_int) + (w * ((ch - 1_c_int))))))
+do row = row_bounds(gr), ((row_bounds((gr + 1_c_int)) - 1_c_int)), sign(1, ((row_bounds((gr + 1_c_int)) - 1_c_int))-row_bounds(gr))
+              total = (total + x((base + row), j))
+            end do
+          end do
+        end do
+        out((gr + (grid_h * ((gc - 1_c_int)))), j) = (total / real(count, kind=c_double))
+      end do
+    end do
   end do
 end subroutine
 
