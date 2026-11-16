@@ -26,8 +26,8 @@ convolution kernel size. Missing values are not allowed.}
 
 \item{p}{The number of random convolutional kernels to generate.}
 
-\item{size}{The size of the square convolutional kernel (e.g., 3 means a
-3x3 kernel).}
+\item{size}{Kernel dimensions. A positive integer specifies a square kernel;
+a two-element vector specifies its height and width.}
 
 \item{stride}{The stride for the convolution operation, i.e., how many
 pixels to skip between kernel applications. Default is 1.}
@@ -52,8 +52,8 @@ dimension to lie in \eqn{[-0.5, 0.5]^d}.}
 
 \item{kernels}{Optional matrix of pre-specified convolutional kernels, where
 each column is a kernel in column-major format. The number of rows must be
-a positive perfect square, from which the kernel size is inferred. If
-provided, overrides \code{p}, \code{size}, and \code{kernel_gen}.}
+the kernel height times its width. If \code{size} is omitted, a square kernel is
+inferred from the number of rows. Overrides \code{p} and \code{kernel_gen}.}
 
 \item{shift}{Vector of shifts, or single shift value, to use. If provided,
 overrides those calculated according to \code{stdize}.}

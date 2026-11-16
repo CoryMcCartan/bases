@@ -476,7 +476,7 @@ scatter_convolve <- function(context, ids, bank, cache, use_fft) {
     start = offset + 1L + factor * first - radius
     x = context$x[seq.int(start[1], h), seq.int(start[2], w), drop = FALSE]
     patches = im2col(as.double(x), as.integer(nrow(x)), as.integer(ncol(x)), 1L,
-                     as.integer(2 * radius + 1L), factor)
+                     as.integer(2 * radius + 1L), as.integer(2 * radius + 1L), factor)
     n = length(ids)
     if (wavelet) {
         z = patches %*% cbind(Re(kernels), Im(kernels))

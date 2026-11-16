@@ -236,19 +236,18 @@ test_that("b_conv() infers size from custom kernels before checking images", {
     feats = b_conv(
         list(img),
         kernels = kernels,
-        size = 100,
         p = 99,
         kernel_gen = "unused",
         activation = mean,
         stdize = "none"
     )
 
-    expect_equal(attr(feats, "size"), 2)
+    expect_equal(attr(feats, "size"), c(2L, 2L))
     expect_equal(dim(feats), c(1, 2))
     expect_equal(as.numeric(feats), c(26, 26))
 
     feats_default = b_conv(list(img), kernels = kernels, stdize = "none")
-    expect_equal(attr(feats_default, "size"), 2)
+    expect_equal(attr(feats_default, "size"), c(2L, 2L))
 
     expect_error(b_conv(list(img), kernels = 1:4), "must be a matrix")
     expect_error(
@@ -290,30 +289,6 @@ test_that("makepredictcall.b_conv() preserves attributes", {
     expect_true(!is.null(new_call$size))
     expect_true(!is.null(new_call$stride))
     expect_identical(new_call$pool_grid, c(1L, 1L))
-})
-
-test_that("im2col() matches direct patch extraction", {
-    for (dims in list(c(8L, 9L, 2L), c(3L, 3L, 1L), c(18L, 23L, 3L))) {
-        x = as.double(seq_len(prod(dims)))
-        img = array(x, dims)
-        for (size in seq_len(min(dims[1:2]))) {
-            for (stride in c(1L, 2L, 4L, 25L)) {
-                patches = list()
-                for (ch in seq_len(dims[3])) {
-                    for (j in seq(1, dims[2] - size + 1, by = stride)) {
-                        for (i in seq(1, dims[1] - size + 1, by = stride)) {
-                            patches[[length(patches) + 1L]] = c(
-                                img[i:(i + size - 1), j:(j + size - 1), ch]
-                            )
-                        }
-                    }
-                }
-                expected = do.call(rbind, patches)
-                actual = im2col(x, dims[1], dims[2], dims[3], size, stride)
-                expect_identical(actual, expected)
-            }
-        }
-    }
 })
 
 test_that("pool_max() matches columnwise max", {
@@ -406,7 +381,7 @@ test_that("global grid pooling preserves max, mean, and custom summaries", {
             if (length(d) == 2) {
                 d = c(d, 1L)
             }
-            responses = im2col(as.double(img), d[1], d[2], d[3], 2L, 1L) %*% kernels
+            responses = im2col(as.double(img), d[1], d[2], d[3], 2L, 2L, 1L) %*% kernels
             expect_equal(as.numeric(out[i, ]), c(apply(responses, 2, activation)))
         }
     }
@@ -490,4 +465,101 @@ test_that("b_conv() preserves max pooling results", {
         stdize = "none"
     )
     expect_identical(as.numeric(fast), as.numeric(reference))
+})
+
+test_that("kernels match direct convolution at image boundaries", {
+    # Image height, width, channels, kernel height, width, and stride
+    cases = rbind(
+        c(1L, 7L, 1L, 1L, 3L, 1L),
+        c(1L, 7L, 1L, 1L, 7L, 3L),
+        c(6L, 1L, 2L, 3L, 1L, 2L),
+        c(4L, 6L, 2L, 4L, 2L, 1L),
+        c(4L, 6L, 2L, 2L, 6L, 3L),
+        c(4L, 6L, 2L, 4L, 6L, 10L),
+        c(4L, 6L, 2L, 2L, 3L, 3L),
+        c(4L, 6L, 2L, 2L, 3L, 10L),
+        c(8L, 9L, 2L, 3L, 3L, 2L),
+        c(3L, 3L, 1L, 1L, 1L, 1L)
+    )
+    for (case in seq_len(nrow(cases))) {
+        dims = cases[case, 1:3]
+        size = cases[case, 4:5]
+        stride = cases[case, 6]
+        img = array(as.double(seq_len(prod(dims))), dims)
+        kernels = cbind(seq_len(prod(size)), -seq_len(prod(size)))
+        patches = list()
+        for (ch in seq_len(dims[3])) {
+            for (j in seq(1L, dims[2] - size[2] + 1L, by = stride)) {
+                for (i in seq(1L, dims[1] - size[1] + 1L, by = stride)) {
+                    patches[[length(patches) + 1L]] = c(img[
+                        i:(i + size[1] - 1L), j:(j + size[2] - 1L), ch
+                    ])
+                }
+            }
+        }
+        expected = do.call(rbind, patches)
+        expect_identical(
+            im2col(c(img), dims[1], dims[2], dims[3], size[1], size[2], stride),
+            expected
+        )
+        feats = b_conv(
+            list(img),
+            kernels = kernels,
+            size = size,
+            stride = stride,
+            activation = identity,
+            stdize = "none"
+        )
+        expect_equal(as.numeric(feats), c(expected %*% kernels))
+    }
+})
+
+test_that("rectangular kernel generation and pooling work on height-one images", {
+    img = matrix(as.double(1:7), 1, 7)
+    for (size in list(c(1L, 3L), c(1L, 7L))) {
+        for (kernel_gen in c("rnorm", "patch")) {
+            feats = b_conv(
+                list(img),
+                p = 4,
+                size = size,
+                kernel_gen = kernel_gen,
+                stdize = "none",
+                pool_grid = c(1, 8 - size[2])
+            )
+            kernels = attr(feats, "kernels")
+            expect_equal(dim(kernels), c(prod(size), 4))
+            if (kernel_gen == "patch") {
+                patches = lapply(seq_len(8 - size[2]), function(j) {
+                    c(img[, j:(j + size[2] - 1L)])
+                })
+                for (j in seq_len(ncol(kernels))) {
+                    expect_true(any(vapply(patches, identical, logical(1), kernels[, j])))
+                }
+            }
+            expected = t(vapply(
+                seq_len(8 - size[2]),
+                function(j) {
+                    c(img[, j:(j + size[2] - 1L)] %*% kernels)
+                },
+                numeric(4)
+            ))
+            expect_equal(as.numeric(feats), c(expected))
+            pred = predict(feats, newdata = list(img = img))
+            expect_equal(as.numeric(pred), as.numeric(feats))
+            expect_identical(attr(pred, "size"), size)
+        }
+    }
+})
+
+test_that("rectangular kernel sizes are validated", {
+    img = matrix(as.double(1:24), 4, 6)
+    for (size in list(numeric(), c(1, 2, 3), 0, -1, 1.5, NA, Inf, "2", 1i)) {
+        expect_error(b_conv(list(img), size = size), "`size` must be")
+    }
+    expect_error(
+        b_conv(list(img), kernels = matrix(1, 6, 2), size = c(2, 2)),
+        "prod\\(size\\)"
+    )
+    expect_error(b_conv(list(img), size = c(5, 1)), "at least as large")
+    expect_error(b_conv(list(img), size = c(1, 7)), "at least as large")
 })

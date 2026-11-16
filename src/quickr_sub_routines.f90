@@ -59,7 +59,7 @@ subroutine forest_mat(x, depths, vars, thresh, p, out, depths__len_, thresh__len
   end do
 end subroutine
 
-subroutine im2col(x, h, w, channels, size, stride, out, x__len_) bind(c)
+subroutine im2col(x, h, w, channels, size_h, size_w, stride, out, x__len_) bind(c)
   use iso_c_binding, only: c_double, c_int, c_ptrdiff_t
   implicit none
 
@@ -72,10 +72,11 @@ subroutine im2col(x, h, w, channels, size, stride, out, x__len_) bind(c)
   integer(c_int), intent(in) :: h
   integer(c_int), intent(in) :: w
   integer(c_int), intent(in) :: channels
-  integer(c_int), intent(in) :: size
+  integer(c_int), intent(in) :: size_h
+  integer(c_int), intent(in) :: size_w
   integer(c_int), intent(in) :: stride
-real(c_double), intent(out) :: out((((int((h - size)) / int(stride) + 1) * (int((w - size)) / int(stride) + 1)) * channels), (size&
-& * size))
+real(c_double), intent(out) :: out((((int((h - size_h)) / int(stride) + 1) * (int((w - size_w)) / int(stride) + 1)) * channels),&
+& (size_h * size_w))
 
   ! locals
   integer(c_int) :: h_out
@@ -91,12 +92,12 @@ real(c_double), intent(out) :: out((((int((h - size)) / int(stride) + 1) * (int(
   ! manifest end
 
 
-  h_out = (int(floor(real(((h - size))) / real(stride))) + 1_c_int)
-  w_out = (int(floor(real(((w - size))) / real(stride))) + 1_c_int)
+  h_out = (int(floor(real(((h - size_h))) / real(stride))) + 1_c_int)
+  w_out = (int(floor(real(((w - size_w))) / real(stride))) + 1_c_int)
   out = 0.0_c_double
-  do k_j = 1, size
-    do k_i = 1, size
-      out_col = (k_i + (size * ((k_j - 1_c_int))))
+  do k_j = 1, size_w
+    do k_i = 1, size_h
+      out_col = (k_i + (size_h * ((k_j - 1_c_int))))
       do ch = 1, channels
         do j = 1, w_out
           do i = 1, h_out

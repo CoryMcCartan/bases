@@ -108,7 +108,8 @@ extern void im2col(
   const int* const h__,
   const int* const w__,
   const int* const channels__,
-  const int* const size__,
+  const int* const size_h__,
+  const int* const size_w__,
   const int* const stride__,
   double* const out__,
   const R_xlen_t x__len_);
@@ -150,14 +151,23 @@ SEXP im2col_(SEXP _args) {
   const int* const channels__ = INTEGER(channels);
   const R_xlen_t channels__len_ = Rf_xlength(channels);
 
-  // size
+  // size_h
   _args = CDR(_args);
-  SEXP size = CAR(_args);
-  if (TYPEOF(size) != INTSXP) {
-    Rf_error("typeof(size) must be 'integer', not '%s'", Rf_type2char(TYPEOF(size)));
+  SEXP size_h = CAR(_args);
+  if (TYPEOF(size_h) != INTSXP) {
+    Rf_error("typeof(size_h) must be 'integer', not '%s'", Rf_type2char(TYPEOF(size_h)));
   }
-  const int* const size__ = INTEGER(size);
-  const R_xlen_t size__len_ = Rf_xlength(size);
+  const int* const size_h__ = INTEGER(size_h);
+  const R_xlen_t size_h__len_ = Rf_xlength(size_h);
+
+  // size_w
+  _args = CDR(_args);
+  SEXP size_w = CAR(_args);
+  if (TYPEOF(size_w) != INTSXP) {
+    Rf_error("typeof(size_w) must be 'integer', not '%s'", Rf_type2char(TYPEOF(size_w)));
+  }
+  const int* const size_w__ = INTEGER(size_w);
+  const R_xlen_t size_w__len_ = Rf_xlength(size_w);
 
   // stride
   _args = CDR(_args);
@@ -177,25 +187,29 @@ SEXP im2col_(SEXP _args) {
   if (channels__len_ != 1)
     Rf_error("length(channels) must be 1, not %0.f",
               (double)channels__len_);
-  if (size__len_ != 1)
-    Rf_error("length(size) must be 1, not %0.f",
-              (double)size__len_);
+  if (size_h__len_ != 1)
+    Rf_error("length(size_h) must be 1, not %0.f",
+              (double)size_h__len_);
+  if (size_w__len_ != 1)
+    Rf_error("length(size_w) must be 1, not %0.f",
+              (double)size_w__len_);
   if (stride__len_ != 1)
     Rf_error("length(stride) must be 1, not %0.f",
               (double)stride__len_);
   const int _as_int_h = Rf_asInteger(h);
-  const int _as_int_size = Rf_asInteger(size);
+  const int _as_int_size_h = Rf_asInteger(size_h);
   const int _as_int_stride = Rf_asInteger(stride);
   const int _as_int_w = Rf_asInteger(w);
+  const int _as_int_size_w = Rf_asInteger(size_w);
   const int _as_int_channels = Rf_asInteger(channels);
-  const R_xlen_t out__len_ = ((((((R_xlen_t)(_as_int_h - _as_int_size) / (R_xlen_t)_as_int_stride) + 1) * (((R_xlen_t)(_as_int_w - _as_int_size) / (R_xlen_t)_as_int_stride) + 1)) * _as_int_channels)) * ((_as_int_size * _as_int_size));
+  const R_xlen_t out__len_ = ((((((R_xlen_t)(_as_int_h - _as_int_size_h) / (R_xlen_t)_as_int_stride) + 1) * (((R_xlen_t)(_as_int_w - _as_int_size_w) / (R_xlen_t)_as_int_stride) + 1)) * _as_int_channels)) * ((_as_int_size_h * _as_int_size_w));
   SEXP out = PROTECT(Rf_allocVector(REALSXP, out__len_));
   double* out__ = REAL(out);
   {
     const SEXP _dim_sexp = PROTECT(Rf_allocVector(INTSXP, 2));
     int* const _dim = INTEGER(_dim_sexp);
-    _dim[0] = (((((R_xlen_t)(_as_int_h - _as_int_size) / (R_xlen_t)_as_int_stride) + 1) * (((R_xlen_t)(_as_int_w - _as_int_size) / (R_xlen_t)_as_int_stride) + 1)) * _as_int_channels);
-    _dim[1] = (_as_int_size * _as_int_size);
+    _dim[0] = (((((R_xlen_t)(_as_int_h - _as_int_size_h) / (R_xlen_t)_as_int_stride) + 1) * (((R_xlen_t)(_as_int_w - _as_int_size_w) / (R_xlen_t)_as_int_stride) + 1)) * _as_int_channels);
+    _dim[1] = (_as_int_size_h * _as_int_size_w);
     Rf_dimgets(out, _dim_sexp);
   }
 
@@ -204,7 +218,8 @@ SEXP im2col_(SEXP _args) {
     h__,
     w__,
     channels__,
-    size__,
+    size_h__,
+    size_w__,
     stride__,
     out__,
     x__len_);

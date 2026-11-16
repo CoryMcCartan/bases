@@ -12,8 +12,8 @@
 #'   may have different dimensions, but must be large enough to accommodate the
 #'   convolution kernel size. Missing values are not allowed.
 #' @param p The number of random convolutional kernels to generate.
-#' @param size The size of the square convolutional kernel (e.g., 3 means a
-#'   3x3 kernel).
+#' @param size Kernel dimensions. A positive integer specifies a square kernel;
+#'   a two-element vector specifies its height and width.
 #' @param stride The stride for the convolution operation, i.e., how many
 #'   pixels to skip between kernel applications. Default is 1.
 #' @param kernel_gen Method for generating convolutional kernels. Either `"rnorm"`
@@ -28,8 +28,8 @@
 #'   functions are also supported.
 #' @param kernels Optional matrix of pre-specified convolutional kernels, where
 #'   each column is a kernel in column-major format. The number of rows must be
-#'   a positive perfect square, from which the kernel size is inferred. If
-#'   provided, overrides `p`, `size`, and `kernel_gen`.
+#'   the kernel height times its width. If `size` is omitted, a square kernel is
+#'   inferred from the number of rows. Overrides `p` and `kernel_gen`.
 #' @param pool_grid Number of spatial pooling cells. A positive integer specifies
 #'   a square grid; a two-element vector specifies the numbers of cell rows and
 #'   columns. The default, 1, pools globally. Color channels are pooled together
@@ -101,11 +101,31 @@ b_conv <- function(
         if (!is.matrix(kernels)) {
             abort("`kernels` must be a matrix")
         }
-        size = sqrt(nrow(kernels))
-        if (size < 1 || size != floor(size)) {
-            abort("`kernels` must have a positive perfect square number of rows")
+        if (missing(size)) {
+            size = sqrt(nrow(kernels))
+            if (size < 1 || size != floor(size)) {
+                abort(
+                    "`kernels` must have a positive perfect square number of rows when `size` is omitted"
+                )
+            }
         }
         p = ncol(kernels)
+    }
+
+    if (
+        !is.numeric(size) ||
+            is.complex(size) ||
+            !length(size) %in% c(1L, 2L) ||
+            any(!is.finite(size)) ||
+            any(size < 1) ||
+            any(size != floor(size)) ||
+            any(size > .Machine$integer.max)
+    ) {
+        abort("`size` must be a positive integer or a two-element vector of positive integers")
+    }
+    size = rep_len(as.integer(size), 2L)
+    if (!is.null(kernels) && nrow(kernels) != prod(size)) {
+        abort("`kernels` must have `prod(size)` rows")
     }
 
     # Validate and normalize images to 3D arrays (h, w, c)
@@ -132,7 +152,7 @@ b_conv <- function(
 
     # Check dimensions are sufficient and channels are consistent
     lapply(img_info, function(info) {
-        if (info$h < size || info$w < size) {
+        if (info$h < size[1] || info$w < size[2]) {
             abort("All images must be at least as large as the kernel `size`")
         }
     })
@@ -153,10 +173,10 @@ b_conv <- function(
     }
 
     # Generate kernels if not supplied
-    s2 = size^2
+    kernel_pixels = prod(size)
     if (is.null(kernels)) {
         if (kernel_gen == "rnorm") {
-            kernels = matrix(rnorm(s2 * p), nrow = s2, ncol = p)
+            kernels = matrix(rnorm(kernel_pixels * p), nrow = kernel_pixels, ncol = p)
         } else if (kernel_gen == "patch") {
             kernels = generate_patch_kernels(x_std, img_info, p, size)
         }
@@ -166,8 +186,8 @@ b_conv <- function(
     features_l = lapply(seq_along(x_std), function(i) {
         img = x_std[[i]]
         info = img_info[[i]]
-        h_out = (info$h - as.integer(size)) %/% as.integer(stride) + 1L
-        w_out = (info$w - as.integer(size)) %/% as.integer(stride) + 1L
+        h_out = (info$h - size[1]) %/% as.integer(stride) + 1L
+        w_out = (info$w - size[2]) %/% as.integer(stride) + 1L
         key = paste(h_out, w_out, info$c, sep = "_")
         if (!exists(key, cell_cache, inherits = FALSE)) {
             cell_cache[[key]] = conv_pool_cells(h_out, w_out, info$c, pool_grid)
@@ -180,7 +200,8 @@ b_conv <- function(
             info$h,
             info$w,
             info$c,
-            as.integer(size),
+            size[1],
+            size[2],
             as.integer(stride)
         )
         conv_output = im_mat %*% kernels
@@ -232,16 +253,16 @@ b_conv <- function(
 
 generate_patch_kernels <- function(x_std, img_info, p, size) {
     n = length(x_std)
-    kernels = matrix(nrow = size^2, ncol = p)
+    kernels = matrix(nrow = prod(size), ncol = p)
     idxs = ceiling(runif(p, 0, n))
     for (j in 1:p) {
         img = x_std[[idxs[j]]]
         info = img_info[[idxs[j]]]
 
-        h_start = ceiling(runif(1, 0, info$h - size + 1))
-        w_start = ceiling(runif(1, 0, info$w - size + 1))
-        h_end = h_start + size - 1
-        w_end = w_start + size - 1
+        h_start = ceiling(runif(1, 0, info$h - size[1] + 1))
+        w_start = ceiling(runif(1, 0, info$w - size[2] + 1))
+        h_end = h_start + size[1] - 1
+        w_end = w_start + size[2] - 1
         ch = ceiling(runif(1, 0, info$c))
 
         patch = img[h_start:h_end, w_start:w_end, ch, drop = FALSE]
@@ -276,30 +297,31 @@ makepredictcall.b_conv <- function(var, call) {
 # Takes a double pixel vector and integer dimensions, kernel size, and stride.
 # Rows index valid positions within each channel; columns index kernel pixels.
 im2col <- quick(
-    function(x, h, w, channels, size, stride) {
+    function(x, h, w, channels, size_h, size_w, stride) {
         declare(
             type(x = double(NA)),
             type(h = integer(1)),
             type(w = integer(1)),
             type(channels = integer(1)),
-            type(size = integer(1)),
+            type(size_h = integer(1)),
+            type(size_w = integer(1)),
             type(stride = integer(1)),
             type(
                 out = double(
-                    ((h - size) %/% stride + 1L) * ((w - size) %/% stride + 1L) * channels,
-                    size * size
+                    ((h - size_h) %/% stride + 1L) * ((w - size_w) %/% stride + 1L) * channels,
+                    size_h * size_w
                 )
             )
         )
 
-        h_out = (h - size) %/% stride + 1L
-        w_out = (w - size) %/% stride + 1L
-        out = matrix(0, h_out * w_out * channels, size * size)
+        h_out = (h - size_h) %/% stride + 1L
+        w_out = (w - size_w) %/% stride + 1L
+        out = matrix(0, h_out * w_out * channels, size_h * size_w)
 
         # Write contiguous columns of the patch matrix
-        for (k_j in seq_len(size)) {
-            for (k_i in seq_len(size)) {
-                out_col = k_i + size * (k_j - 1L)
+        for (k_j in seq_len(size_w)) {
+            for (k_i in seq_len(size_h)) {
+                out_col = k_i + size_h * (k_j - 1L)
                 for (ch in seq_len(channels)) {
                     for (j in seq_len(w_out)) {
                         for (i in seq_len(h_out)) {
