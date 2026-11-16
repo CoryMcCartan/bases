@@ -13,3 +13,6 @@ compile_commands.json
 docs
 inst/doc
 data-raw
+
+*.png
+*.jpg
