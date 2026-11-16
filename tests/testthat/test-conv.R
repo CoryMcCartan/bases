@@ -279,3 +279,62 @@ test_that("makepredictcall.b_conv() preserves attributes", {
     expect_true(!is.null(new_call$size))
     expect_true(!is.null(new_call$stride))
 })
+
+test_that("im2col() matches direct patch extraction", {
+    for (dims in list(c(8L, 9L, 2L), c(3L, 3L, 1L), c(18L, 23L, 3L))) {
+        x = as.double(seq_len(prod(dims)))
+        img = array(x, dims)
+        for (size in seq_len(min(dims[1:2]))) {
+            for (stride in c(1L, 2L, 4L, 25L)) {
+                patches = list()
+                for (ch in seq_len(dims[3])) {
+                    for (j in seq(1, dims[2] - size + 1, by = stride)) {
+                        for (i in seq(1, dims[1] - size + 1, by = stride)) {
+                            patches[[length(patches) + 1L]] = c(
+                                img[i:(i + size - 1), j:(j + size - 1), ch]
+                            )
+                        }
+                    }
+                }
+                expected = do.call(rbind, patches)
+                actual = im2col(x, dims[1], dims[2], dims[3], size, stride)
+                expect_identical(actual, expected)
+            }
+        }
+    }
+})
+
+test_that("pool_max() matches columnwise max", {
+    for (dims in list(c(7, 4), c(1, 4), c(7, 1))) {
+        x = matrix(rnorm(prod(dims)), dims[1], dims[2])
+        expect_identical(pool_max(x), c(apply(x, 2, max)))
+    }
+
+    x = matrix(c(-Inf, -Inf, -3, 2, Inf, 1), 2, 3)
+    expect_identical(pool_max(x), c(-Inf, 2, Inf))
+    expect_identical(pool_max(matrix(numeric(), 3, 0)), numeric())
+})
+
+test_that("b_conv() preserves max pooling results", {
+    images = list(matrix(as.double(1:30), 5, 6))
+    kernels = matrix(c(-1, 2, -3, 4, 2, 3, 4, 5), 4, 2)
+    fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
+    reference = b_conv(
+        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+    )
+    expect_identical(as.numeric(fast), as.numeric(reference))
+
+    kernels[1, 1] = NaN
+    fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
+    reference = b_conv(
+        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+    )
+    expect_identical(as.numeric(fast), as.numeric(reference))
+
+    kernels[1, 1] = NA_real_
+    fast = b_conv(images, kernels = kernels, activation = max, stdize = "none")
+    reference = b_conv(
+        images, kernels = kernels, activation = function(x) max(x), stdize = "none"
+    )
+    expect_identical(as.numeric(fast), as.numeric(reference))
+})
