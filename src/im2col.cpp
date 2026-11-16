@@ -14,8 +14,8 @@ using namespace cpp11;
 [[cpp11::register]]
 doubles_matrix<> im2col(const doubles& x, int h, int w, int c,
                         int size, int stride) {
-    int h_out = (h - size + 1) / stride;
-    int w_out = (w - size + 1) / stride;
+    int h_out = (h - size) / stride + 1;
+    int w_out = (w - size) / stride + 1;
     writable::doubles_matrix<> out(h_out * w_out * c, size * size);
 
     for (int l = 0; l < c; l++) { // channels

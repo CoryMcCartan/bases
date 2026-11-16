@@ -26,8 +26,9 @@
 #'   can be implemented with `function(x) mean(x > 0)`. Multivariate pooling
 #'   functions are also supported.
 #' @param kernels Optional matrix of pre-specified convolutional kernels, where
-#'   each column is a kernel in column-major format. If provided, overrides `p`,
-#'   `size`, and `kernel_gen`.
+#'   each column is a kernel in column-major format. The number of rows must be
+#'   a positive perfect square, from which the kernel size is inferred. If
+#'   provided, overrides `p`, `size`, and `kernel_gen`.
 #'
 #' @returns A matrix of random convolutional features with one row per image in
 #'   `x` and one column per kernel (or more columns if `activation` is
@@ -61,7 +62,6 @@ b_conv <- function(
     shift = NULL,
     scale = NULL
 ) {
-    kernel_gen = rlang::arg_match(kernel_gen)
     stdize = rlang::arg_match(stdize)
 
     if (!is.list(x)) {
@@ -70,6 +70,19 @@ b_conv <- function(
     n = length(x)
     if (n == 0) {
         abort("`x` must contain at least one image")
+    }
+
+    if (is.null(kernels)) {
+        kernel_gen = rlang::arg_match(kernel_gen)
+    } else {
+        if (!is.matrix(kernels)) {
+            abort("`kernels` must be a matrix")
+        }
+        size = sqrt(nrow(kernels))
+        if (size < 1 || size != floor(size)) {
+            abort("`kernels` must have a positive perfect square number of rows")
+        }
+        p = ncol(kernels)
     }
 
     # Validate and normalize images to 3D arrays (h, w, c)
@@ -116,7 +129,7 @@ b_conv <- function(
         start_idx = start_idx + n_pix
     }
 
-    # Generate or validate kernels
+    # Generate kernels if not supplied
     s2 = size^2
     if (is.null(kernels)) {
         if (kernel_gen == "rnorm") {
@@ -124,18 +137,6 @@ b_conv <- function(
         } else if (kernel_gen == "patch") {
             kernels = generate_patch_kernels(x_std, img_info, p, size)
         }
-    } else {
-        # Validate provided kernels
-        if (!is.matrix(kernels)) {
-            abort("`kernels` must be a matrix")
-        }
-        if (nrow(kernels) != s2) {
-            abort(sprintf(
-                "`kernels` must have %d rows (size^2), but has %d",
-                s2, nrow(kernels)
-            ))
-        }
-        p = ncol(kernels)
     }
 
     features_l = lapply(seq_along(x_std), function(i) {

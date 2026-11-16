@@ -49,8 +49,9 @@ to lie in the unit hypercube, and \code{"symbox"} scales the data along each
 dimension to lie in \eqn{[-0.5, 0.5]^d}.}
 
 \item{kernels}{Optional matrix of pre-specified convolutional kernels, where
-each column is a kernel in column-major format. If provided, overrides \code{p},
-\code{size}, and \code{kernel_gen}.}
+each column is a kernel in column-major format. The number of rows must be
+a positive perfect square, from which the kernel size is inferred. If
+provided, overrides \code{p}, \code{size}, and \code{kernel_gen}.}
 
 \item{shift}{Vector of shifts, or single shift value, to use. If provided,
 overrides those calculated according to \code{stdize}.}

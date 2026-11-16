@@ -171,6 +171,37 @@ test_that("b_conv() works with stride parameter", {
     expect_false(isTRUE(all.equal(feats_stride1, feats_stride2)))
 })
 
+test_that("b_conv() retains all valid strided patches", {
+    img = array(as.double(1:(8 * 9 * 2)), c(8, 9, 2))
+
+    for (size in 2:5) {
+        kernel = matrix(seq_len(size^2), size, size)
+        for (stride in c(1, 2, 4, 10)) {
+            expected = c()
+            for (ch in 1:2) {
+                for (j in seq(1, 9 - size + 1, by = stride)) {
+                    for (i in seq(1, 8 - size + 1, by = stride)) {
+                        patch = img[i:(i + size - 1), j:(j + size - 1), ch]
+                        expected = c(expected, sum(patch * kernel))
+                    }
+                }
+            }
+            feats = b_conv(
+                list(img), kernels = matrix(c(kernel), ncol = 1),
+                size = size, stride = stride, activation = identity,
+                stdize = "none"
+            )
+            expect_equal(as.numeric(feats), expected)
+        }
+    }
+
+    feats = b_conv(
+        list(matrix(as.double(1:9), 3, 3)), kernels = matrix(1, 9, 1),
+        stride = 4, activation = identity, stdize = "none"
+    )
+    expect_equal(as.numeric(feats), 45)
+})
+
 test_that("b_conv() integrates with ridge()", {
     images = lapply(1:20, function(i) matrix(runif(15*15), 15, 15))
     y = rnorm(20)
@@ -191,6 +222,36 @@ test_that("b_conv() with custom kernels works", {
 
     expect_equal(ncol(feats), 4)
     expect_equal(attr(feats, "kernels"), custom_kernels)
+})
+
+test_that("b_conv() infers size from custom kernels before checking images", {
+    img = matrix(as.double(1:12), 3, 4)
+    kernels = matrix(1, 4, 2)
+    feats = b_conv(
+        list(img), kernels = kernels, size = 100, p = 99,
+        kernel_gen = "unused", activation = mean, stdize = "none"
+    )
+
+    expect_equal(attr(feats, "size"), 2)
+    expect_equal(dim(feats), c(1, 2))
+    expect_equal(as.numeric(feats), c(26, 26))
+
+    feats_default = b_conv(list(img), kernels = kernels, stdize = "none")
+    expect_equal(attr(feats_default, "size"), 2)
+
+    expect_error(b_conv(list(img), kernels = 1:4), "must be a matrix")
+    expect_error(
+        b_conv(list(img), kernels = matrix(1, 6, 2)),
+        "positive perfect square"
+    )
+    expect_error(
+        b_conv(list(img), kernels = matrix(numeric(), 0, 2)),
+        "positive perfect square"
+    )
+    expect_error(
+        b_conv(list(img), kernels = matrix(1, 25, 1)),
+        "at least as large"
+    )
 })
 
 test_that("b_conv() with 3D images has correct kernel size", {
