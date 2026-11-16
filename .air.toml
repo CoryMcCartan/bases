@@ -1,4 +1,7 @@
 [format]
-line-width = 96
+line-width = 100
 indent-width = 4
 indent-style = "space"
+persistent-line-breaks = true
+skip = ["list", "c", "tribble"]
+assignment-style = "preserve"
